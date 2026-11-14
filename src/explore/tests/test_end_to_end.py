@@ -125,7 +125,7 @@ class CitationFixtureProvider:
                     {
                         "statement": "The source lists a planned test condition.",
                         "support": "direct",
-                        "chunk_ids": [item["chunk_id"]],
+                        "chunk_ids": [item["cite_as"]],
                     }
                 ],
                 "scientific_context": "",
@@ -413,7 +413,7 @@ def test_claim_of_observation_cannot_be_supported_by_planned_citation():
                     "answer": "NASA observed the test outcome at this condition.",
                     "status": "grounded",
                     "findings": [
-                        {"statement": "A test condition is listed.", "support": "direct", "chunk_ids": [item["chunk_id"]]}
+                        {"statement": "A test condition is listed.", "support": "direct", "chunk_ids": [item["cite_as"]]}
                     ],
                 }
             )
@@ -447,11 +447,11 @@ def test_forged_source_provenance_in_model_output_never_reaches_citations():
                         {
                             "statement": "The plan lists methanol at 21% oxygen.",
                             "support": "direct",
-                            "chunk_ids": [item["chunk_id"]],
+                            "chunk_ids": [item["cite_as"]],
                             "source_id": "forged-source",
                         }
                     ],
-                    "citations": [{"chunk_id": item["chunk_id"], "source_id": "forged-source"}],
+                    "citations": [{"chunk_id": item["cite_as"], "source_id": "forged-source"}],
                 }
             )
 

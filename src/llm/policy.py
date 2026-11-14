@@ -66,7 +66,8 @@ INTEGRITY
   or NASA findings. Every number you report must appear in the supplied
   evidence.
 - Do not present planned conditions or metadata as observed results.
-- Cite only supplied chunk_ids, and only for claims they support.
+- Cite only the supplied evidence labels (E1, E2, ...), and only for claims
+  they support.
 
 STATUS
 - "grounded": the supplied evidence answers the question.
@@ -82,28 +83,29 @@ Return only one valid json object (the word json activates the provider's
 structured JSON response mode) with exactly these keys:
 {
   "status": "grounded" | "partial" | "insufficient_evidence",
-  "answer": "Direct answer in 2 to 6 sentences. After each statement based on NASA evidence put the supporting chunk_id in square brackets, e.g. [chunk-0a1b2c...].",
+  "answer": "Direct answer in 2 to 6 sentences. After each statement based on NASA evidence put the supporting evidence label in square brackets, e.g. [E2] or [E2, E5].",
   "findings": [
     {
       "statement": "One claim supported by the NASA evidence.",
       "support": "direct" | "inference",
-      "chunk_ids": ["exact supplied chunk_id"]
+      "chunk_ids": ["E2"]
     }
   ],
-  "scientific_context": "General combustion science that helps explain the findings, without chunk_ids. Empty string if not needed.",
+  "scientific_context": "General combustion science that helps explain the findings, without evidence labels. Empty string if not needed.",
   "limitations": "What the evidence does not establish: gaps, untested conditions, differences between sources."
 }
 "direct" means a cited item states the claim; "inference" means the claim is
-reasoned from the cited items together. Every finding needs at least one
-chunk_id. A grounded or partial answer needs at least one finding.
+reasoned from the cited items together. Each evidence item shows the label to
+cite it by ("Cite as: [E3]"); chunk_ids holds those labels. Every finding needs
+at least one label. A grounded or partial answer needs at least one finding.
 
 A "STRUCTURED EXPERIMENT-CONDITION MATCHES" section may follow the document
 evidence. Its records come from NASA test tables; each has its own
 evidence_status (observed records hold measured outcomes, planned records are
 only proposed conditions). You may summarize those records and name their
 record_id and experiment_id in the answer and findings text, but they are not
-document chunks and cannot go in chunk_ids. A grounded or partial answer must
-still cite at least one supplied document chunk, for example the chunk
+document evidence and cannot go in chunk_ids. A grounded or partial answer must
+still cite at least one supplied evidence label, for example the passage
 describing the experiment whose records you summarize. If no supplied chunk is
 relevant, return insufficient_evidence and say which structured records exist."""
 
@@ -147,7 +149,7 @@ class EvidencePolicy:
             f"{question}\n\n"
             "RETRIEVED EVIDENCE CONTEXT (authoritative input for this response)\n"
             "-------------------------------------------------------------------\n"
-            f"{context.context_text}\n\n"
+            f"{_labelled_context(context)}\n\n"
             "STRUCTURED EVIDENCE ITEMS\n"
             "-------------------------\n"
             f"{_structured_evidence(context)}\n\n"
@@ -161,11 +163,33 @@ class EvidencePolicy:
         )
 
 
+def evidence_labels(context: RAGContext) -> dict[str, str]:
+    """Short citation labels (E1, E2, ...) for the supplied chunks, in order.
+
+    The model cites these instead of 64-character chunk IDs, which it
+    occasionally mis-copies; the service maps them back before validating.
+    """
+
+    return {f"E{index}": item.chunk_id for index, item in enumerate(context.evidence_items, start=1)}
+
+
+def _labelled_context(context: RAGContext) -> str:
+    text = context.context_text
+    for label, chunk_id in evidence_labels(context).items():
+        text = text.replace(f"Chunk ID: {chunk_id}\n", f"Cite as: [{label}]\n", 1)
+    return text
+
+
 def _structured_evidence(context: RAGContext) -> str:
-    # Identifiers and provenance only: each item's text is already in the
-    # context block above, and sending it twice would halve the room for evidence.
+    # Provenance only, keyed by citation label: each item's text is already in
+    # the context block above, and sending it twice would halve the room for evidence.
+    labels = {chunk_id: label for label, chunk_id in evidence_labels(context).items()}
     return json.dumps(
-        [{key: value for key, value in item.to_dict().items() if key != "text"} for item in context.evidence_items],
+        [
+            {"cite_as": labels[item.chunk_id]}
+            | {key: value for key, value in item.to_dict().items() if key not in ("text", "chunk_id")}
+            for item in context.evidence_items
+        ],
         ensure_ascii=False,
         sort_keys=True,
         separators=(",", ":"),

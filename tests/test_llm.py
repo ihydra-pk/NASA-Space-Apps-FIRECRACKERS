@@ -111,7 +111,8 @@ def test_evidence_policy_prompt_has_explicit_scientific_rules():
     ):
         assert required in system
     assert "ONLY the supplied evidence" not in system
-    assert context.context_text in user
+    # The model sees short labels instead of chunk IDs.
+    assert "Cite as: [E1]" in user and context.evidence_items[0].chunk_id not in user
     # Chunk text is sent once, in the context block; the structured items
     # carry identifiers and provenance only.
     assert user.count(context.evidence_items[0].text) == 1
@@ -519,3 +520,31 @@ def test_truncated_llm_output_is_reported_as_truncation():
 def test_default_output_token_limit_leaves_room_for_long_answers(monkeypatch):
     monkeypatch.delenv("FIRELENS_LLM_MAX_OUTPUT_TOKENS", raising=False)
     assert LLMConfig.from_env().max_output_tokens >= 3000
+
+
+def test_evidence_labels_map_back_to_chunk_ids_and_unknown_labels_are_rejected():
+    context = _context(_result(), _result(chunk_id="chunk-2"))
+    response = _answer(
+        context,
+        MockLLMProvider(
+            _mock_response(
+                context,
+                answer="The plan lists 21% oxygen [E2].",
+                chunk_ids=["E1"],
+                limitations="Only [E2, E1] cover this.",
+            )
+        ),
+    )
+    assert [citation.chunk_id for citation in response.citations] == ["chunk-2", "chunk-1"]
+    assert response.findings[0].chunk_ids == ("chunk-1",)
+    # Stored text carries chunk IDs so the web page can link them.
+    assert response.answer == "The plan lists 21% oxygen [chunk-2]."
+    assert response.limitations == "Only [chunk-2, chunk-1] cover this."
+
+    with pytest.raises(LLMResponseError, match="'E7' not present"):
+        _answer(context, MockLLMProvider(_mock_response(context, answer="Oxygen matters [E7].")))
+    with pytest.raises(LLMResponseError, match="finding 1 references chunk_id 'E9'"):
+        _answer(context, MockLLMProvider(_mock_response(context, chunk_ids=["E9"])))
+    with pytest.raises(LLMResponseError, match="scientific_context"):
+        _answer(context, MockLLMProvider(_mock_response(context, scientific_context="Kinetics [E1].")))
+

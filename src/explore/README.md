@@ -195,6 +195,6 @@ helps questions that name a test number, acronym or formula. The reported
 
 
 Search also ranks reference lists after findings and adds the next page of a
-report after each of the top 3 hits (`--keep-reference-lists`, `--neighbours`);
+report after each of the top N hits when `--neighbours N` is set (off by default) (`--keep-reference-lists`, `--neighbours`);
 see `src/vectorstore/README.md`. The CLI gives the answer model 10 passages by
 default (`--top-k`).

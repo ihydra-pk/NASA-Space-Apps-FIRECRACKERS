@@ -67,7 +67,7 @@ def build_explore_service() -> ExploreService:
         top_k=int(_env("TOP_K", "10")),
         min_chunk_words=int(_env("MIN_CHUNK_WORDS", "25")),
         demote_reference_lists=_flag("DEMOTE_REFERENCES", "on"),
-        neighbour_chunks=int(_env("NEIGHBOURS", "3")),
+        neighbour_chunks=int(_env("NEIGHBOURS", "0")),
     )
     if vector_config.provider == "openai-compatible":
         embedding_provider = OpenAICompatibleEmbeddingProvider()

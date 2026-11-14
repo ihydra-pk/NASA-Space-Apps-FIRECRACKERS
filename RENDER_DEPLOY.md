@@ -35,7 +35,7 @@ and ask one question a few minutes before presenting, or switch the plan to
 Change these in Render's Environment tab; see `Run.md` for the full list.
 
 - `UPB_AI_GATEWAY_KEY`: required; answers and query embeddings use the UPB gateway.
-- `FIRELENS_API_TOP_K` (10), `FIRELENS_API_NEIGHBOURS` (3),
+- `FIRELENS_API_TOP_K` (10), `FIRELENS_API_NEIGHBOURS` (0),
   `FIRELENS_API_DEMOTE_REFERENCES` (on), `FIRELENS_API_ROUTER` (on).
 - `FIRELENS_LLM_MODEL`, `FIRELENS_LLM_MAX_OUTPUT_TOKENS`.
 

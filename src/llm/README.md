@@ -71,7 +71,7 @@ written before flight, ...) and that a bibliography entry is not a finding.
 Empty evidence is handled locally as `insufficient_evidence`; the model is not
 called.
 
-The model writes chunk IDs only. `citations` are built by the service from the
+The prompt labels the passages `E1`, `E2`, … ("Cite as: [E3]"); the model cites those labels, because it occasionally mis-copied 64-character chunk IDs, and the service turns them back into chunk IDs before validating, so stored answers and citations still carry chunk IDs. The model writes labels only. `citations` are built by the service from the
 IDs in `findings`, in `[chunk-id]` markers of `answer`, and in `limitations`,
 with source ID, locator, page and evidence status copied from `RAGContext`, so
 model output can never put an invented source, page or status into a citation.

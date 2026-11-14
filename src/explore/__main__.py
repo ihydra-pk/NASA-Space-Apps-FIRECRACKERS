@@ -40,7 +40,7 @@ def main() -> int:
         help="skip chunks shorter than this when ranking; 0 keeps title-only chunks",
     )
     parser.add_argument(
-        "--neighbours", type=int, default=3,
+        "--neighbours", type=int, default=0,
         help="add the next passage of the same report after each of this many top hits; 0 turns it off",
     )
     parser.add_argument(

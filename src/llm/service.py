@@ -10,7 +10,7 @@ from src.rag.models import EvidenceItem, RAGContext
 
 from .config import LLMConfig
 from .models import AnswerCitation, AnswerFinding, AnswerResponse, EvidenceReference
-from .policy import EvidencePolicy
+from .policy import EvidencePolicy, evidence_labels
 from .providers import LLMProvider, create_llm_provider
 
 
@@ -63,6 +63,22 @@ _NOT_RESULTS = frozenset({"planned", "metadata"})
 # Real chunk IDs look like this; one that was not supplied is invented.
 _CHUNK_ID_SHAPE = re.compile(r"\bchunk-[0-9a-f]{8,}\b")
 _BRACKETS = re.compile(r"\[([^\[\]]+)\]")
+# The prompt labels evidence E1, E2, ...; a label that was not supplied is invented.
+_LABEL_SHAPE = re.compile(r"^E\d+$")
+
+
+def _expand_labels(text: str, labels: dict[str, str]) -> str:
+    """Replace evidence labels inside square brackets with their chunk IDs.
+
+    ``[E2, E5]`` becomes ``[chunk-…, chunk-…]``: the stored answer and the web
+    page keep working with chunk IDs; only the model sees the short labels.
+    """
+
+    def expand(match: re.Match[str]) -> str:
+        parts = re.split(r"([,;\s]+)", match.group(1))
+        return "[" + "".join(labels.get(part, part) for part in parts) + "]"
+
+    return _BRACKETS.sub(expand, text)
 _SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
 
 
@@ -95,7 +111,13 @@ def _cited_ids(text: str, supplied: dict[str, EvidenceItem]) -> list[str]:
 
 
 def _reject_invented_ids(text: str, supplied: dict[str, EvidenceItem], *, where: str) -> None:
-    invented = [token for token in _CHUNK_ID_SHAPE.findall(text) if token not in supplied]
+    # Runs after _expand_labels, so any label still in brackets was never supplied.
+    invented = [token for token in _CHUNK_ID_SHAPE.findall(text) if token not in supplied] + [
+        token
+        for group in _BRACKETS.findall(text)
+        for token in re.split(r"[,;\s]+", group)
+        if _LABEL_SHAPE.match(token)
+    ]
     if invented:
         raise LLMResponseError(f"{where} references chunk_id {invented[0]!r} not present in supplied RAGContext")
 
@@ -113,7 +135,9 @@ def _check_observation_claim(
         )
 
 
-def _findings(raw_findings: Any, supplied: dict[str, EvidenceItem]) -> tuple[AnswerFinding, ...]:
+def _findings(
+    raw_findings: Any, supplied: dict[str, EvidenceItem], labels: dict[str, str]
+) -> tuple[AnswerFinding, ...]:
     if raw_findings is None:
         return ()
     if not isinstance(raw_findings, list):
@@ -133,6 +157,7 @@ def _findings(raw_findings: Any, supplied: dict[str, EvidenceItem]) -> tuple[Ans
             raise LLMResponseError(
                 f"finding {index} must cite at least one chunk_id; general background belongs in scientific_context"
             )
+        chunk_ids = [labels.get(chunk_id, chunk_id) if isinstance(chunk_id, str) else chunk_id for chunk_id in chunk_ids]
         for chunk_id in chunk_ids:
             if not isinstance(chunk_id, str) or chunk_id not in supplied:
                 raise LLMResponseError(
@@ -140,7 +165,7 @@ def _findings(raw_findings: Any, supplied: dict[str, EvidenceItem]) -> tuple[Ans
                 )
         unique_ids = tuple(dict.fromkeys(chunk_ids))
         _check_observation_claim(statement, unique_ids, supplied, where=f"finding {index}")
-        findings.append(AnswerFinding(statement.strip(), support, unique_ids))
+        findings.append(AnswerFinding(_expand_labels(statement.strip(), labels), support, unique_ids))
     return tuple(findings)
 
 
@@ -148,12 +173,13 @@ def _validate_response(parsed: dict[str, Any], context: RAGContext, config: LLMC
     status = parsed.get("status")
     if status not in _STATUSES:
         raise LLMResponseError("LLM response status must be grounded, partial or insufficient_evidence")
-    answer = _text_field(parsed, "answer", required=True)
-    scientific_context = _text_field(parsed, "scientific_context", required=False)
-    limitations = _text_field(parsed, "limitations", required=False)
+    labels = evidence_labels(context)
+    answer = _expand_labels(_text_field(parsed, "answer", required=True), labels)
+    scientific_context = _expand_labels(_text_field(parsed, "scientific_context", required=False), labels)
+    limitations = _expand_labels(_text_field(parsed, "limitations", required=False), labels)
 
     supplied = {item.chunk_id: item for item in context.evidence_items}
-    findings = _findings(parsed.get("findings"), supplied)
+    findings = _findings(parsed.get("findings"), supplied, labels)
     _reject_invented_ids(answer, supplied, where="answer")
     _reject_invented_ids(limitations, supplied, where="limitations")
     for index, finding in enumerate(findings, start=1):

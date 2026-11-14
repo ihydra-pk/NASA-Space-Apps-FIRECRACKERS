@@ -87,7 +87,7 @@ Set these before starting the server to change its defaults:
 | --------------------------------------------------------- | -------------------- | ----------------------------------------------------------------- |
 | `FIRELENS_API_LLM_MODEL`                                  | `openai.gpt-6-luna`  | chat model that writes the answer                                 |
 | `FIRELENS_API_TOP_K`                                      | `10`                 | passages given to the model per question                          |
-| `FIRELENS_API_NEIGHBOURS`                                 | `3`                  | add the next page of a report after this many top passages; `0` turns it off |
+| `FIRELENS_API_NEIGHBOURS`                                 | `0`                  | add the next passage of a report after this many top passages (off: in the first benchmark it repeated half-pages and pushed answers down) |
 | `FIRELENS_API_DEMOTE_REFERENCES`                          | `on`                 | `off` lets bibliography pages compete with findings again         |
 | `FIRELENS_API_MIN_CHUNK_WORDS`                            | `25`                 | passages shorter than this (slide titles) are ignored             |
 | `FIRELENS_API_SEARCH_MODE`                                | `hybrid`             | `hybrid` (meaning plus keywords) or `semantic`                    |
@@ -105,7 +105,7 @@ The whole site (page and AI server) runs as one Render service described by `ren
 ```bash
 python -m src.evaluation --label after                  # retrieval and answers, about 20 minutes
 python -m src.evaluation --retrieval-only --label quick # search only, a few minutes
-FIRELENS_API_NEIGHBOURS=0 python -m src.evaluation --retrieval-only --label no-neighbours
+FIRELENS_API_NEIGHBOURS=3 python -m src.evaluation --retrieval-only --label neighbours
 ```
 
 The summary reports how often the answering page is among the first 5 and 10 passages (`hit@5`, `hit@10`, `mrr`), whether answerable questions were answered and unanswerable ones refused, whether the answering page was cited, and the time per question. Compare runs before and after a change; the per-question results show which page was retrieved instead.

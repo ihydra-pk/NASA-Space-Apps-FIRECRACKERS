@@ -126,7 +126,7 @@ class MockLLMProvider:
                     "limitations": "No evidence items were supplied.",
                 }
             )
-        chunk_id = evidence[0]["chunk_id"]
+        chunk_id = evidence[0]["cite_as"]  # evidence label, e.g. "E1"
         return json.dumps(
             {
                 "answer": f"Mock response fixture: retrieved evidence is available; inspect the cited source text. [{chunk_id}]",
