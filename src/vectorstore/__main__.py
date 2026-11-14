@@ -46,6 +46,10 @@ def main() -> int:
         subparser.add_argument("--dimension", type=int, required=True)
         subparser.add_argument("--base-url", default=None)
     search_parser.add_argument("--top-k", type=int, default=5)
+    search_parser.add_argument(
+        "--mode", choices=("semantic", "hybrid"), default="semantic",
+        help="hybrid also ranks by keyword match, which helps with test numbers and acronyms",
+    )
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
     config = _config(args)
@@ -77,7 +81,9 @@ def main() -> int:
         else create_embedding_provider(embedding_config)
     )
     with SQLiteVectorStore(config) as store:
-        result = search(args.query, store, config, provider=provider, top_k=args.top_k)
+        result = search(
+            args.query, store, config, provider=provider, top_k=args.top_k, mode=args.mode
+        )
     for match in result.matches:
         print(json.dumps(asdict(match), ensure_ascii=False, default=str))
     return 0

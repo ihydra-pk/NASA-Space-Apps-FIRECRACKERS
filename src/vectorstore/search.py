@@ -1,4 +1,4 @@
-"""Provider-aware query embedding and cosine similarity retrieval."""
+"""Provider-aware query embedding, cosine similarity and hybrid retrieval."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ from src.embeddings.pipeline import _validate_vectors
 from src.embeddings.providers import EmbeddingProvider, create_embedding_provider
 
 from .config import VectorStoreConfig
+from .keyword import bm25_scores
 from .models import RetrievalResult, SearchResult
 from .store import VectorStore
 
@@ -26,6 +27,50 @@ def cosine_similarity(left: tuple[float, ...], right: tuple[float, ...]) -> floa
     return max(-1.0, min(1.0, score))
 
 
+SEARCH_MODES = ("semantic", "hybrid")
+# Reciprocal rank fusion: each ranking contributes weight / (k + rank). A small
+# k keeps the top semantic hits well ahead; the keyword ranking counts for less,
+# so it promotes exact-term matches without letting word overlap alone outrank
+# a close match in meaning. Chosen by checking a handful of questions against
+# the full index; revisit once there is a question set with known answers.
+_RRF_K = 10
+_KEYWORD_WEIGHT = 0.3
+
+
+def _fuse_with_keywords(
+    query_text: str,
+    scored: list[tuple[float, dict, tuple[float, ...]]],
+    count: int,
+) -> tuple[RetrievalResult, ...]:
+    """Re-rank similarity-sorted chunks by fusing semantic and keyword ranks."""
+
+    keyword_scores = bm25_scores(query_text, [record["text"] for _, record, _ in scored])
+    by_keyword = sorted(
+        (index for index, score in enumerate(keyword_scores) if score > 0),
+        key=lambda index: (-keyword_scores[index], scored[index][1]["chunk_id"]),
+    )
+    keyword_rank = {index: rank for rank, index in enumerate(by_keyword, start=1)}
+
+    def fused(index: int) -> float:
+        value = 1.0 / (_RRF_K + index + 1)  # ``scored`` is already in semantic order
+        if index in keyword_rank:
+            value += _KEYWORD_WEIGHT / (_RRF_K + keyword_rank[index])
+        return value
+
+    order = sorted(range(len(scored)), key=lambda index: (-fused(index), scored[index][1]["chunk_id"]))
+    return tuple(
+        RetrievalResult.from_record(
+            rank,
+            scored[index][0],
+            scored[index][1],
+            semantic_rank=index + 1,
+            keyword_rank=keyword_rank.get(index),
+            keyword_score=keyword_scores[index] if index in keyword_rank else None,
+        )
+        for rank, index in enumerate(order[:count], start=1)
+    )
+
+
 def search(
     query_text: str,
     store: VectorStore,
@@ -33,11 +78,20 @@ def search(
     *,
     provider: EmbeddingProvider | None = None,
     top_k: int | None = None,
+    mode: str = "semantic",
 ) -> SearchResult:
-    """Embed a query with the indexed profile and return ranked evidence."""
+    """Embed a query with the indexed profile and return ranked evidence.
+
+    ``mode="semantic"`` ranks by cosine similarity alone. ``mode="hybrid"``
+    also scores chunk text by keyword (BM25) and orders by reciprocal rank
+    fusion of the two rankings. Fusion uses ranks only, so the two score
+    scales are never added together and ``similarity_score`` stays cosine.
+    """
 
     if not isinstance(query_text, str) or not query_text.strip():
         raise ValueError("query_text must not be empty")
+    if mode not in SEARCH_MODES:
+        raise ValueError(f"mode must be one of {SEARCH_MODES}; got {mode!r}")
     count = config.top_k if top_k is None else top_k
     if count <= 0:
         raise ValueError("top_k must be greater than zero")
@@ -81,11 +135,15 @@ def search(
             )
         scored.append((cosine_similarity(query_vector, vector), record, vector))
     scored.sort(key=lambda item: (-item[0], item[1]["chunk_id"]))
-    results = tuple(
-        RetrievalResult.from_record(rank, score, record)
-        for rank, (score, record, _) in enumerate(scored[:count], start=1)
-    )
+    if mode == "hybrid":
+        results = _fuse_with_keywords(query_text, scored, count)
+    else:
+        results = tuple(
+            RetrievalResult.from_record(rank, score, record)
+            for rank, (score, record, _) in enumerate(scored[:count], start=1)
+        )
     return SearchResult(
+        mode=mode,
         query=query_text,
         provider=config.provider,
         model_name=config.model_name,

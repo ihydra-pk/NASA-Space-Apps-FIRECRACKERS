@@ -38,10 +38,27 @@ class RetrievalResult:
     content_sha256: str
     source_path: str
     metadata: dict[str, Any] = field(default_factory=dict)
+    # Set by hybrid search only. ``similarity_score`` is always the cosine
+    # similarity; these record why a chunk was ranked where it was.
+    semantic_rank: int | None = None
+    keyword_rank: int | None = None
+    keyword_score: float | None = None
 
     @classmethod
-    def from_record(cls, rank: int, score: float, record: dict[str, Any]) -> "RetrievalResult":
+    def from_record(
+        cls,
+        rank: int,
+        score: float,
+        record: dict[str, Any],
+        *,
+        semantic_rank: int | None = None,
+        keyword_rank: int | None = None,
+        keyword_score: float | None = None,
+    ) -> "RetrievalResult":
         return cls(
+            semantic_rank=semantic_rank,
+            keyword_rank=keyword_rank,
+            keyword_score=keyword_score,
             rank=rank,
             chunk_id=record["chunk_id"],
             similarity_score=score,
@@ -67,3 +84,4 @@ class SearchResult:
     dimension: int
     similarity_metric: str
     matches: tuple[RetrievalResult, ...]
+    mode: str = "semantic"
