@@ -22,7 +22,7 @@ class LLMConfig:
     base_url: str = DEFAULT_UPB_BASE_URL
     timeout_seconds: float = 90.0
     temperature: float = 0.0
-    max_output_tokens: int = 1200
+    max_output_tokens: int = 3000
 
     def __post_init__(self) -> None:
         if not self.provider.strip():
@@ -47,7 +47,7 @@ class LLMConfig:
             base_url=os.environ.get("FIRELENS_LLM_BASE_URL", DEFAULT_UPB_BASE_URL),
             timeout_seconds=float(os.environ.get("FIRELENS_LLM_TIMEOUT", "90")),
             temperature=float(os.environ.get("FIRELENS_LLM_TEMPERATURE", "0")),
-            max_output_tokens=int(os.environ.get("FIRELENS_LLM_MAX_OUTPUT_TOKENS", "1200")),
+            max_output_tokens=int(os.environ.get("FIRELENS_LLM_MAX_OUTPUT_TOKENS", "3000")),
         )
 
     @property

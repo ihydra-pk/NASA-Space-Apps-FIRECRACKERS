@@ -173,9 +173,21 @@ def _embed_batch(
     return records, []
 
 
+def _provider_output_dir(output_dir: Path, provider_name: str, config: EmbeddingConfig) -> Path:
+    if provider_name == "mock":
+        return output_dir
+    safe_model_name = "".join(
+        character if character.isalnum() or character in "._-" else "_"
+        for character in config.model_name
+    ).strip("._") or "model"
+    return output_dir / provider_name / safe_model_name
+
+
 def run_embedding(
     config: EmbeddingConfig | None = None,
     provider: EmbeddingProvider | None = None,
+    *,
+    skip_existing: bool = False,
 ) -> EmbeddingResult:
     """Embed chunk JSONL in batches and write separate embedding JSONL files.
 
@@ -229,6 +241,19 @@ def run_embedding(
             else:
                 valid_records.append((line_number, record))
 
+        if skip_existing and valid_records and not file_failures:
+            existing_path = _provider_output_dir(output_dir, provider_name, config) / relative_path
+            if existing_path.is_file():
+                existing_ids = {
+                    rec.get("chunk_id")
+                    for _, rec in _read_jsonl(existing_path)[0]
+                    if isinstance(rec.get("embedding"), list)
+                }
+                if {rec["chunk_id"] for _, rec in valid_records} <= existing_ids:
+                    logger.info("Skipping %s: all chunks already embedded", relative_path)
+                    processed_paths.append(relative_path.as_posix())
+                    continue
+
         for offset in range(0, len(valid_records), config.batch_size):
             batch = valid_records[offset : offset + config.batch_size]
             embedded, batch_failures = _embed_batch(
@@ -242,14 +267,7 @@ def run_embedding(
 
         # The relative tree and input basename are retained, including spaces.
         # Keep real provider/model output separate from existing mock vectors.
-        if provider_name == "mock":
-            provider_output_dir = output_dir
-        else:
-            safe_model_name = "".join(
-                character if character.isalnum() or character in "._-" else "_"
-                for character in config.model_name
-            ).strip("._") or "model"
-            provider_output_dir = output_dir / provider_name / safe_model_name
+        provider_output_dir = _provider_output_dir(output_dir, provider_name, config)
         output_path = provider_output_dir / relative_path
         _atomic_write_jsonl(output_path, [record.to_dict() for record in file_records])
         output_paths.append(output_path.as_posix())

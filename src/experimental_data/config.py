@@ -11,6 +11,8 @@ from pathlib import Path
 class ExperimentalDataConfig:
     project_root: Path = Path(".")
     documents_dir: Path = Path("data/documents")
+    structured_dir: Path = Path("data/structured")
+    psi_download_dir: Path = Path("data/psi-download")
     store_path: Path = Path("data/experimental_data/experiments.sqlite3")
     # These are software defaults, not uncertainties stated by the source.
     absolute_tolerances: dict[str, float] = field(

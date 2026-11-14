@@ -86,6 +86,11 @@ class OpenAICompatibleLLMProvider:
             raise RuntimeError("LLM API response is missing choices[0].message.content") from exc
         if not isinstance(content, str) or not content.strip():
             raise RuntimeError("LLM API returned empty assistant content")
+        if parsed["choices"][0].get("finish_reason") == "length":
+            raise RuntimeError(
+                "LLM answer was cut off at the output token limit "
+                f"({config.max_output_tokens}); raise FIRELENS_LLM_MAX_OUTPUT_TOKENS."
+            )
         return content
 
 

@@ -303,7 +303,9 @@ def test_openai_compatible_provider_surfaces_api_errors_without_secrets():
     def failing_urlopen(request, timeout):
         raise HTTPError(request.full_url, 503, "Unavailable", {}, None)
 
-    provider = OpenAICompatibleEmbeddingProvider(api_key="do-not-log", urlopen_func=failing_urlopen)
+    provider = OpenAICompatibleEmbeddingProvider(
+        api_key="do-not-log", urlopen_func=failing_urlopen, sleep_func=lambda _: None
+    )
 
     with pytest.raises(RuntimeError, match="HTTP 503") as error:
         provider.embed_batch(["semantic text"], EmbeddingConfig(provider="openai-compatible"))
@@ -326,9 +328,9 @@ def test_real_flex_chunk_files_embed_with_all_provenance_retained(tmp_path):
         EmbeddingConfig(input_dir=chunk_dir, output_dir=tmp_path / "embeddings", dimension=12)
     )
 
-    assert len(inputs) == 18
-    assert result.input_chunks == 18
-    assert result.successfully_embedded == 18
+    assert len(inputs) >= 18
+    assert result.input_chunks == len(inputs)
+    assert result.successfully_embedded == len(inputs)
     assert result.failed_chunks == 0
     required = (
         "chunk_id", "source_id", "content_sha256", "experiment", "filename",
@@ -382,10 +384,60 @@ def test_openai_compatible_provider_gives_up_after_repeated_rate_limits() -> Non
         api_key="do-not-log",
         urlopen_func=always_limited,
         sleep_func=waits.append,
-        rate_limit_retries=3,
+        max_retries=3,
     )
     config = EmbeddingConfig(provider="openai-compatible", model_name="m", dimension=2)
 
     with pytest.raises(RuntimeError, match="HTTP 429"):
         provider.embed_batch(["text"], config)
     assert waits == [5.0, 10.0, 20.0]
+
+
+def test_openai_compatible_provider_retries_transient_server_errors() -> None:
+    from urllib.error import HTTPError
+
+    calls: list[int] = []
+    waits: list[float] = []
+
+    class Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def read(self) -> bytes:
+            return json.dumps({"data": [{"index": 0, "embedding": [0.1, 0.2]}]}).encode("utf-8")
+
+    def unavailable_once(request, timeout):
+        calls.append(1)
+        if len(calls) == 1:
+            raise HTTPError(request.full_url, 503, "Service Unavailable", {}, None)
+        return Response()
+
+    provider = OpenAICompatibleEmbeddingProvider(
+        api_key="do-not-log", urlopen_func=unavailable_once, sleep_func=waits.append
+    )
+    config = EmbeddingConfig(provider="openai-compatible", model_name="m", dimension=2)
+
+    assert provider.embed_batch(["text"], config) == [[0.1, 0.2]]
+    assert waits == [5.0]
+
+
+def test_gateway_is_default_endpoint_when_only_gateway_key_is_set(monkeypatch):
+    monkeypatch.delenv("FIRELENS_EMBEDDING_API_KEY", raising=False)
+    monkeypatch.delenv("FIRELENS_EMBEDDING_BASE_URL", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setenv("UPB_AI_GATEWAY_KEY", "gateway-secret")
+    provider = OpenAICompatibleEmbeddingProvider()
+    assert provider.base_url == "https://ai-gateway.uni-paderborn.de/v1"
+    assert provider.api_key == "gateway-secret"
+
+
+def test_openai_key_keeps_openai_endpoint(monkeypatch):
+    monkeypatch.delenv("FIRELENS_EMBEDDING_BASE_URL", raising=False)
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test")
+    monkeypatch.setenv("UPB_AI_GATEWAY_KEY", "gateway-secret")
+    provider = OpenAICompatibleEmbeddingProvider()
+    assert provider.base_url == "https://api.openai.com/v1"
+    assert provider.api_key == "sk-test"

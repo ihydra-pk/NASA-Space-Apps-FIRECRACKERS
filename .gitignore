@@ -1,12 +1,13 @@
-.venv/
 __pycache__/
-*.py[cod]
 .pytest_cache/
 .coverage
 htmlcov/
+.env
 
 # Built locally from data/embeddings; over the 100 MB file limit for GitHub.
 data/vectorstore/firelens.sqlite3
 *.sqlite3-wal
 *.sqlite3-shm
 .DS_Store
+data/experimental_data/dry-run.sqlite3
+data/experimental_data/test-experiments.sqlite3

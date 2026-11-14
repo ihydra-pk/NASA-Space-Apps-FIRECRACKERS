@@ -231,11 +231,16 @@ def load_docx_metadata(path: Path, *, source_file: str) -> ExperimentRecord:
 
 
 def discover_sources(documents_dir: Path) -> list[Path]:
-    """Discover original supported sources, excluding generated/processed files."""
+    """Discover FLEX test-plan sources (PDF test matrix and DOCX description).
 
-    if not documents_dir.exists():
+    Only ``documents/flex`` is scanned: these parsers are FLEX-specific, and other
+    experiments' documents are handled by the table parsers in ``tables.py``.
+    """
+
+    flex_dir = documents_dir / "flex"
+    if not flex_dir.exists():
         return []
     return sorted(
-        (path for path in documents_dir.rglob("*") if path.is_file() and path.suffix.casefold() in {".pdf", ".docx"}),
+        (path for path in flex_dir.rglob("*") if path.is_file() and path.suffix.casefold() in {".pdf", ".docx"}),
         key=lambda path: path.as_posix().casefold(),
     )

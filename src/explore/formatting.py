@@ -42,12 +42,15 @@ def format_condition_evidence(
                     for key, value in {
                         "fuel": match.record.fuel,
                         "oxygen_concentration": match.record.oxygen_concentration,
+                        "oxygen_concentration_range": match.record.original_values.get("oxygen_concentration_range"),
                         "pressure": match.record.pressure,
                         "flow_velocity": match.record.flow_velocity,
                         "suppressant": match.record.suppressant,
                         "suppressant_concentration": match.record.suppressant_concentration,
                         "diluent": match.record.diluent,
                         "fiber_support": match.record.fiber_support,
+                        "observed_result": match.record.observed_result,
+                        "measurement": match.record.measurement or None,
                         "units": match.record.units,
                     }.items()
                     if value is not None
@@ -76,7 +79,7 @@ def format_condition_evidence(
         f"Matching records: {json.dumps(records, ensure_ascii=False, sort_keys=True)}"
     )
     if omitted:
-        block += f"\nAdditional matching record IDs omitted from this prompt for size: {json.dumps(omitted)}"
+        block += f"\n{len(omitted)} further matching record(s) omitted from this prompt for size; see the Explore response."
     while len(block) > max_characters and records:
         removed = records.pop()
         omitted.append(str(removed["record_id"]))
@@ -89,7 +92,7 @@ def format_condition_evidence(
             f"Matching records: {json.dumps(records, ensure_ascii=False, sort_keys=True)}"
         )
         if omitted:
-            block += f"\nAdditional matching record IDs omitted from this prompt for size: {json.dumps(omitted)}"
+            block += f"\n{len(omitted)} further matching record(s) omitted from this prompt for size; see the Explore response."
     if len(block) > max_characters:
         block = (
             "STRUCTURED EXPERIMENT-CONDITION MATCHES omitted from LLM prompt due to size limit. "

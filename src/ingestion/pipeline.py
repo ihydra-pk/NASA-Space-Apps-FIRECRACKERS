@@ -16,7 +16,7 @@ from .models import DocumentType, EvidenceStatus, IngestionResult, NormalizedDoc
 
 logger = logging.getLogger(__name__)
 
-SUPPORTED_SUFFIXES = {".pdf", ".docx"}
+SUPPORTED_SUFFIXES = {".pdf", ".docx", ".md"}
 VALID_DOCUMENT_TYPES = {
     "experiment_metadata",
     "test_plan",
@@ -153,6 +153,15 @@ def ingest_file(path: Path, config: IngestionConfig) -> list[NormalizedDocument]
                 extraction_warnings=list(page.warnings),
             )
             for page in pages
+        ]
+
+    if suffix == ".md":
+        return [
+            NormalizedDocument(
+                **common,
+                text=path.read_text(encoding="utf-8").strip(),
+                source_locator="document",
+            )
         ]
 
     document = extract_docx(path)

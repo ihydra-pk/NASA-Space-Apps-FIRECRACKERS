@@ -28,8 +28,9 @@ status; bounded frontend JSON; and condition/unit availability.
 
 ## Integrity and behavior
 
-- Condition evidence comes from planned FLEX matrix rows only; it is never
-  presented as observed and contains no fabricated outcomes or measurements.
+- Condition evidence comes from planned FLEX matrix rows and observed NASA PSI
+  table rows (FLEX, BASS-II, SAFFIRE-I/II). Each keeps its own source status; a
+  planned row is never presented as observed, and no outcome is invented.
 - RAG source text passes through unchanged as evidence. Similarity is retained
   only on document evidence; condition type/differences/tolerance are retained
   only on structured evidence.
@@ -44,11 +45,21 @@ status; bounded frontend JSON; and condition/unit availability.
 
 ## Limitations and readiness
 
-Only the local FLEX test-plan conditions are structured. No verified observed
-measurements are currently available; temperature and per-test gravity are
-not in the structured rows. Semantic retrieval still depends on configured
-embedding credentials/profile and existing vector index. End-to-end tests use
-deterministic adapters and do not make network calls. The current system
+Structured data covers FLEX planned conditions plus observed tables for FLEX,
+BASS-II and SAFFIRE-I/II. Original BASS and SAFFIRE-III are metadata only.
+Temperature, time series and per-test gravity are not in the structured rows,
+and answers say so instead of inventing them. When a question asks for
+observed/measured results, observed records are ordered ahead of planned ones
+before the bounded prompt is built (order only; nothing is dropped or
+relabelled). The prompt and the response are still capped, so lists can be
+incomplete and the answer says when records were omitted.
+
+Live runs against the real index and gateway LLM (SAFFIRE-I, SAFFIRE-II,
+BASS-II, FLEX) returned grounded answers whose values matched the source CSVs,
+with citations accepted by the validator. Semantic retrieval still depends on
+the configured embedding credentials and the existing vector index (the UPB
+gateway is the default when only `UPB_AI_GATEWAY_KEY` is set). Unit tests use
+deterministic adapters and make no network calls. The current system
 provides NASA document evidence, structured condition matching, and grounded
 explanation. **It is not a scientific prediction model and does not predict
 flame behavior from physics.**
@@ -57,5 +68,4 @@ The separated JSON boundary (`question`, conditions, typed evidence arrays,
 condition summary, answer/status, citations, warnings) is stable enough for
 frontend integration. Before deployment, install project dependencies, ingest
 the experimental source, configure credentials/index profile, and run the full
-pytest suite against the target environment. No live LLM/API test was run for
-this report.
+pytest suite against the target environment.

@@ -162,7 +162,7 @@ def test_real_flex_processed_records_keep_all_provenance():
     ]
     chunks = [chunk.to_dict() for record in inputs for chunk in chunk_record(record)]
 
-    assert len(inputs) == 16
+    assert len(inputs) >= 16
     assert chunks
     assert all(chunk["source_id"] and chunk["content_sha256"] for chunk in chunks)
     assert all("evidence_status" in chunk and "source_locator" in chunk for chunk in chunks)

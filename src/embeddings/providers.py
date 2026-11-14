@@ -13,6 +13,8 @@ from urllib.request import Request, urlopen
 
 from .config import EmbeddingConfig
 
+DEFAULT_GATEWAY_BASE_URL = "https://ai-gateway.uni-paderborn.de/v1"
+
 
 @runtime_checkable
 class EmbeddingProvider(Protocol):
@@ -83,12 +85,16 @@ class OpenAICompatibleEmbeddingProvider:
         base_url: str | None = None,
         urlopen_func: Callable[..., object] | None = None,
         use_gateway_credential: bool | None = None,
-        rate_limit_retries: int = 8,
+        max_retries: int = 8,
         sleep_func: Callable[[float], None] | None = None,
     ) -> None:
-        self.rate_limit_retries = rate_limit_retries
+        self.max_retries = max_retries
         self._sleep = sleep_func or time.sleep
         configured_base_url = base_url or os.environ.get("FIRELENS_EMBEDDING_BASE_URL")
+        other_key = api_key or os.environ.get("FIRELENS_EMBEDDING_API_KEY") or os.environ.get("OPENAI_API_KEY")
+        if configured_base_url is None and not other_key and os.environ.get("UPB_AI_GATEWAY_KEY"):
+            # Only the gateway credential is available, and the project's index was built through the gateway.
+            configured_base_url = DEFAULT_GATEWAY_BASE_URL
         if use_gateway_credential is None:
             use_gateway_credential = configured_base_url is not None
         self.api_key = (
@@ -101,9 +107,7 @@ class OpenAICompatibleEmbeddingProvider:
                 else None
             )
         )
-        self.base_url = (
-            configured_base_url or "https://api.openai.com/v1"
-        ).rstrip("/")
+        self.base_url = (configured_base_url or "https://api.openai.com/v1").rstrip("/")
         self._urlopen = urlopen_func or urlopen
 
     def embed_batch(
@@ -134,18 +138,19 @@ class OpenAICompatibleEmbeddingProvider:
             method="POST",
         )
         try:
-            for attempt in range(self.rate_limit_retries + 1):
+            for attempt in range(self.max_retries + 1):
                 try:
                     response = self._urlopen(request, timeout=60)
+                    with response as result:
+                        response_body = result.read()
                     break
                 except HTTPError as exc:
-                    # Gateways cap requests per minute; wait and retry rather
-                    # than dropping the batch. Other HTTP errors fail at once.
-                    if exc.code != 429 or attempt == self.rate_limit_retries:
+                    # Gateways cap requests per minute and fail transiently;
+                    # wait and retry rather than dropping the batch. Other
+                    # HTTP errors fail at once.
+                    if exc.code not in RETRYABLE_STATUS or attempt == self.max_retries:
                         raise
                     self._sleep(_retry_delay(exc, attempt))
-            with response as result:
-                response_body = result.read()
             parsed = json.loads(response_body.decode("utf-8"))
         except HTTPError as exc:
             raise RuntimeError(f"Embedding API returned HTTP {exc.code}") from exc
@@ -177,8 +182,11 @@ class OpenAICompatibleEmbeddingProvider:
         return [vector for _, vector in indexed]
 
 
+RETRYABLE_STATUS = (429, 500, 502, 503, 504)
+
+
 def _retry_delay(error: HTTPError, attempt: int) -> float:
-    """Seconds to wait after a 429: the server's Retry-After, else 5, 10, 20... up to 60."""
+    """Seconds to wait before a retry: the server's Retry-After, else 5, 10, 20... up to 60."""
 
     try:
         return min(max(float(error.headers.get("Retry-After")), 1.0), 120.0)

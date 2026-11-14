@@ -348,3 +348,29 @@ def test_live_llm_smoke_is_opt_in_and_requires_gateway_configuration():
     assert response.status in {"grounded", "insufficient_evidence"}
     if response.status == "grounded":
         assert response.citations
+
+
+def test_truncated_llm_output_is_reported_as_truncation():
+    import pytest
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def read(self):
+            body = {"choices": [{"finish_reason": "length", "message": {"content": '{"answer": "cut'}}]}
+            return json.dumps(body).encode()
+
+    provider = OpenAICompatibleLLMProvider(
+        api_key="secret", base_url="https://gateway.example/v1", urlopen_func=lambda r, timeout: FakeResponse()
+    )
+    with pytest.raises(RuntimeError, match="cut off at the output token limit"):
+        provider.generate(system_prompt="s", user_prompt="u", config=LLMConfig(model_name="m", max_output_tokens=50))
+
+
+def test_default_output_token_limit_leaves_room_for_long_answers(monkeypatch):
+    monkeypatch.delenv("FIRELENS_LLM_MAX_OUTPUT_TOKENS", raising=False)
+    assert LLMConfig.from_env().max_output_tokens >= 3000

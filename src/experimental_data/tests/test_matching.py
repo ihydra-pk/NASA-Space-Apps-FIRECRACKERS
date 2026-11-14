@@ -65,3 +65,10 @@ def test_empty_candidate_set_is_explicitly_no_match():
     result = match_experiments([], {"fuel": "methanol"})
     assert result.match_type == "no_match"
     assert result.matches == ()
+
+
+def test_fuel_matches_whole_word_inside_material_description():
+    desc = record(fuel="100 micron PMMA film   2 cm wide")
+    assert match_experiments([desc], {"fuel": "PMMA"}).matches[0].match_type == "exact_match"
+    assert match_experiments([desc], {"fuel": "PMM"}).matches[0].match_type == "no_match"
+    assert match_experiments([record(fuel="methanol")], {"fuel": "ethanol"}).matches[0].match_type == "no_match"

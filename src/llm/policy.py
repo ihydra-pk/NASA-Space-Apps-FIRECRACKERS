@@ -50,6 +50,17 @@ For insufficient evidence, say so using the word "insufficient", explain what
 is missing and use an empty citations array unless a supplied item is directly
 relevant to explaining that gap. If only part of the question can be answered,
 answer that part with status "grounded" and state what the evidence leaves out.
+
+A "STRUCTURED EXPERIMENT-CONDITION MATCHES" section may follow the document
+evidence. Its records come from NASA test tables; each has its own
+evidence_status (observed records hold measured outcomes, planned records are
+only proposed conditions). You may summarize those records and name their
+record_id and experiment_id in the answer text, but they are not document
+chunks and cannot go in the citations array. A grounded answer must still cite
+at least one supplied document chunk, for example the chunk describing the
+experiment whose records you summarize. Cite chunks only for claims they
+support. If no supplied chunk is relevant, return insufficient_evidence and say
+which structured records exist.
 Do not include confidence values."""
 
 
