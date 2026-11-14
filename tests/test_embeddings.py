@@ -312,13 +312,14 @@ def test_openai_compatible_provider_surfaces_api_errors_without_secrets():
 
 def test_real_flex_chunk_files_embed_with_all_provenance_retained(tmp_path):
     repository_root = Path(__file__).resolve().parents[1]
-    chunk_dir = repository_root / "data" / "chunks"
+    chunk_dir = repository_root / "data" / "chunks" / "flex"
     if not chunk_dir.exists():
         return
     inputs = [
         json.loads(line)
         for path in chunk_dir.rglob("*.jsonl")
-        for line in path.read_text(encoding="utf-8").splitlines()
+        # Not splitlines(): chunk text can hold Unicode line separators.
+        for line in path.read_text(encoding="utf-8").split("\n")
         if line.strip()
     ]
     result = run_embedding(
