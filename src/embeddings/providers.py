@@ -6,6 +6,7 @@ import hashlib
 import json
 import math
 import os
+import time
 from typing import Callable, Protocol, Sequence, runtime_checkable
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -82,7 +83,11 @@ class OpenAICompatibleEmbeddingProvider:
         base_url: str | None = None,
         urlopen_func: Callable[..., object] | None = None,
         use_gateway_credential: bool | None = None,
+        rate_limit_retries: int = 8,
+        sleep_func: Callable[[float], None] | None = None,
     ) -> None:
+        self.rate_limit_retries = rate_limit_retries
+        self._sleep = sleep_func or time.sleep
         configured_base_url = base_url or os.environ.get("FIRELENS_EMBEDDING_BASE_URL")
         if use_gateway_credential is None:
             use_gateway_credential = configured_base_url is not None
@@ -129,7 +134,16 @@ class OpenAICompatibleEmbeddingProvider:
             method="POST",
         )
         try:
-            response = self._urlopen(request, timeout=60)
+            for attempt in range(self.rate_limit_retries + 1):
+                try:
+                    response = self._urlopen(request, timeout=60)
+                    break
+                except HTTPError as exc:
+                    # Gateways cap requests per minute; wait and retry rather
+                    # than dropping the batch. Other HTTP errors fail at once.
+                    if exc.code != 429 or attempt == self.rate_limit_retries:
+                        raise
+                    self._sleep(_retry_delay(exc, attempt))
             with response as result:
                 response_body = result.read()
             parsed = json.loads(response_body.decode("utf-8"))
@@ -161,6 +175,15 @@ class OpenAICompatibleEmbeddingProvider:
         if [index for index, _ in indexed] != list(range(len(texts))):
             raise RuntimeError("Embedding API response indices do not match the input batch")
         return [vector for _, vector in indexed]
+
+
+def _retry_delay(error: HTTPError, attempt: int) -> float:
+    """Seconds to wait after a 429: the server's Retry-After, else 5, 10, 20... up to 60."""
+
+    try:
+        return min(max(float(error.headers.get("Retry-After")), 1.0), 120.0)
+    except (AttributeError, TypeError, ValueError):
+        return min(5.0 * 2**attempt, 60.0)
 
 
 def create_embedding_provider(config: EmbeddingConfig) -> EmbeddingProvider:

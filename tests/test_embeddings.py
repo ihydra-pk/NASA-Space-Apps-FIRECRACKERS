@@ -335,3 +335,56 @@ def test_real_flex_chunk_files_embed_with_all_provenance_retained(tmp_path):
         "page_number", "text", "chunk_index", "chunk_count", "estimated_token_count",
     )
     assert all(all(field in record.to_dict() for field in required) for record in result.records)
+
+
+def test_openai_compatible_provider_waits_and_retries_on_rate_limit() -> None:
+    from urllib.error import HTTPError
+
+    calls: list[int] = []
+    waits: list[float] = []
+
+    class Response:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def read(self) -> bytes:
+            return json.dumps({"data": [{"index": 0, "embedding": [0.0, 1.0]}]}).encode("utf-8")
+
+    def rate_limited_twice(request, timeout):
+        calls.append(1)
+        if len(calls) <= 2:
+            raise HTTPError(request.full_url, 429, "Too Many Requests", {"Retry-After": "3"}, None)
+        return Response()
+
+    provider = OpenAICompatibleEmbeddingProvider(
+        api_key="do-not-log", urlopen_func=rate_limited_twice, sleep_func=waits.append
+    )
+    config = EmbeddingConfig(provider="openai-compatible", model_name="m", dimension=2)
+
+    assert provider.embed_batch(["text"], config) == [[0.0, 1.0]]
+    assert len(calls) == 3
+    assert waits == [3.0, 3.0]
+
+
+def test_openai_compatible_provider_gives_up_after_repeated_rate_limits() -> None:
+    from urllib.error import HTTPError
+
+    waits: list[float] = []
+
+    def always_limited(request, timeout):
+        raise HTTPError(request.full_url, 429, "Too Many Requests", {}, None)
+
+    provider = OpenAICompatibleEmbeddingProvider(
+        api_key="do-not-log",
+        urlopen_func=always_limited,
+        sleep_func=waits.append,
+        rate_limit_retries=3,
+    )
+    config = EmbeddingConfig(provider="openai-compatible", model_name="m", dimension=2)
+
+    with pytest.raises(RuntimeError, match="HTTP 429"):
+        provider.embed_batch(["text"], config)
+    assert waits == [5.0, 10.0, 20.0]
