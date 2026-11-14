@@ -22,7 +22,8 @@ from src.explore.config import ExploreConfig
 from src.explore.models import ExploreRequest
 from src.explore.router import QuestionRouter
 from src.explore.service import ExploreInputError, ExploreService
-from src.llm.config import LLMConfig
+from src.api.network import diagnose, install_ipv4_only
+from src.llm.config import DEFAULT_UPB_BASE_URL, LLMConfig
 from src.llm.service import LLMResponseError, LLMService
 from src.rag.config import RAGContextConfig
 from src.vectorstore.config import VectorStoreConfig
@@ -118,6 +119,10 @@ def build_explore_service() -> ExploreService:
 def create_app(service: ExploreService | None = None) -> FastAPI:
     """Create the API. Pass `service` to inject a preconfigured/fake service."""
 
+    if os.environ.get("FIRELENS_FORCE_IPV4", "").lower() in {"1", "on", "true", "yes"}:
+        # Hosts without an IPv6 route (Render) would otherwise try the
+        # gateway's IPv6 address and fail with "Network is unreachable".
+        install_ipv4_only()
     app = FastAPI(title="FireLens API", version="0.1.0")
     origins = [o.strip() for o in _env("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173").split(",") if o.strip()]
     app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["GET", "POST"], allow_headers=["*"])
@@ -138,6 +143,21 @@ def create_app(service: ExploreService | None = None) -> FastAPI:
         if not page.is_file():
             raise HTTPException(404, "index.html not found")
         return FileResponse(page, media_type="text/html")
+
+    @app.get("/api/diagnose")
+    def network_diagnose() -> dict[str, Any]:
+        """Can this server reach the AI gateway? Uses no key; never returns it."""
+
+        urls = [
+            os.environ.get("FIRELENS_EMBEDDING_BASE_URL") or DEFAULT_UPB_BASE_URL,
+            os.environ.get("FIRELENS_LLM_BASE_URL") or DEFAULT_UPB_BASE_URL,
+        ]
+        key_names = ("UPB_AI_GATEWAY_KEY", "FIRELENS_LLM_API_KEY", "FIRELENS_EMBEDDING_API_KEY", "OPENAI_API_KEY")
+        return {
+            "key_configured": {name: bool(os.environ.get(name)) for name in key_names},
+            "force_ipv4": os.environ.get("FIRELENS_FORCE_IPV4", ""),
+            "gateways": diagnose(urls),
+        }
 
     @app.get("/health")
     def health() -> dict[str, str]:

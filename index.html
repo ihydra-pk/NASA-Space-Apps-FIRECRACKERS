@@ -1031,10 +1031,13 @@ function aiAnswer(bub,r){
 async function send(q){q=(q||'').trim();if(!q)return;QN++;addMsg('u',esc(q));
  const wait=addMsg('a','<div class="typing"><span></span><span></span><span></span></div>');
  const bub=wait.querySelector('.bub');
- try{const res=await fetch(FIRELENS_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
+ /* Never wait forever: note after 10 s, give up after 150 s and use the built-in passages. */
+ const ctl=new AbortController(),slow=setTimeout(()=>bub.insertAdjacentHTML('beforeend','<p class="note">Still working: the server can take a minute to wake up and search.</p>'),10000),stop=setTimeout(()=>ctl.abort(),150000);
+ try{const res=await fetch(FIRELENS_API,{method:'POST',signal:ctl.signal,headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
   if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.detail||('HTTP '+res.status))}
   aiAnswer(bub,await res.json())}
- catch(e){keywordAnswer(bub,q,'AI backend not reachable ('+(e.message||e)+'), so this is assembled from NASA PSI passages built into the page.')}
+ catch(e){keywordAnswer(bub,q,'AI backend not reachable ('+(e.name==='AbortError'?'no answer within 150 s':(e.message||e))+'), so this is assembled from NASA PSI passages built into the page.')}
+ finally{clearTimeout(slow);clearTimeout(stop)}
  logEl().scrollTop=1e9}
 const SUG=['Why does a flame go out when the air flow is very low?','Which gases put out a flame?','How does smoke behave in microgravity?','What did SAFFIRE test?','Do materials burn better in space?','How does oxygen affect flame spread?'];
 function welcome(){logEl().innerHTML='';addMsg('a',`<p>Hi, I’m Ask NASA. I answer only from NASA PSI files on fire in microgravity, and I show the source for every answer.</p><div class="chips2">${SUG.map(x=>`<button type="button">${x}</button>`).join('')}</div>`);

@@ -41,3 +41,23 @@ Change these in Render's Environment tab; see `Run.md` for the full list.
 
 There is no rate limit or login: keep the URL within the team, because every
 question uses the key's quota.
+
+## If the chat only gives keyword answers
+
+The page falls back to its built-in passages when the AI server fails, and
+shows the reason. "Could not reach embedding API" means Render cannot reach the
+university AI gateway. Open `https://<service>.onrender.com/api/diagnose` (it
+uses no key and never shows it):
+
+- `"tcp": "connected"` on the IPv4 address and `"https": {"status": 401}`:
+  the gateway is reachable; check `key_configured` and the Logs tab.
+- IPv4 times out or is refused: the gateway does not accept connections from
+  Render's region. Create the service again in the Frankfurt region (add
+  `region: frankfurt` to `render.yaml`; Render cannot move an existing
+  service), then check again.
+- Still blocked: the gateway only accepts university or German networks.
+  Present from a laptop where it works (`python -m src.api`, then
+  `http://127.0.0.1:8000`).
+
+`FIRELENS_FORCE_IPV4=1` (set in `render.yaml`) makes the server skip the
+gateway's IPv6 address, which Render cannot route to.
