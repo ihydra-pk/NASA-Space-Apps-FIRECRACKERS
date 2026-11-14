@@ -25,6 +25,7 @@ Safe to re-run: files already downloaded are skipped.
 
 import argparse
 import csv
+import http.client
 import json
 import os
 import sys
@@ -37,6 +38,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 BASE = "https://psi.nasa.gov/geode-py/ws"
 PAGE = "https://psi.nasa.gov/physci/repo/data/investigations/"
 USER_AGENT = "psi-download-script/1.0 (python-urllib)"
+
+# Everything that can go wrong on a slow or dropped connection.
+NETWORK_ERRORS = (urllib.error.URLError, http.client.HTTPException, OSError, ValueError)
 
 TEXT_TYPES = {".pdf", ".doc", ".docx", ".ppt", ".pptx", ".txt"}
 TABLE_TYPES = {".csv", ".xls", ".xlsx", ".dat"}
@@ -59,8 +63,9 @@ def with_retries(action, attempts, label):
     for attempt in range(1, attempts + 1):
         try:
             return action()
-        except (urllib.error.URLError, OSError, ValueError) as error:
-            if attempt == attempts:
+        except NETWORK_ERRORS as error:
+            missing = isinstance(error, urllib.error.HTTPError) and error.code in (403, 404)
+            if attempt == attempts or missing:  # a missing file will not appear on retry
                 raise
             wait = 5 * attempt
             print(f"    retry {attempt}/{attempts - 1} for {label} in {wait}s ({error})")
@@ -316,7 +321,7 @@ def download(accession, item, destination, options):
     os.makedirs(os.path.dirname(destination), exist_ok=True)
     try:
         with_retries(action, options.attempts, item["name"])
-    except (urllib.error.URLError, OSError, ValueError) as error:
+    except NETWORK_ERRORS as error:
         return f"failed: {error}"
     actual = os.path.getsize(destination)
     if expected and actual != expected:
@@ -385,7 +390,7 @@ def main():
             print(f"{accession}: safe download preflight failed ({error})")
             problems.append(accession)
             continue
-        except (urllib.error.URLError, OSError, ValueError) as error:
+        except NETWORK_ERRORS as error:
             print(f"{accession}: could not read catalogue ({error})")
             problems.append(accession)
             continue
