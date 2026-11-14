@@ -1,3 +1,5 @@
+import pytest
+
 from src.experimental_data.matching import match_experiments
 from src.experimental_data.models import ExperimentRecord
 
@@ -55,7 +57,7 @@ def test_nonmatching_conditions_are_not_promoted_to_close_match():
     detail = result.matches[0].parameters[0]
     assert result.matches[0].match_type == "no_match"
     assert detail.match_type == "no_match"
-    assert detail.difference == 0.2
+    assert detail.difference == pytest.approx(0.2)
     assert detail.tolerance == 0.01
 
 
