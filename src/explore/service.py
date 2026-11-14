@@ -18,6 +18,7 @@ from .config import ExploreConfig
 from .evidence import document_evidence, experimental_evidence, matching_experimental_matches
 from .formatting import add_condition_evidence, format_condition_evidence
 from .models import ExploreRequest, ExploreResponse
+from .router import QuestionRouter, RouteDecision
 
 Retriever = Callable[..., Any]
 ConditionMatcher = Callable[[dict[str, object]], MatchResult]
@@ -218,7 +219,9 @@ class ExploreService:
         llm: LLMService,
         *,
         config: ExploreConfig | None = None,
+        router: QuestionRouter | None = None,
     ) -> None:
+        self.router = router
         self.retriever = retriever
         self.experimental_data = experimental_data
         self.llm = llm
@@ -230,7 +233,16 @@ class ExploreService:
         conditions = {} if request.conditions is None else request.conditions
         if not isinstance(conditions, dict):
             raise ExploreInputError("conditions must be an object")
-        normalized = normalize_conditions(conditions, request.condition_units)
+        condition_units = request.condition_units
+        # Conditions chosen by the caller win. Otherwise the router reads them
+        # from the question; document retrieval runs on every route because
+        # answers are cited against retrieved chunks.
+        routing: RouteDecision | None = None
+        if self.router is not None and not conditions:
+            routing = self.router.route(request.question)
+            if routing.uses_test_data:
+                conditions, condition_units = routing.conditions, routing.condition_units
+        normalized = normalize_conditions(conditions, condition_units)
 
         # A. Existing retrieval function -> existing RAGContext builder.
         context = retrieve_context(request.question, self.retriever, self.config.rag)
@@ -290,6 +302,12 @@ class ExploreService:
         )
 
         warnings = list(_planned_warning(match_result))
+        if routing is not None and routing.fallback:
+            warnings.append(f"Question routing fell back to document search. {routing.reason}")
+        if routing is not None and routing.ignored:
+            warnings.append(
+                "The router dropped conditions it could not verify: " + "; ".join(routing.ignored) + "."
+            )
         if match_result is not None and not match_result.matches:
             warnings.append("No structured condition records were available to compare.")
         if match_result is not None and any(
@@ -334,7 +352,8 @@ class ExploreService:
             condition_match=match_result,
             requested_conditions=dict(conditions),
             normalized_conditions=normalized.values,
-            requested_condition_units=dict(request.condition_units or {}),
+            requested_condition_units=dict(condition_units or {}),
+            routing=routing.to_dict() if routing is not None else None,
             condition_units=normalized.units,
             condition_availability=availability,
             condition_match_summary=_match_summary(conditions, match_result, availability),

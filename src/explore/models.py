@@ -102,6 +102,8 @@ class ExploreResponse:
     status: Literal["grounded", "insufficient_evidence"]
     max_serialized_condition_matches: int = 25
     warnings: tuple[str, ...] = ()
+    # How the router read the question; None when it was not used.
+    routing: dict[str, object] | None = None
 
     @property
     def evidence(self) -> tuple[UnifiedEvidence, ...]:
@@ -119,6 +121,7 @@ class ExploreResponse:
             "answer": self.answer.to_dict(),
             "status": self.status,
             "evidence_mode": self.evidence_mode,
+            "routing": self.routing,
             "document_evidence": [item.to_dict() for item in self.document_evidence],
             "experimental_evidence": [item.to_dict() for item in self.experimental_evidence],
             "rag_context": self.rag_context.to_dict(),

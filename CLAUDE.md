@@ -54,6 +54,10 @@ experimental_data -> experiments.sqlite3 (structured rows + condition matching),
 explore           -> composes retriever + experimental_data + llm into one response
 ```
 
+Search has two modes. `semantic` ranks by cosine similarity alone. `hybrid` also scores chunk text by keyword (BM25 in `src/vectorstore/keyword.py`) and orders by reciprocal rank fusion of the two rankings, which helps with test numbers, acronyms and formulae; `similarity_score` is still the cosine value. `src.explore` defaults to hybrid, `src.vectorstore search` to semantic (`--mode hybrid`).
+
+`src/explore/router.py` reads a plain question with one LLM call, labels it `documents`, `test_data` or `both`, and extracts the test conditions it states so the matcher can run without the caller passing `conditions`. Its output is validated: unknown fields, unsupported units and numbers not written in the question are dropped and listed under `routing.ignored`. Conditions passed by the caller bypass it, a router failure falls back to document search with a warning, and document retrieval runs on every route because answers are cited against retrieved chunks. Disable with `--no-router`.
+
 `src/explore` is the integration point intended for a frontend. `ExploreService` takes an injected retriever callable, an `ExperimentalDataService` and an `LLMService`, and returns a JSON contract with separate `document_evidence`, `experimental_evidence`, `condition_match_summary`, `answer`, `citations`, `status` and `evidence_mode`.
 
 ### Rules that span modules

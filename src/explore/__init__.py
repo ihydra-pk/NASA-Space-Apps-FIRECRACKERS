@@ -7,6 +7,7 @@ from .models import (
     ExploreRequest,
     ExploreResponse,
 )
+from .router import QuestionRouter, RouteDecision
 from .service import ExploreInputError, ExploreService, condition_availability, normalize_conditions
 
 __all__ = [
@@ -17,6 +18,8 @@ __all__ = [
     "ExploreResponse",
     "ExploreInputError",
     "ExploreService",
+    "QuestionRouter",
+    "RouteDecision",
     "condition_availability",
     "normalize_conditions",
 ]

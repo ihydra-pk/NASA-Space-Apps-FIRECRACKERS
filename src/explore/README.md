@@ -153,3 +153,31 @@ and LLM adapters; it does not require network access or assert invented NASA
 observations. Install the project's declared dependencies, then run the suite
 with the repository-wide tests before frontend integration.
 See [EVALUATION.md](EVALUATION.md) for scenario outcomes and known limitations.
+
+## Question routing and hybrid search
+
+`python -m src.explore "question"` no longer needs `--conditions`. A router
+(`router.py`) reads the question with one LLM call, labels it `documents`,
+`test_data` or `both`, and extracts the conditions it states:
+
+```text
+"Which FLEX tests are planned for methanol at 21% oxygen and 1 atm?"
+  -> route: test_data
+     conditions: {"fuel": "methanol", "oxygen_concentration": 21, "pressure": 1}
+     condition_units: {"oxygen_concentration": "%", "pressure": "atm"}
+```
+
+The decision is returned as `routing` in the response. The router's output is
+checked before use: fields the test data does not have, unsupported units and
+numbers that are not written in the question are dropped and listed in
+`routing.ignored`. Conditions passed by the caller take precedence and skip the
+router. If the router cannot be reached or returns something unusable, the
+request continues as a document question and a warning is added. Document
+retrieval runs on every route, because answers are cited against retrieved
+chunks. Use `--no-router` to turn it off.
+
+Retrieval defaults to `--search-mode hybrid`: chunks are ranked by cosine
+similarity and by keyword match, and the two rankings are fused by rank. This
+helps questions that name a test number, acronym or formula. The reported
+`similarity_score` is unchanged; it is always the cosine similarity. Use
+`--search-mode semantic` for the previous behaviour.

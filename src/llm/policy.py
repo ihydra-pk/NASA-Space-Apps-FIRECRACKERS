@@ -46,8 +46,10 @@ provider's structured JSON response mode.
   ]
 }
 
-For insufficient evidence, explain what is missing and use an empty citations
-array unless a supplied item is directly relevant to explaining that gap.
+For insufficient evidence, say so using the word "insufficient", explain what
+is missing and use an empty citations array unless a supplied item is directly
+relevant to explaining that gap. If only part of the question can be answered,
+answer that part with status "grounded" and state what the evidence leaves out.
 Do not include confidence values."""
 
 

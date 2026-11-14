@@ -20,6 +20,7 @@ from src.vectorstore.sqlite_store import SQLiteVectorStore
 
 from .config import ExploreConfig
 from .models import ExploreRequest
+from .router import QuestionRouter
 from .service import ExploreService
 
 
@@ -36,6 +37,14 @@ def main() -> int:
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--llm-provider", default="openai-compatible")
     parser.add_argument("--llm-model", default="openai.gpt-6-luna")
+    parser.add_argument(
+        "--search-mode", choices=("semantic", "hybrid"), default="hybrid",
+        help="hybrid (default) ranks by meaning and by keyword; semantic uses meaning only",
+    )
+    parser.add_argument(
+        "--no-router", action="store_true",
+        help="do not read test conditions from the question; use --conditions only",
+    )
     parser.add_argument("--experimental-database", type=Path, default=Path("data/experimental_data/experiments.sqlite3"))
     args = parser.parse_args()
 
@@ -69,7 +78,10 @@ def main() -> int:
 
     def retrieve(query: str, *, top_k: int):
         with SQLiteVectorStore(vector_config) as store:
-            return search(query, store, vector_config, provider=embedding_provider, top_k=top_k)
+            return search(
+                query, store, vector_config,
+                provider=embedding_provider, top_k=top_k, mode=args.search_mode,
+            )
 
     rag_config = RAGContextConfig(top_k=args.top_k)
     llm_config = replace(
@@ -80,11 +92,13 @@ def main() -> int:
         ExperimentalDataConfig(),
         store_path=args.experimental_database,
     )
+    llm_service = LLMService(config=llm_config)
     service = ExploreService(
         retrieve,
         ExperimentalDataService(experimental_config),
-        LLMService(config=llm_config),
+        llm_service,
         config=ExploreConfig(rag=rag_config),
+        router=None if args.no_router else QuestionRouter(llm_service.provider, llm_config),
     )
     response = service.explore(ExploreRequest(args.question, conditions, units))
     print(json.dumps(response.to_dict(), ensure_ascii=False, indent=2))
