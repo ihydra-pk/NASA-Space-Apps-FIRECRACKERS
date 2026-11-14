@@ -91,7 +91,7 @@ Models are reached through an OpenAI-compatible gateway (`https://ai-gateway.uni
 
 ## psi_download.py
 
-Standard-library-only script that pulls text-rich files from PSI and writes `manifest.csv`, plus per-experiment `catalogue.json`, `metadata.json` and `summary.md`. It writes to `<out>/<PSI-ID>/<category>/`, which is not the `data/documents/<experiment>/` layout ingestion expects; files must be placed there and labelled in `data/document_metadata.json`.
+Standard-library-only script that pulls text-rich files from PSI and writes `manifest.csv`, plus per-experiment `catalogue.json`, `metadata.json` and `summary.md`. It writes to `<out>/<PSI-ID>/<category>/`, which is not the `data/documents/<experiment>/` layout ingestion expects. `python scripts/stage_psi_documents.py` links the PDFs and DOCX files into that layout (deduplicated by content) and adds an entry per file to `data/document_metadata.json` with the experiment, accession and source URL; document type and evidence status stay unset until someone labels them. Ingestion reads only `flex`, `bass` and `saffire` unless run with `--all-experiments`.
 
 - Endpoints: search `https://psi.nasa.gov/geode-py/ws/repo/search?term=...&source=psi&type=investigation`, catalogue `.../ws/repo/investigations/<ID>`, file `.../ws/studies/<ID>/download?source=datamanager&file=<name>`.
 - Keeps Reports, Science Documents, Presentations, Reference Data and the experimental table; skips Raw Data (over a terabyte across the combustion set), archives, media and files above `--max-mb`. `--include-analyzed` and `--include-engineering` widen the filter.
