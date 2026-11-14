@@ -42,7 +42,7 @@ The module READMEs give examples in PowerShell syntax (backtick continuations, `
 A linear pipeline of independent packages. Each stage reads only the previous stage's output files and never reaches back to earlier ones; keep that boundary when changing code.
 
 ```
-psi_download.py -> data/documents/<experiment>/
+psi_download.py -> <out>/<PSI-ID>/<category>/   (staged into data/documents/<experiment>/ by scripts/stage_psi_documents.py)
   ingestion   -> data/processed/   JSONL, one record per PDF page / one per DOCX
   chunking    -> data/chunks/      JSONL (800 estimated tokens, 120 overlap)
   embeddings  -> data/embeddings/[<provider>/<model>/]  JSONL
@@ -65,7 +65,7 @@ Search has two modes. `semantic` ranks by cosine similarity alone. `hybrid` also
 These are deliberate design constraints, enforced by tests, and easy to break by accident:
 
 - **Evidence status is carried, never inferred.** Every record has `planned`, `observed`, `interpreted`, `metadata` or `unknown`. Labels come from `data/document_metadata.json` (keyed by path relative to `data/documents/`); unlisted files are `unknown`. Nothing classifies documents from their content.
-- **No fabricated measurements.** The only structured data is the FLEX test plan's proposed matrix (Tables 6-12), all `planned`. There are no observed results; fields absent from the source (temperature, per-test gravity, outcomes) stay unavailable and are reported as `parameter_unavailable` / `UNAVAILABLE` instead of being filled in.
+- **No fabricated measurements.** The only structured data loaded is the FLEX test plan's proposed matrix (Tables 6-12), all `planned`. No observed results are loaded (see Data state for the unused FLEX run table); fields absent from the source (temperature, per-test gravity, outcomes) stay unavailable and are reported as `parameter_unavailable` / `UNAVAILABLE` instead of being filled in.
 - **Similarity is not confidence.** Document `similarity_score` and structured `match_type`/difference/tolerance are different scales and are never merged into one score.
 - **Citations are validated, not trusted.** `src/llm` rejects any citation whose chunk ID, source ID, locator, page or status does not match the supplied `RAGContext`; provenance is copied from the context, not from model output. With no retrieved evidence the model is not called and the answer is `insufficient_evidence`.
 - **Source text is never rewritten or truncated.** When context limits are hit, `rag` drops whole lowest-ranked items and records the dropped chunk IDs.
@@ -92,6 +92,7 @@ Models are reached through an OpenAI-compatible gateway (`https://ai-gateway.uni
 - The all-experiment index `data/vectorstore/firelens.sqlite3` (collection `firelens-qwen3-embedding-4b`) is git-ignored because it is over GitHub's 100 MB file limit. Build it from the committed embeddings, which needs no network: `python -m src.vectorstore index --input-dir data/embeddings/openai-compatible/gwdg.qwen3-embedding-4b --database data/vectorstore/firelens.sqlite3 --collection firelens-qwen3-embedding-4b --provider openai-compatible --model gwdg.qwen3-embedding-4b --dimension 2560`.
 - The `explore` CLI still defaults to the committed FLEX-only index `flex-qwen3-embedding-4b.sqlite3`; pass `--vector-database data/vectorstore/firelens.sqlite3 --collection firelens-qwen3-embedding-4b` for all experiments.
 - `data/experimental_data/experiments.sqlite3` (291 FLEX test-plan records) is committed; `python -m src.experimental_data` rebuilds it.
+- `data/psi-download/PSI-69/Experimental table/PSI-69_Experimental table_FLEX.csv` is committed but read by no code. It is NASA's as-run FLEX table (274 tests: date, fuel, pressure in mmHg, gas mole fractions, droplet diameter, outcome such as Extinction or Disruption), so it is the first source of observed per-test data. `experimental_data` loaders only parse the test-plan PDF and the DOCX.
 - Ingestion handles `.pdf` and `.docx` only, with no OCR. Legacy `.doc`/`.ppt` files from PSI are not extracted.
 
 ## psi_download.py
