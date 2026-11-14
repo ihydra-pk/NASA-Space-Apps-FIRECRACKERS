@@ -28,6 +28,7 @@ def _config(args) -> VectorStoreConfig:
         model_name=args.model,
         dimension=args.dimension,
         top_k=getattr(args, "top_k", 5),
+        min_chunk_words=getattr(args, "min_chunk_words", 0),
     )
 
 
@@ -46,6 +47,10 @@ def main() -> int:
         subparser.add_argument("--dimension", type=int, required=True)
         subparser.add_argument("--base-url", default=None)
     search_parser.add_argument("--top-k", type=int, default=5)
+    search_parser.add_argument(
+        "--min-chunk-words", type=int, default=0,
+        help="skip chunks shorter than this when ranking, e.g. 25 to ignore slide titles",
+    )
     search_parser.add_argument(
         "--mode", choices=("semantic", "hybrid"), default="semantic",
         help="hybrid also ranks by keyword match, which helps with test numbers and acronyms",

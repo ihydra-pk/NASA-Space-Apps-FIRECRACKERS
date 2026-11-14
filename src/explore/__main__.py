@@ -35,6 +35,10 @@ def main() -> int:
     parser.add_argument("--embedding-model", default="gwdg.qwen3-embedding-4b")
     parser.add_argument("--embedding-dimension", type=int, default=2560)
     parser.add_argument("--top-k", type=int, default=5)
+    parser.add_argument(
+        "--min-chunk-words", type=int, default=25,
+        help="skip chunks shorter than this when ranking; 0 keeps title-only chunks",
+    )
     parser.add_argument("--llm-provider", default="openai-compatible")
     parser.add_argument("--llm-model", default="openai.gpt-6-luna")
     parser.add_argument(
@@ -63,6 +67,7 @@ def main() -> int:
         model_name=args.embedding_model,
         dimension=args.embedding_dimension,
         top_k=args.top_k,
+        min_chunk_words=args.min_chunk_words,
     )
     embedding_config = EmbeddingConfig(
         provider=vector_config.provider,

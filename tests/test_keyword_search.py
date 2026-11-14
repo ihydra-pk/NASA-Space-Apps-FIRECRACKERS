@@ -112,3 +112,63 @@ def test_unknown_mode_is_rejected(tmp_path):
     store, config = _store(tmp_path)
     with store, pytest.raises(ValueError, match="mode must be one of"):
         search("query", store, config, provider=QueryProvider(), mode="keyword")
+
+
+class RecordingProvider(QueryProvider):
+    def __init__(self) -> None:
+        self.texts: list[str] = []
+
+    def embed_batch(self, texts, embedding_config):
+        self.texts.extend(texts)
+        return [[1.0, 0.0, 0.0]]
+
+
+def test_qwen3_queries_carry_the_instruction_and_other_models_do_not(tmp_path):
+    from dataclasses import replace
+
+    store, config = _store(tmp_path)
+    provider = RecordingProvider()
+    with store:
+        search("which tests use SF6", store, config, provider=provider)
+    assert provider.texts == ["which tests use SF6"]
+
+    qwen = replace(
+        config,
+        database_path=tmp_path / "qwen.sqlite3",
+        model_name="gwdg.qwen3-embedding-4b",
+    )
+    provider = RecordingProvider()
+    with SQLiteVectorStore(qwen) as qwen_store:
+        result = search("which tests use SF6", qwen_store, qwen, provider=provider)
+        search("which tests use SF6", qwen_store, replace(qwen, query_instruction=None), provider=provider)
+    assert provider.texts[0].startswith("Instruct: ")
+    assert provider.texts[0].endswith("\nQuery: which tests use SF6")
+    assert provider.texts[1] == "which tests use SF6"
+    # The caller's question is reported unchanged.
+    assert result.query == "which tests use SF6"
+
+
+def test_short_chunks_are_skipped_only_when_a_minimum_is_set(tmp_path):
+    from dataclasses import replace
+
+    store, config = _store(tmp_path)
+    with store:
+        store.upsert(_record("title", [1.0, 0.0, 0.0], "Cool Flames"), [1.0, 0.0, 0.0])
+        default = search("flames", store, config, provider=QueryProvider(), top_k=2)
+        filtered = search(
+            "flames", store, replace(config, min_chunk_words=5), provider=QueryProvider(), top_k=2
+        )
+    assert "title" in [item.chunk_id for item in default.matches]
+    assert [item.chunk_id for item in filtered.matches] == ["near", "middle"]
+
+
+def test_identical_passages_take_one_result_slot(tmp_path):
+    store, config = _store(tmp_path)
+    with store:
+        # Same text filed under another name, with the same vector.
+        store.upsert(_record("near-copy", [1.0, 0.0, 0.0], "Droplets burn in a  quiescent chamber."), [1.0, 0.0, 0.0])
+        for mode in ("semantic", "hybrid"):
+            result = search("droplets", store, config, provider=QueryProvider(), top_k=3, mode=mode)
+            ids = [item.chunk_id for item in result.matches]
+            assert len(ids) == 3
+            assert ("near" in ids) != ("near-copy" in ids)

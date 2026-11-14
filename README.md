@@ -34,12 +34,6 @@ python -m src.explore "What causes cool flame extinction in microgravity?" \
   --collection firelens-qwen3-embedding-4b
 ```
 
-To use the web front-end instead, start the server and open http://127.0.0.1:8000:
-
-```bash
-python -m src.api
-```
-
-The server uses `firelens.sqlite3` automatically once you have built it, and falls back to the FLEX-only index if it is missing. `POST /api/explore` with `{"question": "..."}` is the endpoint the page calls; `GET /api/experiments` lists the stored NASA test records.
+To use the web front-end instead, follow [Run.md](Run.md): it covers setup, starting the server and troubleshooting. `POST /api/explore` with `{"question": "..."}` is the endpoint the page calls; `GET /api/experiments` lists the stored NASA test records.
 
 Without the two `--vector-database` / `--collection` options, the `src.explore` command line searches only the FLEX documents. The response is JSON with the answer, validated citations and the matching test conditions; `src/explore/README.md` describes the contract for a frontend. `CLAUDE.md` covers the architecture and the state of the data.

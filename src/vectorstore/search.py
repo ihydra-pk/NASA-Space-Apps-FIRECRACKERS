@@ -27,6 +27,43 @@ def cosine_similarity(left: tuple[float, ...], right: tuple[float, ...]) -> floa
     return max(-1.0, min(1.0, score))
 
 
+def query_text_for_embedding(query_text: str, config: VectorStoreConfig) -> str:
+    """The text sent to the embedding model for a query.
+
+    Qwen3 embedding models expect ``Instruct: <task>\nQuery: <question>`` on
+    the query side only. Other models, including the mock provider, get the
+    question unchanged.
+    """
+
+    if config.query_instruction and "qwen3-embedding" in config.model_name.casefold():
+        return f"Instruct: {config.query_instruction}\nQuery: {query_text}"
+    return query_text
+
+
+def _rankable(
+    scored: list[tuple[float, dict, tuple[float, ...]]], min_chunk_words: int
+) -> list[tuple[float, dict, tuple[float, ...]]]:
+    """Drop title-only chunks and repeats of a passage already ranked higher.
+
+    The same paper is often filed under several names, so identical text would
+    otherwise fill several result slots. ``scored`` is in similarity order, so
+    the first copy kept is the best-scoring one.
+    """
+
+    kept: list[tuple[float, dict, tuple[float, ...]]] = []
+    seen: set[str] = set()
+    for item in scored:
+        words = item[1]["text"].split()
+        if len(words) < min_chunk_words:
+            continue
+        key = " ".join(words).casefold()
+        if key in seen:
+            continue
+        seen.add(key)
+        kept.append(item)
+    return kept
+
+
 SEARCH_MODES = ("semantic", "hybrid")
 # Reciprocal rank fusion: each ranking contributes weight / (k + rank). A small
 # k keeps the top semantic hits well ahead; the keyword ranking counts for less,
@@ -121,7 +158,7 @@ def search(
         batch_size=1,
     )
     try:
-        vectors = _validate_vectors(provider.embed_batch([query_text], embedding_config), 1, embedding_config)
+        vectors = _validate_vectors(provider.embed_batch([query_text_for_embedding(query_text, config)], embedding_config), 1, embedding_config)
     except Exception as exc:
         raise RuntimeError(f"Could not embed retrieval query: {exc}") from exc
     query_vector = vectors[0]
@@ -135,6 +172,7 @@ def search(
             )
         scored.append((cosine_similarity(query_vector, vector), record, vector))
     scored.sort(key=lambda item: (-item[0], item[1]["chunk_id"]))
+    scored = _rankable(scored, config.min_chunk_words)
     if mode == "hybrid":
         results = _fuse_with_keywords(query_text, scored, count)
     else:

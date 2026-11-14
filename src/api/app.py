@@ -60,6 +60,7 @@ def build_explore_service() -> ExploreService:
         model_name=_env("EMBEDDING_MODEL", "gwdg.qwen3-embedding-4b"),
         dimension=int(_env("EMBEDDING_DIMENSION", "2560")),
         top_k=int(_env("TOP_K", "5")),
+        min_chunk_words=int(_env("MIN_CHUNK_WORDS", "25")),
     )
     if vector_config.provider == "openai-compatible":
         embedding_provider = OpenAICompatibleEmbeddingProvider()
