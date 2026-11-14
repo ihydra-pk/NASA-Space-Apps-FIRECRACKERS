@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: firecrackers-firelens
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m src.api
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: FIRELENS_LLM_PROVIDER
+        value: openai-compatible
+      - key: FIRELENS_LLM_MODEL
+        value: openai.gpt-6-luna
+      - key: FIRELENS_LLM_MAX_OUTPUT_TOKENS
+        value: "3000"
+      - key: FIRELENS_EMBEDDING_BASE_URL
+        value: https://ai-gateway.uni-paderborn.de/v1
+      - key: UPB_AI_GATEWAY_KEY
+        sync: false

@@ -173,43 +173,48 @@ h2{font:600 32px/1.12 var(--f);letter-spacing:-.025em;margin:0}
 .ticks span.most{color:var(--tx);font-weight:600}
 .ticks span.edge0{transform:none}.ticks span.edge0:before{margin:0 0 2px}
 .ticks span.edge1{transform:translateX(-100%)}.ticks span.edge1:before{margin:0 0 2px auto}
-/* ===== Ask NASA ===== */
+
+.lnin{max-width:none;padding:0 max(22px,calc((100% - 1000px)/2));height:44px}
+.lnin span{margin-right:auto}.lnin span a{font-size:13px}
+/* ===== Ask NASA chat ===== */
 main>#ask.pg{max-width:none;padding:0}
-.askhero{text-align:center;padding:80px 22px 24px;max-width:820px;margin:0 auto}
-.tag2{font:600 clamp(20px,2.4vw,28px)/1.2 var(--f);letter-spacing:-.02em;color:var(--mu);margin:14px 0 36px}
-.askbox{display:flex;align-items:center;background:#fff;border:1px solid var(--ln);border-radius:999px;padding:6px 6px 6px 22px;box-shadow:0 4px 18px rgba(0,0,0,.06);max-width:680px;margin:0 auto}
-.askbox:focus-within{border-color:#0071e3;box-shadow:0 0 0 4px rgba(0,113,227,.15)}
-.askbox input{flex:1;border:0;outline:0;background:none;font:19px var(--f);color:var(--tx);padding:10px 0}
-.askbox button{width:40px;height:40px;border-radius:50%;border:0;background:#0071e3;color:#fff;font-size:20px}
-.askbox button:hover{background:#0077ed}
-.sugg{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:20px auto 0;max-width:720px}
-.sugg button{border:0;background:#e8e8ed;border-radius:999px;padding:8px 14px;font:14px var(--f);color:var(--tx)}
-.sugg button:hover{background:#dcdce0}
-.kbline{font-size:12px;color:var(--mu);margin-top:22px}
-.askwrap{max-width:820px;margin:0 auto;padding:12px 22px 90px;display:grid;gap:28px}
-.qa{background:#fff;border-radius:28px;box-shadow:2px 4px 12px rgba(0,0,0,.06);padding:32px 36px;animation:pop .35s ease}
-@keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
-.qa .qq{font:600 24px/1.25 var(--f);letter-spacing:-.02em;margin:0 0 6px}
-.qa .mode{font-size:12px;color:var(--mu);margin:0 0 20px}
-.qa .ans p{font-size:17px;line-height:1.55;margin:0 0 12px;color:#1d1d1f}
-.qa sup a{font-size:11px;color:#0066cc;text-decoration:none;background:#eef4fc;border-radius:6px;padding:1px 5px;margin-left:2px}
-.qa h4{font:600 13px var(--f);color:var(--mu);margin:26px 0 10px}
-.srcs{display:grid;gap:10px}
-.srcc{background:#f5f5f7;border-radius:16px;padding:16px 18px}
-.srcc .hd{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
-.srcc b{font:600 15px var(--f)}.srcc .fld{font-size:12px;color:var(--mu)}
-.srcc p{font-size:14px;color:#333336;margin:8px 0 8px;line-height:1.5}
+.chat{max-width:1120px;margin:0 auto;padding:24px 22px 18px;display:flex;flex-direction:column;height:calc(100vh - 44px)}
+.chathead{display:flex;justify-content:space-between;align-items:center;padding:8px 0 14px;border-bottom:1px solid #e8e8ed}
+.chathead b{font:600 21px var(--f);letter-spacing:-.02em;display:block}.chathead span{font-size:12px;color:var(--mu)}
+.newchat{border:1px solid var(--ln);background:#fff;border-radius:999px;padding:6px 14px;font:13px var(--f);color:var(--tx)}
+.msgs{flex:1;overflow-y:auto;padding:24px 2px;display:flex;flex-direction:column;gap:18px;scrollbar-width:thin}
+.m{max-width:78%;animation:pop .3s ease}
+@keyframes pop{from{transform:translateY(6px);opacity:0}to{transform:none;opacity:1}}
+.m.u{align-self:flex-end;background:#0071e3;color:#fff;border-radius:20px 20px 6px 20px;padding:10px 16px;font-size:16px}
+.m.a{align-self:flex-start;display:flex;gap:10px}
+.av{flex:none;width:30px;height:30px;border-radius:50%;background:#1d1d1f;color:#fff;font:600 11px var(--f);display:grid;place-items:center}
+.bub{background:#f5f5f7;border-radius:20px 20px 20px 6px;padding:12px 16px;font-size:16px;line-height:1.5}
+.bub p{margin:0 0 8px}.bub p:last-child{margin:0}
+.bub sup a{font-size:11px;color:#0066cc;text-decoration:none;background:#fff;border-radius:6px;padding:1px 5px;margin-left:2px}
+.bub .note{font-size:12px;color:var(--mu);margin-top:8px}
+.chips2{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chips2 button{border:1px solid var(--ln);background:#fff;border-radius:999px;padding:6px 12px;font:13px var(--f);color:var(--tx)}
+.chips2 button:hover{border-color:#0071e3;color:#0071e3}
+.srctog{border:0;background:none;color:var(--link);font:13px var(--f);padding:0;margin-top:10px}
+.srcs{display:none;gap:8px;margin-top:10px}.srcs.open{display:grid}
+.srcc{background:#fff;border-radius:14px;padding:12px 14px}
+.srcc .hd{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.srcc b{font:600 14px var(--f)}.srcc .fld{font-size:12px;color:var(--mu)}
+.srcc p{font-size:13px;color:#333336;margin:6px 0;line-height:1.45}
 .srcc mark{background:#fff3c4;color:inherit;border-radius:3px;padding:0 2px}
-.srcc a{font-size:14px;color:#0066cc;text-decoration:none;margin-right:16px}.srcc a:hover{text-decoration:underline}
-.pubs{font-size:13px;color:var(--mu);margin-top:6px}.pubs a{font-size:13px}
-.none{color:var(--mu)}
-.stt{display:inline-block;font-size:11px;padding:1px 8px;border-radius:99px;background:#e8e8ed;color:#444;margin-left:6px}
-.stt.observed{background:#d8f0dd;color:#1b6b30}.stt.planned{background:#fff1cc;color:#8a5a00}.stt.metadata,.stt.interpreted{background:#e3ecfa;color:#25507f}
-.srcc .doct{white-space:pre-wrap;max-height:180px;overflow:auto;font:13px/1.45 'IBM Plex Mono',monospace}
-.qa .ans ul{margin:0 0 12px;padding-left:22px;font-size:17px;line-height:1.55}.qa .ans li{margin-bottom:6px}
-.qa .ans sup a{color:#0066cc;text-decoration:none;font-weight:600;margin-left:2px}
-details.more{margin-top:14px}details.more summary{cursor:pointer;font-size:13px;color:var(--mu)}details.more .srcs{margin-top:10px}
-.fnd{margin-top:28px}
+.srcc a{font-size:13px;color:#0066cc;text-decoration:none;margin-right:12px}
+.typing span{display:inline-block;width:7px;height:7px;border-radius:50%;background:#86868b;margin:0 2px;animation:blink 1s infinite}
+.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,80%,100%{opacity:.25}40%{opacity:1}}
+.askbox{display:flex;align-items:center;background:#fff;border:1px solid var(--ln);border-radius:999px;padding:5px 5px 5px 20px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.askbox:focus-within{border-color:#0071e3;box-shadow:0 0 0 4px rgba(0,113,227,.15)}
+.askbox input{flex:1;border:0;outline:0;background:none;font:17px var(--f);color:var(--tx);padding:9px 0}
+.askbox button{width:36px;height:36px;border-radius:50%;border:0;background:#0071e3;color:#fff;font-size:18px}
+.disc{font-size:11px;color:var(--mu);text-align:center;margin:8px 0 0}
+.m.u{font-family:var(--f);border-right:0;text-align:left;justify-self:auto;max-width:85%}
+.m.a{border-left:0;padding-left:0;max-width:85%}
+.av{width:34px;height:34px;font-size:9px;letter-spacing:.02em}
+.fnd{margin-top:28px}.scenario-rag{margin-top:20px;padding-top:16px;border-top:1px solid var(--ln);display:grid;gap:10px}.scenario-rag .scenario-answer{background:#f5f5f7;border-radius:16px;padding:16px}.scenario-rag .scenario-answer .srcs{display:grid}.scenario-rag .scenario-answer .srcc{border:1px solid var(--ln)}.scenario-rag .scenario-answer h4{margin:14px 0 6px}.stt{display:inline-block;font-size:11px;padding:1px 8px;border-radius:99px;background:#e8e8ed;color:#444}.stt.observed{background:#d8f0dd;color:#1b6b30}.stt.planned{background:#fff1cc;color:#8a5a00}.stt.metadata,.stt.interpreted{background:#e3ecfa;color:#25507f}.srcc .doct{white-space:pre-wrap;max-height:180px;overflow:auto;font:13px/1.45 'IBM Plex Mono',monospace}
 .fnd .fh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
 .fnd .fh h3{margin:0;font:600 24px var(--f);letter-spacing:-.02em}
 .fnd .fh p{margin:4px 0 0;font-size:14px;color:var(--mu)}
@@ -239,14 +244,75 @@ details.more{margin-top:14px}details.more summary{cursor:pointer;font-size:13px;
 .cov,.cov.out{color:#6e6e73}.cov.out{color:#1d1d1f}
 .chip.match .s,.chip.part .s,.chip.none .s{color:#6e6e73}.chip.match .s{background:#1d1d1f;color:#fff}
 .ev .st,.ev .st.p{color:#6e6e73}
+main>#exps.pg,main>#detail.pg{max-width:none;padding:0 0 80px}
+.pgtop{padding-top:72px}.h1s{font:600 clamp(40px,5vw,56px)/1.07 var(--f);letter-spacing:-.03em;margin:0 0 10px}
+.rail{display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px max(22px,calc((100% - 1000px)/2 + 22px)) 24px;scrollbar-width:none;cursor:grab;user-select:none}
+.rail::-webkit-scrollbar{display:none}.rail.drag{cursor:grabbing;scroll-snap-type:none}.rail.drag *{pointer-events:none}
+.ecard{flex:0 0 min(340px,82vw);min-height:440px;scroll-snap-align:start;border-radius:28px;background:#f5f5f7;padding:30px;display:flex;flex-direction:column}
+.ecard.dark{background:#000;color:#f5f5f7}.ecard.dark p{color:#a1a1a6}
+.ecard .ey{font:600 13px var(--f);color:var(--mu);margin:0}
+.ecard h3{font:600 30px/1.1 var(--f);letter-spacing:-.02em;margin:8px 0 4px}
+.ecard .full{font-size:15px;color:var(--mu);margin:0 0 16px}
+.ecard p{font-size:15px;line-height:1.45;margin:0 0 8px;color:#333336}
+.ecard .acts{margin-top:auto;display:flex;gap:18px;align-items:center;padding-top:16px}
+.ecard .acts button{border:0;background:#0071e3;color:#fff;border-radius:999px;padding:8px 16px;font:14px var(--f);pointer-events:auto}
+.ecard .acts a{color:#2997ff;font-size:14px;text-decoration:none}.ecard:not(.dark) .acts a{color:var(--link)}
+.railnav{display:flex;justify-content:flex-end;gap:16px}
+.railnav button{width:36px;height:36px;border-radius:50%;border:0;background:#e8e8ed;color:var(--tx);font-size:20px;line-height:1}
+.dback{border:0;background:none;color:var(--link);font:15px var(--f);padding:0;margin-bottom:24px}
+.dhead p{color:var(--mu);font-size:19px;margin:6px 0 0}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:36px}
+.dtile{background:#f5f5f7;border-radius:24px;padding:28px}.dtile.wide{grid-column:1/-1}
+.dtile h4{margin:0 0 10px;font:600 13px var(--f);color:var(--mu)}
+.dtile p,.dtile li{font-size:16px;line-height:1.5;margin:0 0 8px}.dtile ul{margin:0;padding-left:18px}
+.dtile a{color:var(--link);text-decoration:none}.dtile a:hover{text-decoration:underline}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}.kv div{background:#fff;border-radius:14px;padding:14px}.kv b{display:block;font:600 19px var(--f)}.kv span{font-size:12px;color:var(--mu)}
+.dacts{display:flex;gap:16px;align-items:center;margin-top:28px}
+.dacts button{border:0;background:#0071e3;color:#fff;border-radius:999px;padding:10px 20px;font:15px var(--f)}
+.dacts a{color:var(--link);text-decoration:none}
+@media(max-width:800px){.dgrid{grid-template-columns:1fr}}
+#exps .intro2{margin:0 0 28px}
+
+.chiprow{cursor:grab;user-select:none;scroll-snap-type:x mandatory}.chiprow.drag{cursor:grabbing;scroll-snap-type:none}.chiprow.drag *{pointer-events:none}
+.chip a{pointer-events:auto}
+main>#filter.pg{max-width:none;padding:0 0 80px}
+.fgrid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:24px;align-items:start}
+.ftile{background:#f5f5f7;border-radius:24px;padding:24px;position:sticky;top:64px}
+.fsec{padding:14px 0;border-top:1px solid #e3e3e8}.fsec:first-child{border-top:0;padding-top:0}
+.fsec small{display:block;font-size:12px;color:var(--mu);margin-top:6px}
+.rg{display:flex;align-items:center;gap:8px;margin-top:8px}.rg span{color:var(--mu)}
+.rg input{width:100%;border:1px solid var(--ln);border-radius:10px;padding:8px 10px;font:15px var(--f);background:#fff;color:var(--tx)}
+.rg input:focus{outline:2px solid #0071e3;outline-offset:0}
+.cks{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.cks label{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--ln);border-radius:999px;padding:5px 11px;font-size:13px;cursor:pointer}
+.cks input{margin:0;accent-color:#1d1d1f}
+.cks label:has(input:checked){border-color:#1d1d1f;box-shadow:0 0 0 1px #1d1d1f inset}
+.strict{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--mu);padding-top:14px;border-top:1px solid #e3e3e8}
+.fbtns{margin-top:14px}.ghost2{border:1px solid var(--ln);background:#fff;border-radius:999px;padding:7px 16px;font:14px var(--f);color:var(--tx)}
+.fhd{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}.fhd h3{margin:0;font:600 26px var(--f);letter-spacing:-.02em}.fhd span{color:var(--mu)}
+.fr{background:#fff;border-radius:24px;box-shadow:2px 4px 12px rgba(0,0,0,.06);padding:26px;margin-bottom:16px}
+.fr.part{opacity:.7}
+.fr .t{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.fr h4{margin:0;font:600 22px var(--f)}.fr .full{color:var(--mu);font-size:14px}
+.why2{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.why2 span{font-size:12px;border-radius:99px;padding:3px 10px;background:#f5f5f7;color:#6e6e73}.why2 span.ok{background:#1d1d1f;color:#fff}
+.pts{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+.pts th{text-align:left;color:var(--mu);font-weight:500;padding:6px 8px;border-bottom:1px solid #e8e8ed}
+.pts td{padding:6px 8px;border-bottom:1px solid #f0f0f3}
+.more2{font-size:12px;color:var(--mu);margin-top:6px}
+.res2{margin-top:14px;padding-top:12px;border-top:1px solid #e8e8ed;font-size:14px}
+.res2 b{display:block;font:600 13px var(--f);color:var(--mu);margin-bottom:6px}
+.res2 a{color:var(--link);text-decoration:none;display:block;margin:3px 0}.res2 a:hover{text-decoration:underline}
+.fempty{background:#f5f5f7;border-radius:24px;padding:28px;color:var(--mu)}
+@media(max-width:860px){.fgrid{grid-template-columns:1fr}.ftile{position:static}}
+#filter .intro2{margin:0 0 28px}
 </style></head><body>
 <canvas id="stars" aria-hidden="true"></canvas>
 <header><div class="logo">NASA <b>FireLens</b></div>
-<nav aria-label="Main"><button data-p="explore">EXPLORE</button><button data-p="ask">ASK NASA</button><button data-p="exps">EXPERIMENTS</button><button data-p="evidence">EVIDENCE</button><button data-p="about">ABOUT</button></nav>
+<nav aria-label="Main"><button data-p="explore">EXPLORE</button><button data-p="ask">ASK NASA</button><button data-p="exps">EXPERIMENTS</button><button data-p="filter">FILTER</button><button data-p="about">ABOUT</button></nav>
 <div class="demo" title="NASA PSI knowledge base — integration in progress"><i></i>DEMO MODE · NASA PSI INTEGRATION IN PROGRESS</div></header>
 <main>
 <section class="pg" id="explore">
-<nav class="localnav"><div class="lnin"><b>FireLens</b><span><a href="#ov">Overview</a><a href="#explorer">Explorer</a><a href="#mapsec">Map</a><a href="#evsec">Evidence</a></span><a class="pill" href="#explorer">Explore the data</a></div></nav>
 
 <div class="hero" id="ov">
   <p class="kicker">NASA Space Apps · Flame in Freefall</p>
@@ -276,7 +342,8 @@ details.more{margin-top:14px}details.more summary{cursor:pointer;font-size:13px;
     </div>
     <div class="tile pad fnd" id="findings"></div>
     <div class="matchhead"><h3 id="cnt"></h3></div>
-    <div class="chiprow" id="chips"></div>
+    <div class="chiprow" id="chips" tabindex="0" aria-label="Matching NASA experiments"></div>
+    <div class="railnav"><button aria-label="Previous" id="cprev">‹</button><button aria-label="Next" id="cnext">›</button></div>
   </div>
 </div>
 
@@ -301,39 +368,46 @@ details.more{margin-top:14px}details.more summary{cursor:pointer;font-size:13px;
 </section>
 
 <section class="pg" id="ask">
-<div class="askhero">
-  <h1>Ask NASA.</h1>
-  <p class="tag2">Answers built only from NASA PSI files,<br>with a link to every source.</p>
-  <form class="askbox" id="askform" autocomplete="off"><input id="q" placeholder="Ask about fire in microgravity" aria-label="Question"><button id="send" aria-label="Ask">↑</button></form>
-  <div class="sugg" id="sugg"></div>
-  <p class="kbline" id="kbline"></p>
+<div class="chat">
+  <div class="chathead"><div><b>Ask NASA</b><span id="kbline"></span></div><button class="newchat" id="newchat" type="button">New chat</button></div>
+  <div class="msgs" id="log" aria-live="polite"></div>
+  <form class="askbox" id="askform" autocomplete="off"><input id="q" placeholder="Message Ask NASA" aria-label="Question"><button id="send" aria-label="Send">↑</button></form>
+  <p class="disc">Answers come only from NASA PSI files. Every answer shows its sources.</p>
 </div>
-<div class="askwrap" id="log" aria-live="polite"></div>
 </section>
 
 <section class="pg" id="exps">
-<div class="sec" style="margin-top:40px"><div><h2>NASA COMBUSTION EXPERIMENTS</h2><p>A catalogue of experiment families. Counts are demo values.</p></div></div>
-<div class="flt"><input type="search" id="es" placeholder="Search NASA experiments..." aria-label="Search"><select id="fa"><option value="">Research area</option><option>Flame extinguishment</option><option>Solid-fuel burning</option><option>Spacecraft fire</option></select><select id="fe"><option value="">Environment</option><option>ISS</option><option>Free-flyer</option></select><select id="ff"><option value="">Fuel</option><option>Gas</option><option>Solid</option></select></div>
-<div class="cat" id="cat"></div></section>
-
-<section class="pg" id="evidence">
-<div class="sec" style="margin-top:40px"><div><h2>NASA EVIDENCE BASE</h2><p>Planned, observed and interpreted evidence are kept apart.</p></div><span class="ph">DEMO ENTRIES — pending ingestion</span></div>
-<div class="flt" style="grid-template-columns:2fr repeat(5,1fr)"><input type="search" id="vq" placeholder="Search NASA combustion evidence..." aria-label="Search evidence"><select id="vx"><option value="">Experiment</option><option>FLEX</option><option>FLEX-2</option><option>BASS</option><option>SAFFIRE</option></select><select id="vy"><option value="">Evidence type</option><option>PLANNED</option><option>OBSERVED</option><option>INTERPRETED</option><option>METADATA</option></select><select id="vp" disabled aria-label="Topic"><option value="">Topic: not classified yet</option></select><select id="vd"><option value="">Document</option><option>Test Plan</option><option>Metadata</option></select><select id="vf" disabled aria-label="Fuel"><option value="">Fuel: not indexed yet</option></select></div>
-<div id="vl"></div></section>
-
+<div class="wrap pgtop">
+  <h1 class="h1s">The experiments.</h1>
+  <p class="intro2">The eight NASA investigations behind FireLens. Drag, scroll or use the arrows.</p>
+  <div class="seg" id="efilt"><button data-f="" class="on">All</button><button data-f="prev">Prevention</button><button data-f="det">Detection</button><button data-f="supp">Suppression</button></div>
+</div>
+<div class="rail" id="erail" tabindex="0" aria-label="Experiments"></div>
+<div class="wrap railnav"><button aria-label="Previous" id="eprev">‹</button><button aria-label="Next" id="enext">›</button></div>
+</section>
 <section class="pg" id="detail">
-<div style="margin-top:40px" class="split"><div><span class="tag">NASA PSI</span><h1 style="font-size:clamp(56px,9vw,120px)">FLEX</h1><div class="lab">FLAME EXTINGUISHMENT EXPERIMENT</div>
-<p class="line" style="margin-top:24px"><span class="lab">OBJECTIVE</span><br>OBJECTIVE PENDING SOURCE INGESTION</p>
-<p><span class="lab">RESEARCH QUESTIONS</span><br>Evidence will appear after NASA source ingestion.</p><p><span class="lab">ENVIRONMENT</span><br>PENDING SOURCE INGESTION</p></div>
-<canvas id="cv2" width="520" height="520" style="width:100%;max-width:520px;margin:auto" role="img" aria-label="Stylized flame"></canvas></div>
-<div class="sec"><h2>EXPERIMENT CONDITIONS</h2><span class="ph">VALUES PENDING INGESTION</span></div>
-<div class="cond"><div><span class="lab">FUEL</span><b>—</b></div><div><span class="lab">OXYGEN</span><b>—</b></div><div><span class="lab">PRESSURE</span><b>—</b></div><div><span class="lab">TEMPERATURE</span><b>—</b></div><div><span class="lab">FLOW</span><b>—</b></div><div><span class="lab">GRAVITY</span><b>Micro</b></div></div>
-<div class="sec"><h2>EVIDENCE TIMELINE</h2></div>
-<div class="stg"><div class="on"><b>PLANNED</b>FLEX Test Plan · p.8</div><div><b>TESTED</b>No verified source indexed</div><div><b>OBSERVED</b>No verified result indexed</div><div><b>INTERPRETED</b>No verified interpretation indexed</div></div><p class="lab" style="margin-top:16px"><span class="tag METADATA">METADATA</span> FLEX DoD</p><p class="ph">Empty stages mean no verified source is indexed yet — not that the experiment did not happen.</p>
-<div class="sec"><h2>NASA DOCUMENTS</h2></div><div id="dd"></div>
-<div class="sec"><h2>KEY FINDINGS</h2></div><p style="color:var(--mu)">Evidence pending ingestion. Findings appear only when linked to real NASA data.</p>
-<button class="btn" id="af">ASK NASA ABOUT THIS EXPERIMENT</button></section>
-
+<div class="wrap pgtop" id="dbody"></div>
+</section>
+<section class="pg" id="filter">
+<div class="wrap pgtop">
+  <h1 class="h1s">Find the data.</h1>
+  <p class="intro2">Set the conditions you care about. FireLens shows which NASA experiments and test points match, with their sources.</p>
+  <div class="fgrid">
+    <form class="ftile" id="fform" autocomplete="off">
+      <div class="fsec"><span class="lab">Oxygen (%)</span><div class="rg"><input type="number" step="0.1" id="o2min" placeholder="min"><span>–</span><input type="number" step="0.1" id="o2max" placeholder="max"></div><small>NASA data: 12–34 %</small></div>
+      <div class="fsec"><span class="lab">Air flow (cm/s)</span><div class="rg"><input type="number" step="0.5" id="flmin" placeholder="min"><span>–</span><input type="number" step="0.5" id="flmax" placeholder="max"></div><small>NASA data: 0–44 cm/s</small></div>
+      <div class="fsec"><span class="lab">Pressure (atm)</span><div class="rg"><input type="number" step="0.05" id="prmin" placeholder="min"><span>–</span><input type="number" step="0.05" id="prmax" placeholder="max"></div><small>NASA data: 0.7–3.05 atm (FLEX); others at cabin pressure</small></div>
+      <div class="fsec"><span class="lab">Materials</span><div class="cks" id="fmats"></div></div>
+      <div class="fsec"><span class="lab">Gravity</span><div class="cks" id="fgrav"></div></div>
+      <div class="fsec"><span class="lab">Flow direction</span><div class="cks" id="fdir"></div></div>
+      <div class="fsec"><span class="lab">Suppressant gas</span><div class="cks" id="fgas"></div></div>
+      <label class="strict"><input type="checkbox" id="fstrict"> Also show experiments where a filtered value isn’t listed in NASA’s table</label>
+      <div class="fbtns"><button type="button" class="ghost2" id="freset">Reset</button></div>
+    </form>
+    <div id="fres"></div>
+  </div>
+</div>
+</section>
 <section class="pg" id="about">
 <div class="sec" style="margin-top:40px"><div><h2>HOW FIRELENS WORKS</h2><p>From experiment to insight, with a source at every step.</p></div></div>
 <svg class="arch" viewBox="0 0 880 700" role="img" aria-label="Architecture diagram: document and data pipelines merging into AI reasoning"><g class="fl"><path d="M220 88V102M220 140V154M220 192V206M220 244V258M220 296V310M220 348V362M660 88V102M660 140V154M660 192V206M220 402V440H440M660 240V440H440M440 440V470M440 508V540M440 578V610M440 610H220V640M440 610H660V640"/></g><text class="t" x="220" y="30" style="letter-spacing:.14em">DOCUMENT PIPELINE</text><text class="t" x="660" y="30" style="letter-spacing:.14em">DATA PIPELINE</text><text x="440" y="602" style="font-size:11px;fill:#8a9ab6">FIRELENS</text><rect x="120" y="50" width="200" height="38"/><text x="220.0" y="66">NASA PSI</text><text class="t" x="220.0" y="80">Python</text><rect x="120" y="102" width="200" height="38"/><text x="220.0" y="118">PDF / DOCX</text><text class="t" x="220.0" y="132">PyMuPDF / python-docx</text><rect x="120" y="154" width="200" height="38"/><text x="220.0" y="170">INGESTION</text><text class="t" x="220.0" y="184">Python</text><rect x="120" y="206" width="200" height="38"/><text x="220.0" y="230">CHUNKING</text><rect x="120" y="258" width="200" height="38"/><text x="220.0" y="274">EMBEDDINGS</text><text class="t" x="220.0" y="288">Embeddings</text><rect x="120" y="310" width="200" height="38"/><text x="220.0" y="326">VECTOR STORE</text><text class="t" x="220.0" y="340">Chroma</text><rect x="120" y="362" width="200" height="38"/><text x="220.0" y="386">RETRIEVAL</text><rect x="560" y="50" width="200" height="38"/><text x="660.0" y="74">NASA PSI</text><rect x="560" y="102" width="200" height="38"/><text x="660.0" y="126">ANALYZED EXPERIMENT DATA</text><rect x="560" y="154" width="200" height="38"/><text x="660.0" y="170">STRUCTURED DATA ENGINE</text><text class="t" x="660.0" y="184">Python</text><rect x="560" y="206" width="200" height="38"/><text x="660.0" y="230">CONDITION MATCHING</text><rect x="300" y="470" width="280" height="38"/><text x="440.0" y="494">RETRIEVAL + CONDITION MATCHING</text><rect x="340" y="540" width="200" height="38" style="stroke:#fc3d21"/><text x="440.0" y="556">AI REASONING</text><text class="t" x="440.0" y="570">GPT-6 Luna</text><rect x="120" y="640" width="200" height="38"/><text x="220.0" y="664">ASK NASA</text><rect x="560" y="640" width="200" height="38"/><text x="660.0" y="664">EXPLORE</text></svg>
@@ -349,7 +423,7 @@ const COVERAGE={};/* backend hook: {OXYGEN:true,TEMPERATURE:false,...} from inde
 const PEND='PENDING BACKEND CONNECTION';
 const EV=[{x:'FLEX',n:'Flame Extinguishment',d:'FLEX Test Plan',p:8,t:'',ty:'PLANNED',k:'Test Plan',psi:'PSI-69',loc:'p.8',id:null,path:null},
 {x:'FLEX',n:'Flame Extinguishment',d:'FLEX DoD',p:null,t:'',ty:'METADATA',k:'Metadata',psi:'PSI-69',loc:null,id:null,path:null}];
-const NI=[{x:'FLEX-2',n:'Flame Extinguishment'},{x:'BASS',n:'Burning and Suppression of Solids'},{x:'SAFFIRE',n:'Spacecraft Fire Experiments'}];
+const NI=[{x:'BASS',n:'Burning and Suppression of Solids'},{x:'SAFFIRE',n:'Spacecraft Fire Experiments'}];
 const row=(e,i)=>`<div class="src ${e.ty}"><div><span class="tag ${e.ty}">${e.ty}</span></div><div><h3>${e.x}</h3><p>${e.n}</p></div><div><p>Source</p><b>${e.d}</b><p>Page ${e.p||'—'} · NASA PSI</p></div><div><button class="btn s" data-src="${i}">VIEW SOURCE</button></div></div>`;
 const nrow=e=>`<div class="src METADATA"><div><span class="tag METADATA">NO RECORD</span></div><div><h3>${e.x}</h3><p>${e.n}</p></div><div><b>SOURCE NOT INGESTED</b></div><div></div></div>`;
 const evx=()=>$('#evx').innerHTML=EV.map(row).join('')+NI.map(nrow).join('');
@@ -357,7 +431,7 @@ function kbRender(){$('#k1').textContent=STATE.sources;$('#k2').textContent=STAT
 function show(p){$$('.pg').forEach(s=>s.classList.toggle('on',s.id===p));$$('header nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p||(p==='detail'&&b.dataset.p==='exps')));history.replaceState(null,'','#'+p);scrollTo(0,0)}
 $$('header nav button').forEach(b=>b.onclick=()=>show(b.dataset.p));
 let cur=EV[0];document.addEventListener('click',e=>{const s=e.target.closest('[data-src]');if(s){const v=cur=EV[+s.dataset.src];$('#dl').innerHTML=[['EXPERIMENT',v.x],['DOCUMENT',v.d],['PAGE',v.p||PEND],['EVIDENCE TYPE',`<span class="tag ${v.ty}">${v.ty}</span>`],['SOURCE ID',v.id||PEND],['SOURCE LOCATOR',v.loc||PEND],['SOURCE PATH',v.path||PEND],['NASA PSI',v.psi||PEND]].map(([k,t])=>`<div><div class="lab">${k}</div><div style="font:500 15px var(--m)">${t}</div></div>`).join('');$('#dr').classList.add('on')}const g=e.target.closest('[data-go]');if(g)show(g.dataset.go)});
-$('#dx').onclick=()=>$('#dr').classList.remove('on');$('#dop').onclick=()=>{$('#dr').classList.remove('on');show('detail')};$('#dak').onclick=()=>{$('#dr').classList.remove('on');show('ask');send('What does '+cur.d+' contain?')};
+$('#dx').onclick=()=>$('#dr').classList.remove('on');$('#dop').onclick=()=>{$('#dr').classList.remove('on');openExp((EXP.find(e=>e.n===cur.x)||EXP.find(e=>e.k==='FLEX')).k)};$('#dak').onclick=()=>{$('#dr').classList.remove('on');show('ask');send('What does '+cur.d+' contain?')};
 kbRender();
 // flame canvas
 function flame(c,g){const x=c.getContext('2d'),W=c.width,P=Array.from({length:70},()=>({a:Math.random()*6.28,r:Math.random(),s:.002+Math.random()*.004}));let t=0;
@@ -367,17 +441,9 @@ const gv=g?g():'Microgravity',up=gv.startsWith('Normal')?1.6:gv.startsWith('Luna
 P.forEach(p=>{p.r+=p.s;if(p.r>1)p.r=.2;const d=R+p.r*W*.3;x.fillStyle=`rgba(60,200,230,${.5*(1-p.r)})`;x.fillRect(cx+Math.cos(p.a)*d,cy+Math.sin(p.a)*d*(up>1?1.3:1)-(up>1?p.r*40:0),2,2)});
 x.save();x.translate(cx,cy+(up>1?R*.3:0));x.scale(1,up);const gr=x.createRadialGradient(0,0,2,0,0,R*1.6);gr.addColorStop(0,'rgba(255,240,220,.95)');gr.addColorStop(.25,'rgba(252,120,60,.8)');gr.addColorStop(.6,'rgba(252,61,33,.35)');gr.addColorStop(1,'rgba(252,61,33,0)');x.fillStyle=gr;x.beginPath();x.arc(0,0,R*1.6,0,6.28);x.fill();x.strokeStyle='rgba(60,200,230,.5)';x.beginPath();x.arc(0,0,R,0,6.28);x.stroke();x.restore();
 x.fillStyle='#8a9ab6';x.fillText('ILLUSTRATIVE VISUALIZATION · '+gv.toUpperCase(),12,W-12);if(!matchMedia('(prefers-reduced-motion:reduce)').matches)requestAnimationFrame(dr)}dr()}
-flame($('#cv2'));
-// experiments
-const EX=[{n:'FLEX / FLEX-2',s:'Flame Extinguishment',a:'Flame extinguishment',e:'ISS',f:'Gas',o:'Study flame extinction in microgravity.',c:6},{n:'BASS / BASS-II',s:'Burning and Suppression of Solids',a:'Solid-fuel burning',e:'ISS',f:'Solid',o:'Study solid-fuel burning and suppression.',c:4},{n:'SAFFIRE I–III',s:'Spacecraft Fire Experiments',a:'Spacecraft fire',e:'Free-flyer',f:'Solid',o:'Large-scale spacecraft fire behavior.',c:5}];
-const art=i=>`<svg viewBox="0 0 300 150"><defs><radialGradient id="g${i}"><stop offset="0" stop-color="#fff2e0"/><stop offset=".3" stop-color="#fc7a3c"/><stop offset="1" stop-color="#fc3d21" stop-opacity="0"/></radialGradient></defs><rect width="300" height="150" fill="#060b16"/><g stroke="#14213a">${[1,2,3,4,5].map(k=>`<circle cx="150" cy="75" r="${k*18}" fill="none"/>`).join('')}</g><circle cx="150" cy="75" r="${30+i*8}" fill="url(#g${i})"/></svg>`;
-function rx(){const q=$('#es').value.toLowerCase(),a=$('#fa').value,e=$('#fe').value,f=$('#ff').value;$('#cat').innerHTML=EX.map((x,i)=>[x,i]).filter(([x])=>(!q||(x.n+x.s).toLowerCase().includes(q))&&(!a||x.a===a)&&(!e||x.e===e)&&(!f||x.f===f)).map(([x,i])=>`<div class="ex">${art(i)}<div><h3>${x.n}</h3><span class="lab">${x.s.toUpperCase()}</span><p>${x.o}</p><p class="lab">${x.n.startsWith('FLEX')?'SOURCES INDEXED: '+STATE.sources:'SOURCE INDEX PENDING'}</p><span><span class="tag">NASA PSI</span> <button class="btn s" data-go="detail">EXPLORE</button></span></div></div>`).join('')||'<p class="lab">No experiments match. Clear a filter.</p>'}
-['es','fa','fe','ff'].forEach(i=>$('#'+i).oninput=rx);rx();
-function rv(){const q=$('#vq').value.toLowerCase(),a=$('#vx').value,b=$('#vy').value,d=$('#vd').value;
-const r=EV.map((e,i)=>[e,i]).filter(([e])=>(!q||(e.d+e.x).toLowerCase().includes(q))&&(!a||e.x===a)&&(!b||e.ty===b)&&(!d||e.k===d)).map(([e,i])=>row(e,i));
-const ni=(!b&&!d&&!q)?NI.filter(x=>!a||x.x===a).map(nrow):[];$('#vl').innerHTML=r.concat(ni).join('')||'<p class="lab">No evidence matches.</p>'}
-['vq','vx','vy','vp','vd','vf'].forEach(i=>$('#'+i).oninput=rv);rv();
-$('#dd').innerHTML=EV.slice(0,2).map(row).join('');$$('.cond b').forEach(b=>b.textContent='PENDING');$('#af').onclick=()=>{show('ask');send('What did FLEX study about flame extinction?')};
+
+
+
 show(location.hash.slice(1)&&$('#'+location.hash.slice(1))?location.hash.slice(1):'explore');
 
 const B2RAW="P,5,22.2,6;P,2,22.2,4;P,3,21,4;P,5,21,4;P,10,21,5;P,2,21,3;P,1,21,4;P,4,21,2;P,5,15,1;P,3,15,1;P,2,15,1;P,3,17.3,2;P,0.5,17.3,1;P,0.4,17.3,1;P,5,17.5,3;P,3,17.5,2;P,0.4,17.5,1;P,10,17.4,1;P,10,17.3,2;P,5,17.4,3;P,3,17.4,1;P,0.5,17.4,1;P,5,20.8,3;P,5,20.7,2;P,2,20.7,1;P,0,20.7,1;N,9.5,22.2,1;N,15,21,1;N,8,21.7,1;W,3,17.4,1;P,10,22.2,4;P,8,22.2,3;P,20,22.2,3;P,15,22.2,1;P,13,22.2,2;P,14,22.2,1;P,10,20.8,1;P,20,20.8,1;P,18,20.8,1;P,5,21.8,2;P,4,21.8,1;P,3,21.8,2;P,10,21.8,1;P,0,21.8,1;P,10,18.9,1;P,6,18.9,1;P,5,18.9,2;P,4.5,18.9,1;P,4,18.9,1;P,3,18.9,1;P,10,19.1,1;P,5,19.1,1;P,7,19.1,1;P,10,18,2;P,14,18,1;P,10,20.1,1;P,17,20.1,1;P,14,20.1,1;P,8,20.1,1;P,10,20,1;P,20,20,1;P,15,20,1;P,12,20,1;P,1,21.7,1;P,6,20.8,1;P,4,20.8,1;P,8,21,1;P,7,21,1;P,20,21,1;P,18,21,1;P,16,21,1;P,15,21,1;P,10,19.2,1;P,6,19.2,1;P,3,19.2,1;P,2,19.2,1;P,1,19.2,1;P,10,18.8,1;P,5,18.8,1;P,3,18.8,1;P,0,18.8,1;P,10,17.9,1;P,15,17.9,1;P,8,17.9,1;P,10,19,1;P,17,19,1;P,14,19,1;P,7,19,1;P,5,19,1;P,8,18,1;P,1,22.2,1;P,0,22.2,1;P,5,18,3;P,3,18,2;P,2,18,1;P,1,18,1;P,5,14.8,1;P,5,15.1,1;P,10,15.1,1;P,2,15.1,1;P,0,15.1,2;P,5,14.2,1;P,5,16.7,2;P,2,16.7,1;P,0,16.7,2;P,5,15.4,1;P,7,14.6,1;P,4,14.6,1;P,5,16.3,3;P,5,17.1,1;P,0,17.1,1;P,5,14.5,1;P,3,15.1,1;P,11,15.1,1;P,5,15.2,1;P,2,15.2,1;P,0,15.2,1;P,11,15.2,1;P,5,15.3,1;P,5,16.5,1;P,8,16.5,1;P,38.5,16.5,1;P,28,15.9,1;P,4,15.4,1;P,26.5,15.4,1;P,5,17.7,2;P,2,17.7,1;P,2.5,17.4,1;P,2,17.4,1;P,2.5,17.7,1;P,5,18.5,1;P,0.4,18.5,1;P,0.36,18.5,1;P,0.32,18.5,1;P,0.308,18.5,1;P,5,19.3,1;P,0.4,18.9,1;P,0.36,18.9,1;P,0.32,18.9,1;P,0.31,18.9,1;P,5,16.4,1;P,10,16.4,1;P,15,16.4,1;P,5,17.6,1;P,5,17,1;P,0.4,17,1;P,0.36,17,1;P,0.32,17,1;P,0.31,17,1;P,0.3,17,1;P,2,17.5,2;P,1,17.5,1;P,0.5,17.5,1;P,5,20.6,1;P,5,18.4,1;P,5,18.2,1;P,8,18.2,1;P,2,18.2,2;P,5,16.8,1;P,3,16.8,1;P,2,16.8,1;P,22,16.8,1;P,2,20,1;P,0,20,1;P,8,17.5,1;P,0,17.5,1;P,2,19,2;P,0,19,2;P,5,20,1;P,0,18.2,1;P,5,20.9,1;S,10,18.5,1;S,9,18.5,1;S,5,18.5,1;S,4,18.5,1;P,10,17.2,1;S,9,18.7,2;S,1,18.7,1;S,10,18.8,1;S,2,18.8,2;S,1,18.8,2;S,5,18.8,1;P,5,17.3,1;P,1,17.3,1;S,10,16.4,1;S,5,16.4,1;S,5,17.1,2;S,5,16.8,1;S,5,17.5,1;S,1,17.5,1;S,5,16.9,1;S,3,16.9,1;S,29,18.7,1;S,5,17.6,1;S,3,17.6,1;S,6,16.9,1;S,5,17.4,1;S,2,17.4,1;S,11,17.2,3;S,3,17.2,1;S,10,17.1,1;S,10,17.2,1;S,10,18.2,1;S,5,20.8,2;S,2.5,20.8,2;S,5,20.7,4;S,2,20.7,2";
@@ -429,7 +495,8 @@ function findings(){const box=$('#findings');if(!box)return;
   ${dim?`<p class="short">${f.in}</p>`:`<p class="ob"><span class="k">OBSERVED</span>${ob}</p><p class="in"><span class="k">INTERPRETATION</span>${f.in}</p><div class="fsrc">${f.src.map(([n,p])=>`<a href="${PSI(p)}" target="_blank" rel="noopener">${n} · ${p} ›</a>`).join('')}</div>`}</div></div>`};
  box.innerHTML=`<div class="fh"><div><h3>Top fire safety findings for your scenario</h3><p>${cond.join(' · ')}</p></div><span class="why">Ranked by safety impact, evidence and fit</span></div>`+
   main.map((x,i)=>item(x,i+1,false)).join('')+other.map((x,i)=>item(x,main.length+i+1,true)).join('')+
-  `<p class="fcrit">Ranking: safety impact (does it change a decision on materials, ventilation, detection or suppression?) · evidence strength (number of tests, sample size) · fit to your material and conditions. Observed = NASA data. Interpretation = FireLens reading of it.</p>`}
+  `<p class="fcrit">Ranking: safety impact (does it change a decision on materials, ventilation, detection or suppression?) · evidence strength (number of tests, sample size) · fit to your material and conditions. Observed = NASA data. Interpretation = FireLens reading of it.</p>`+`<div class="scenario-rag"><button class="btn" id="scenarioAsk" type="button">Ask RAG about this scenario</button><span class="why">NASA document retrieval + structured experiment matching</span><div id="scenarioAnswer" aria-live="polite"></div></div>`;const ask=$('#scenarioAsk');if(ask)ask.onclick=askScenario}
+async function askScenario(){const button=$('#scenarioAsk'),out=$('#scenarioAnswer');if(!button||!out)return;const conditions={};if(['heptane','methanol'].includes(S.mat))conditions.fuel=S.mat;else if(S.mat==='sibal')conditions.fuel='SIBAL';else if(S.mat==='pmma')conditions.fuel='PMMA';else if(S.mat==='nomex')conditions.fuel='Nomex';else if(S.mat==='silicone')conditions.fuel='Silicone';if(PIL[S.pil].in.includes('flow'))conditions.flow_velocity=S.flow;if(PIL[S.pil].in.includes('o2'))conditions.oxygen_concentration=S.o2;if(PIL[S.pil].in.includes('pres'))conditions.pressure=S.p;const q=`Using NASA evidence, what is known about ${GOAL[S.pil][0]}, ${MATS[S.mat]}, ${conditions.flow_velocity??'unspecified'} cm/s air flow, ${conditions.oxygen_concentration??'unspecified'}% oxygen, ${S.dir==='opposed'?'against':'same direction as'} airflow? Distinguish observed data from planned conditions and state what is unsupported.`;button.disabled=true;button.textContent='Searching…';out.innerHTML='<p class="note">Retrieving NASA documents and matching experiment records…</p>';try{const res=await fetch(FIRELENS_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,conditions})});const d=await res.json();if(!res.ok)throw new Error(d.detail||`HTTP ${res.status}`);const cs=d.answer?.citations||[],docs=new Map((d.document_evidence||[]).map(x=>[x.record_identifier,x])),exps=new Map((d.experimental_evidence||[]).map(x=>[x.record_identifier,x]));let a=esc(d.answer?.answer||'No answer returned.').replace(/\[(chunk-[0-9a-f]+)\]/g,(m,id)=>{const i=cs.findIndex(c=>c.chunk_id===id);return i<0?'':`<sup>[${i+1}]</sup>`}).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');const cards=cs.map((c,i)=>{const x=docs.get(c.chunk_id);if(x)return `<div class="srcc"><div class="hd"><b>[${i+1}] ${esc(x.experiment||'NASA')} · ${esc(x.source_file||'')}</b><span class="stt ${esc(x.evidence_status||'')}">${esc(x.evidence_status||'')}</span></div><p class="doct">${esc(x.original_text||'')}</p></div>`;const e=exps.get(c.chunk_id);return e?`<div class="srcc"><div class="hd"><b>[${i+1}] ${esc(e.experiment||'')} · ${esc(e.experiment_id||'')}</b><span class="stt ${esc(e.evidence_status||'')}">${esc(e.evidence_status||'')}</span></div><p>${esc(e.source_file||'')} · ${esc(e.source_locator||'')}</p><p>${esc(JSON.stringify(e.original_data?.measurement||{}))}</p></div>`:''}).join('');out.innerHTML=`<div class="scenario-answer"><p class="mode">${d.status==='grounded'?'Grounded answer · citations validated':'Insufficient evidence · citations validated'} · ${esc(d.evidence_mode||'')}</p><div class="ans">${a.split(/\n\n+/).map(p=>`<p>${p.replace(/\n/g,'<br>')}</p>`).join('')}</div>${cards?`<h4>Retrieved citations</h4><div class="srcs open">${cards}</div>`:''}${(d.warnings||[]).map(w=>`<p class="note">${esc(w)}</p>`).join('')}</div>`}catch(e){out.innerHTML=`<p class="note">RAG request failed: ${esc(e.message||String(e))}</p>`}finally{button.disabled=false;button.textContent='Ask RAG about this scenario'}}
 /* ===== FireLens Explore — data from NASA PSI experimental tables ===== */
 const PSI=id=>'https://psi.nasa.gov/physci/repo/data/investigations/'+id;
 const MATS={sibal:'SIBAL cotton-fiberglass fabric',pmma:'PMMA (acrylic plastic)',nomex:'Nomex fabric',silicone:'Silicone',ultem:'Ultem',wax:'Wax candle',teflon:'Teflon',kapton:'Kapton',lampwick:'Lampwick',pyrell:'Pyrell foam',dbp:'Dibutyl phthalate',heptane:'Heptane (droplet)',methanol:'Methanol (droplet)'};
@@ -647,6 +714,9 @@ function mats(){const list=[...new Set(EXP.filter(e=>e.pil.includes(S.pil)).flat
 $('#onlymat').onchange=drawMap;
 render();goals();mats();scene($('#cv'));scene($('#cvh'),true);
 
+function alignNav(){const b=document.querySelector('header nav button[data-p="explore"]'),l=$('#lnlinks');if(!b||!l)return;l.style.marginLeft='0px';const pad=parseFloat(getComputedStyle(b).paddingLeft)||0;const dx=b.getBoundingClientRect().left+pad-l.getBoundingClientRect().left;l.style.marginLeft=Math.max(0,dx)+'px'}
+addEventListener('resize',alignNav);document.fonts&&document.fonts.ready.then(alignNav);alignNav();
+
 /* NASA PSI investigation texts (objective, approach, hypothesis, impact) — from psi.nasa.gov, trimmed */
 const PSIDOC={
 "PSI-26":{n:"BASS",t:"Burning and Suppression of Solids",
@@ -699,7 +769,7 @@ p:[["Tethered methanol droplet combustion in carbon-dioxide enriched environment
 };
 /* ===== Ask NASA: retrieval over NASA PSI texts, optional AI backend ===== */
 const API_BASE=location.protocol==='file:'?'http://127.0.0.1:8000':'';
-const FIRELENS_API=API_BASE+'/api/explore'; /* POST {question} -> grounded answer + citations (src/api/app.py) */
+const FIRELENS_API=API_BASE+'/api/explore'; /* FireLens Explore API */
 const FLD={o:'Objective',a:'Approach',h:'Hypothesis',r:'Research impact',x:'Science document'};
 const CHUNKS=[];
 for(const [psi,d] of Object.entries(PSIDOC)){for(const f of ['o','a','h','r']){if(d[f])CHUNKS.push({psi,n:d.n,f:FLD[f],text:d[f]})}(d.x||[]).forEach(t=>CHUNKS.push({psi,n:d.n,f:'Science document · Ferkul et al. 2013, Flammability Aspects of Fabric…',text:t.replace(/^Science document \([^)]*\):\s*/,'').replace(/^./,m=>m.toUpperCase())}))}
@@ -713,73 +783,95 @@ const DF={};CHUNKS.forEach(c=>new Set(c.tk).forEach(w=>DF[w]=(DF[w]||0)+1));
 const AVG=CHUNKS.reduce((s,c)=>s+c.len,0)/CHUNKS.length;
 function qterms(q){const base=tok(q);const all=new Set();base.forEach(w=>{all.add(stem(w));(SYN[w]||[]).forEach(s=>all.add(stem(s)))});
  EXP.forEach(e=>{if(q.toLowerCase().includes(e.n.toLowerCase()))all.add(stem(e.n.toLowerCase()))});return[...all]}
-function search(q,k=5){const qs=qterms(q),N=CHUNKS.length;
+function search(q,k=5){const qs=qterms(q),N=CHUNKS.length;const ql=q.toLowerCase();const fams=['bass','saffire','same','flex'].filter(f=>new RegExp('\\b'+f+'\\b').test(ql));const exact=EXP.map(e=>e.n.toLowerCase()).filter(n=>ql.includes(n)&&/-/.test(n));
  return CHUNKS.map(c=>{let s=0;for(const w of qs){const tf=c.tk.filter(x=>x===w).length;if(!tf)continue;const idf=Math.log(1+(N-(DF[w]||0)+.5)/((DF[w]||0)+.5));s+=idf*tf*2.2/(tf+1.2*(.25+.75*c.len/AVG))}
-  if(q.toLowerCase().includes(c.n.toLowerCase()))s+=2;return{c,s}}).filter(r=>r.s>0).sort((a,b)=>b.s-a.s).slice(0,k).map(r=>r.c)}
+  if(q.toLowerCase().includes(c.n.toLowerCase()))s+=2;return{c,s}}).filter(r=>r.s>0).filter(r=>{const n=r.c.n.toLowerCase();if(exact.length)return exact.includes(n);if(fams.length)return fams.some(f=>n===f||n.startsWith(f+'-'));return true}).sort((a,b)=>b.s-a.s).slice(0,k).map(r=>r.c)}
 const esc=t=>t.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
 function hl(t,qs){return esc(t).replace(/[A-Za-z0-9₂]+/g,w=>qs.includes(stem(w.toLowerCase().replace('₂','2')))?`<mark>${w}</mark>`:w)}
 function extract(q,hits){const qs=qterms(q);const sents=[];
  hits.forEach((c,i)=>c.text.split(/(?<=[.!?])\s+(?=[A-Z0-9])/).forEach(s=>{const t=tok(s).map(stem);const sc=qs.filter(w=>t.includes(w)).length/Math.sqrt(t.length+3);if(sc>0)sents.push({s,sc,i})}));
  sents.sort((a,b)=>b.sc-a.sc);const pick=[],seen=new Set();for(const x of sents){if(pick.length>=3)break;const key=x.s.slice(0,40);if(seen.has(key))continue;seen.add(key);pick.push(x)}
- return pick.map(x=>`<p>${esc(x.s)}<sup><a href="#src-${QN}-${x.i+1}">${x.i+1}</a></sup></p>`).join('')}
+ return pick.map(x=>`<p>${esc(x.s)}<sup><a href="#">${x.i+1}</a></sup></p>`).join('')}
 let QN=0;
-function fmtAnswer(raw,ref){
-  const html=esc(raw||'')
-    .replace(/\[(chunk-[0-9a-f]+)\]/g,(m,id)=>ref('d',id))
-    .replace(/nasa-[0-9a-f]{64}:[A-Za-z0-9]+(?:[:-][A-Za-z0-9]+)*/g,(m)=>m+ref('e',m))
-    .replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
-  return html.split(/\n\n+/).map(par=>{const ls=par.split('\n');
-    if(ls.every(l=>/^\s*[-*]\s+/.test(l)))return '<ul>'+ls.map(l=>'<li>'+l.replace(/^\s*[-*]\s+/,'')+'</li>').join('')+'</ul>';
-    return '<p>'+ls.join('<br>')+'</p>'}).join('')}
-function srcCard(n,kind,x,N){
-  const st=`<span class="stt ${esc(x.evidence_status||'')}">${esc(x.evidence_status||'')}</span>`;
-  if(kind==='d'){const loc=x.page_number?`page ${x.page_number}`:esc(x.source_locator||'document');
-    const sim=typeof x.similarity_score==='number'?` · similarity ${x.similarity_score.toFixed(2)}`:'';
-    return `<div class="srcc" id="src-${N}-${n}"><div class="hd"><b>[${n}] ${esc(x.experiment||'')} · ${esc(x.source_file||'')}</b><span class="fld">${loc}${sim} ${st}</span></div><p class="doct">${esc(x.original_text||'')}</p><div class="pubs">Chunk ${esc(x.record_identifier)}</div></div>`}
-  const od=x.original_data||{},m=od.measurement||{};
-  const meas=Object.entries(m).map(([k,v])=>`${esc(k)}: ${esc(String(v))}`).join(' · ');
-  const cond=[od.fuel,od.oxygen_concentration!=null?`O2 ${od.oxygen_concentration}`:null,od.pressure!=null?`${(+od.pressure).toFixed(2)} atm`:null,od.flow_velocity!=null?`${od.flow_velocity} cm/s`:null].filter(Boolean).map(v=>esc(String(v))).join(' · ');
-  return `<div class="srcc" id="src-${N}-${n}"><div class="hd"><b>[${n}] ${esc(x.experiment||'')} · test ${esc(x.experiment_id||'')}</b><span class="fld">${esc(x.source_locator||'')} ${st}</span></div><p>${cond}</p>${meas?`<p>${meas}</p>`:''}${od.observed_result?`<p>Test end: ${esc(od.observed_result)}</p>`:''}<div class="pubs">Record ${esc(x.record_identifier)} · ${esc(x.source_file||'')}</div></div>`}
-function renderExplore(d,N,r){
-  const docs=new Map((r.document_evidence||[]).map(x=>[x.record_identifier,x]));
-  const exps=new Map((r.experimental_evidence||[]).map(x=>[x.record_identifier,x]));
-  const order=[],idx=new Map();
-  const ref=(kind,id)=>{if(!(kind==='d'?docs:exps).has(id))return '';const key=kind+id;
-    if(!idx.has(key)){order.push({kind,id});idx.set(key,order.length)}
-    const n=idx.get(key);return `<sup><a href="#src-${N}-${n}">${n}</a></sup>`};
-  ((r.answer&&r.answer.citations)||[]).forEach(c=>ref('d',c.chunk_id));
-  const a=r.answer||{};
-  const body=fmtAnswer(a.answer,ref);
-  const grounded=r.status==='grounded';
-  d.querySelector('.mode').textContent=grounded?'AI answer written only from NASA documents and experiment records · citations validated':'Insufficient evidence in the indexed NASA sources · citations validated';
-  d.querySelector('.ans').innerHTML=body||'<p class="none">No answer returned.</p>';
-  let cards=order.map((o,i)=>srcCard(i+1,o.kind,(o.kind==='d'?docs:exps).get(o.id),N)).join('');
-  let html=cards?`<h4>Citations</h4><div class="srcs">${cards}</div>`:'';
-  const uncited=(r.document_evidence||[]).filter(x=>!idx.has('d'+x.record_identifier));
-  if(uncited.length)html+=`<details class="more"><summary>${uncited.length} other retrieved passage${uncited.length>1?'s':''} (not cited)</summary><div class="srcs">${uncited.map(x=>srcCard('·','d',x,N)).join('')}</div></details>`;
-  if((r.warnings||[]).length)html+=`<details class="more"><summary>Notes</summary>${r.warnings.map(w=>`<p class="none">${esc(w)}</p>`).join('')}</details>`;
-  d.insertAdjacentHTML('beforeend',html)}
-async function send(q){q=(q||'').trim();if(!q)return;QN++;const N=QN;
-  const d=document.createElement('article');d.className='qa';
-  d.innerHTML=`<p class="qq">${esc(q)}</p><p class="mode">Searching NASA documents and experiment records…</p><div class="ans"><p class="none">Thinking…</p></div>`;
-  $('#log').prepend(d);d.scrollIntoView({behavior:'smooth',block:'start'});
-  try{
-    const res=await fetch(FIRELENS_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
-    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.detail||('HTTP '+res.status))}
-    renderExplore(d,N,await res.json());
-  }catch(e){
-    const hits=search(q),qs=qterms(q);
-    d.querySelector('.mode').textContent='Backend unavailable ('+(e.message||e)+') · showing matching NASA passages instead';
-    if(!hits.length){d.querySelector('.ans').innerHTML='<p class="none">No NASA PSI passage in FireLens matches this question yet. Try words like flame spread, oxygen, smoke, suppressant or an experiment name.</p>';return}
-    d.querySelector('.ans').innerHTML=extract(q,hits);
-    const srcs=hits.map((c,i)=>`<div class="srcc" id="src-${N}-${i+1}"><div class="hd"><b>[${i+1}] ${c.n} · ${c.psi}</b><span class="fld">${c.f}</span></div><p>${hl(c.text,qs)}</p><a href="https://psi.nasa.gov/physci/repo/data/investigations/${c.psi}" target="_blank" rel="noopener">Open ${c.psi} on NASA PSI ›</a></div>`).join('');
-    d.insertAdjacentHTML('beforeend',`<h4>Sources from NASA PSI</h4><div class="srcs">${srcs}</div>`)}}
+const logEl=()=>$('#log');
+function addMsg(cls,html){const d=document.createElement('div');d.className='m '+cls;d.innerHTML=cls==='a'?`<div class="av">NASA</div><div class="bub">${html}</div>`:html;logEl().appendChild(d);logEl().scrollTop=1e9;return d}
+async function send(q){q=(q||'').trim();if(!q)return;QN++;const n=QN;addMsg('u',esc(q));const wait=addMsg('a','<div class="typing"><span></span><span></span><span></span></div>');try{const res=await fetch(FIRELENS_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});const d=await res.json();if(!res.ok)throw new Error(d.detail||('HTTP '+res.status));const cs=d.answer?.citations||[],docs=new Map((d.document_evidence||[]).map(x=>[x.record_identifier,x])),exps=new Map((d.experimental_evidence||[]).map(x=>[x.record_identifier,x]));let a=esc(d.answer?.answer||'No answer returned.').replace(/\[(chunk-[0-9a-f]+)\]/g,(m,id)=>{const i=cs.findIndex(c=>c.chunk_id===id);return i<0?'':`<sup>[${i+1}]</sup>`}).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');const cards=cs.map((c,i)=>{const x=docs.get(c.chunk_id);if(x)return `<div class="srcc"><div class="hd"><b>[${i+1}] ${esc(x.experiment||'NASA')} · ${esc(x.source_file||'')}</b><span class="fld">${x.page_number?'page '+x.page_number:''} <span class="stt ${esc(x.evidence_status||'')}">${esc(x.evidence_status||'')}</span></span></div><p class="doct">${esc(x.original_text||'')}</p></div>`;const e=exps.get(c.chunk_id);return e?`<div class="srcc"><div class="hd"><b>[${i+1}] ${esc(e.experiment||'')} · test ${esc(e.experiment_id||'')}</b><span class="stt ${esc(e.evidence_status||'')}">${esc(e.evidence_status||'')}</span></div><p>${esc(e.source_file||'')} · ${esc(e.source_locator||'')}</p><p>${esc(JSON.stringify(e.original_data?.measurement||{}))}</p></div>`:''}).join('');wait.querySelector('.bub').innerHTML=`<p class="note">${d.status==='grounded'?'Grounded answer · citations validated':'Insufficient evidence · citations validated'}</p>${a.split(/\n\n+/).map(p=>`<p>${p.replace(/\n/g,'<br>')}</p>`).join('')}${cards?`<button class="srctog" type="button">Show ${cs.length} citations</button><div class="srcs open">${cards}</div>`:''}${(d.warnings||[]).map(w=>`<p class="note">${esc(w)}</p>`).join('')}`}catch(e){wait.querySelector('.bub').innerHTML=`<p>FireLens backend unavailable: ${esc(e.message||String(e))}</p>`}logEl().scrollTop=1e9}
 const SUG=['Why does a flame go out when the air flow is very low?','Which gases put out a flame?','How does smoke behave in microgravity?','What did SAFFIRE test?','Do materials burn better in space?','How does oxygen affect flame spread?'];
-$('#sugg').innerHTML=SUG.map(s=>`<button type="button">${s}</button>`).join('');
-$$('#sugg button').forEach(b=>b.onclick=()=>{$('#q').value='';send(b.textContent)});
+function welcome(){logEl().innerHTML='';addMsg('a',`<p>Hi, I’m Ask NASA. I answer only from NASA PSI files on fire in microgravity, and I show the source for every answer.</p><div class="chips2">${SUG.map(x=>`<button type="button">${x}</button>`).join('')}</div>`);
+ $$('#log .chips2 button').forEach(b=>b.onclick=()=>send(b.textContent))}
+welcome();$('#newchat').onclick=welcome;
 $('#askform').onsubmit=e=>{e.preventDefault();send($('#q').value);$('#q').value=''};
-$('#kbline').textContent=`${Object.keys(PSIDOC).length} NASA PSI investigations · ${CHUNKS.length} passages · ${Object.values(PSIDOC).reduce((s,d)=>s+(d.p||[]).length,0)} linked publications`;
+$('#kbline').textContent=`${Object.keys(PSIDOC).length} NASA investigations · ${CHUNKS.length} passages`;
 function kbRender(){}
-{const pq=new URLSearchParams(location.search).get('q');if(pq)setTimeout(()=>send(pq),200)}
+/* ===== Experiments slider + detail pages ===== */
+let EF='';
+function erender(){const list=EXP.filter(e=>!EF||e.pil.includes(EF));
+ $('#erail').innerHTML=list.map((e,i)=>{const d=PSIDOC[e.psi]||{};return `<article class="ecard"><p class="ey">${e.pil.map(p=>GOAL[p][0]).join(' · ')}</p><h3>${e.n}</h3><p class="full">${e.full}</p><p>${e.facts[0]}</p><p>${e.facts[1]||''}</p>
+ <div class="acts"><button data-x="${e.k}">Open details</button><a href="${PSI(e.psi)}" target="_blank" rel="noopener">${e.psi} on NASA PSI ↗</a></div></article>`}).join('');
+ $$('#erail button[data-x]').forEach(b=>b.onclick=()=>openExp(b.dataset.x));$('#erail').scrollLeft=0}
+function openExp(k){const e=EXP.find(x=>x.k===k),d=PSIDOC[e.psi]||{};
+ const kv=[['Air flow',e.flow?(e.flow[0]===e.flow[1]?e.flow[0]:e.flow.join('–'))+' cm/s':'not listed'],['Oxygen',e.o2?e.o2.join('–')+' %':'not listed'],['Pressure',e.p?e.p.join('–')+' atm':'not listed'],['Platform',e.plat]];
+ const sec=(t,x,w)=>x?`<div class="dtile ${w?'wide':''}"><h4>${t}</h4><p>${x}</p></div>`:'';
+ $('#dbody').innerHTML=`<button class="dback" id="dback">‹ All experiments</button><div class="dhead"><h1 class="h1s">${e.n}</h1><p>${e.full}</p></div>
+ <div class="dgrid"><div class="dtile wide"><h4>Tested conditions</h4><div class="kv">${kv.map(([a,b])=>`<div><span>${a}</span><b>${b}</b></div>`).join('')}</div><p style="margin-top:14px">Materials: ${e.mats.map(m=>MATS[m]).join(', ')}</p></div>
+ ${sec('Objective',d.o,1)}${sec('Approach',d.a)}${sec('Hypothesis',d.h)}
+ <div class="dtile"><h4>Key facts</h4><ul>${e.facts.map(f=>`<li>${f}</li>`).join('')}</ul></div>
+ <div class="dtile"><h4>Publications</h4>${(d.p||[]).length?`<ul>${d.p.map(([t,doi])=>`<li>${doi?`<a href="https://doi.org/${doi}" target="_blank" rel="noopener">${t} ↗</a>`:t}</li>`).join('')}</ul>`:'<p>None listed in FireLens yet.</p>'}</div></div>
+ <div class="dacts"><button id="dask">Ask NASA about ${e.n}</button><a href="${PSI(e.psi)}" target="_blank" rel="noopener">Open ${e.psi} on NASA PSI ↗</a></div>`;
+ $('#dback').onclick=()=>show('exps');$('#dask').onclick=()=>{show('ask');send('What did '+e.n+' test?')};show('detail')}
+$$('#efilt button').forEach(b=>b.onclick=()=>{EF=b.dataset.f;$$('#efilt button').forEach(x=>x.classList.toggle('on',x===b));erender()});
+function makeSlider(r,prev,next){let down=false,sx=0,sl=0,moved=false;
+ r.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse')return;down=true;moved=false;sx=e.clientX;sl=r.scrollLeft});
+ addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-sx;if(Math.abs(dx)>4){moved=true;r.classList.add('drag')}r.scrollLeft=sl-dx});
+ addEventListener('pointerup',()=>{if(!down)return;down=false;setTimeout(()=>r.classList.remove('drag'),0)});
+ r.addEventListener('wheel',e=>{if(Math.abs(e.deltaY)<=Math.abs(e.deltaX))return;const end=(e.deltaY>0&&r.scrollLeft+r.clientWidth>=r.scrollWidth-1)||(e.deltaY<0&&r.scrollLeft<=0);if(end)return;r.scrollLeft+=e.deltaY;e.preventDefault()},{passive:false});
+ r.addEventListener('keydown',e=>{if(e.key==='ArrowRight')r.scrollBy({left:360,behavior:'smooth'});if(e.key==='ArrowLeft')r.scrollBy({left:-360,behavior:'smooth'})});
+ if(prev)prev.onclick=()=>r.scrollBy({left:-300,behavior:'smooth'});if(next)next.onclick=()=>r.scrollBy({left:300,behavior:'smooth'})}
+makeSlider($('#erail'),$('#eprev'),$('#enext'));makeSlider($('#chips'),$('#cprev'),$('#cnext'));
+erender();
+/* ===== Data filter: experiments + real test points that match a set of condition ranges ===== */
+const FP=[];/* unified NASA test points */
+[[10,'c'],[5,'c'],[10,'c'],[5,'c'],[22,'c'],[11,'c'],[5,'c'],[3,'c'],[1.5,'c'],[1,'c'],[9,'o'],[9,'c'],[44,'c'],[10,'o'],[20,'o'],[44,'o'],[20,'c'],[10,'o'],[6,'o'],[4,'o'],[2,'o'],[1.5,'o'],[1,'o']].forEach(([f,d])=>FP.push({k:'BASS',m:'sibal',f,o:null,p:null,dir:d==='c'?'concurrent':'opposed',gas:'none',r:'burned',src:'BASS paper, Table I'}));
+B2.forEach(p=>FP.push({k:'BASS2',m:p.m,f:p.f,o:p.o,p:null,dir:null,gas:p.o<21?'N2':'none',n:p.n,r:`${p.n} test${p.n>1?'s':''}`,src:'Experimental table'}));
+SAFP.forEach(p=>FP.push({k:p.e==='SAFFIRE-I'?'SAF1':'SAF2',m:p.m,f:p.f,o:p.o,p:null,dir:'concurrent',gas:'none',r:p.r,src:'Experimental table'}));
+FP.push({k:'SAF1',m:'sibal',f:20,o:21.5,p:null,dir:'opposed',gas:'none',r:'burned 70 s',src:'Experimental table'});
+FP.push({k:'SAF3',m:'sibal',f:30,o:null,p:null,dir:'concurrent',gas:'none',r:'tested',src:'Experimental table'},{k:'SAF3',m:'sibal',f:30,o:null,p:null,dir:'opposed',gas:'none',r:'tested',src:'Experimental table'});
+FX.forEach(p=>FP.push({k:'FLEX',m:p.m,f:0,o:p.o,p:p.p,dir:null,gas:p.c?'CO2':p.h?'He':(p.o<21?'N2':'none'),gv:p.c||p.h||0,r:`${p.C} completion · ${p.E} extinction · ${p.D} disruption`,src:'Experimental table'}));
+['teflon','kapton','silicone','lampwick','dbp'].forEach(m=>[[5,1],[5,1],[5,20],[10,1]].forEach(([f,a])=>FP.push({k:'SAME',m,f,o:null,p:null,dir:null,gas:'none',r:`smoke aging ${a} min`,src:'Experimental table'})));
+const EXSRC={BASS:[['Science document: Ferkul et al. 2013, Flammability Aspects of Fabric…',PSI('PSI-26')]]};
+const FG=[['micro','Microgravity'],['earth','Earth 1 g'],['moon','Moon'],['mars','Mars']],FD=[['concurrent','Same direction'],['opposed','Against flow']],FGAS=[['none','None'],['N2','Nitrogen'],['CO2','CO₂'],['He','Helium']];
+const ck=(id,list,name)=>$('#'+id).innerHTML=list.map(([v,l])=>`<label><input type="checkbox" name="${name}" value="${v}">${l}</label>`).join('');
+ck('fmats',Object.entries(MATS),'m');ck('fgrav',FG,'g');ck('fdir',FD,'d');ck('fgas',FGAS,'s');
+const num=id=>{const v=$('#'+id).value;return v===''?null:+v};
+const vals=n=>[...document.querySelectorAll(`#fform input[name="${n}"]:checked`)].map(i=>i.value);
+const ov=(r,a,b)=>r&&(a==null||r[1]>=a)&&(b==null||r[0]<=b);
+const inr=(v,a,b)=>v!=null&&(a==null||v>=a)&&(b==null||v<=b);
+const rs=(a,b,u)=>`${a??'any'}–${b??'any'} ${u}`;
+function ftest(){
+ const F={o:[num('o2min'),num('o2max')],f:[num('flmin'),num('flmax')],p:[num('prmin'),num('prmax')],m:vals('m'),g:vals('g'),d:vals('d'),s:vals('s'),strict:!$('#fstrict').checked};
+ const any=F.o.some(x=>x!=null)||F.f.some(x=>x!=null)||F.p.some(x=>x!=null)||F.m.length||F.g.length||F.d.length||F.s.length;
+ const out=[];
+ for(const e of EXP){const why=[];let ok=true;
+  if(F.m.length){const hit=e.mats.filter(m=>F.m.includes(m));if(!hit.length){ok=false}else why.push(['ok','materials: '+hit.map(m=>MATS[m].split(' (')[0]).join(', ')])}
+  const rng=(lab,r,a,b,u)=>{if(a==null&&b==null)return;if(!r){if(F.strict)ok=false;else why.push(['',lab+' not listed'])}else if(ov(r,a,b))why.push(['ok',`${lab} ${r[0]===r[1]?r[0]:r.join('–')} ${u}`]);else ok=false};
+  rng('O₂',e.o2,F.o[0],F.o[1],'%');rng('air flow',e.flow,F.f[0],F.f[1],'cm/s');rng('pressure',e.p,F.p[0],F.p[1],'atm');
+  if(F.g.length){if(F.g.includes('micro'))why.push(['ok','microgravity']);else if(F.g.includes('earth')&&e.g1)why.push(['ok','1-g comparison']);else ok=false}
+  if(F.d.length){if(e.dir&&e.k!=='FLEX')why.push(['ok','flow direction tested']);else ok=false}
+  if(F.s.length){const hit=e.dil.filter(x=>F.s.includes(x));if(hit.length)why.push(['ok','gas: '+hit.join(', ')]);else ok=false}
+  if(!ok)continue;
+  const pts=FP.filter(t=>t.k===e.k&&(!F.m.length||F.m.includes(t.m))&&(F.o.every(x=>x==null)||(t.o==null?!F.strict:inr(t.o,...F.o)))&&(F.f.every(x=>x==null)||inr(t.f,...F.f))&&(F.p.every(x=>x==null)||(t.p==null?!F.strict:inr(t.p,...F.p)))&&(!F.d.length||!t.dir||F.d.includes(t.dir))&&(!F.s.length||F.s.includes(t.gas)));
+  out.push({e,why,pts})}
+ out.sort((a,b)=>b.pts.length-a.pts.length);
+ if(!any){$('#fres').innerHTML='<div class="fempty">Set at least one condition on the left. Example: oxygen 12–15 %, air flow 13–17 cm/s.</div>';return}
+ const ntp=out.reduce((s,x)=>s+x.pts.length,0);
+ $('#fres').innerHTML=`<div class="fhd"><h3>${out.length} ${out.length===1?'experiment matches':'experiments match'}</h3><span>${ntp} NASA test points inside your ranges</span></div>`+(out.length?out.map(({e,why,pts})=>{const d=PSIDOC[e.psi]||{};
+  const rows=pts.slice(0,8).map(t=>`<tr><td>${MATS[t.m].split(' (')[0]}</td><td>${t.f??'–'}</td><td>${t.o??'n/l'}</td><td>${t.p??'cabin'}</td><td>${t.dir?(t.dir==='concurrent'?'same':'against'):'–'}</td><td>${t.r}</td></tr>`).join('');
+  const res=[[`${e.psi} on NASA PSI (description, experimental table, data files)`,PSI(e.psi)],...(EXSRC[e.k]||[]),...(d.p||[]).filter(x=>x[1]).map(([t,doi])=>[t,'https://doi.org/'+doi])];
+  return `<div class="fr ${pts.length?'':'part'}"><div class="t"><h4>${e.n}</h4><span class="full">${e.full} · ${e.plat}</span></div>
+  <div class="why2">${why.map(([c,t])=>`<span class="${c}">${t}</span>`).join('')}</div>
+  ${pts.length?`<table class="pts"><tr><th>Material</th><th>Air cm/s</th><th>O₂ %</th><th>Pressure atm</th><th>Direction</th><th>Result</th></tr>${rows}</table>${pts.length>8?`<p class="more2">+ ${pts.length-8} more test points</p>`:''}`:'<p class="more2">The experiment’s tested range overlaps yours, but no individual test point is loaded in FireLens for these exact values.</p>'}
+  <div class="res2"><b>Resources</b>${res.map(([t,u])=>`<a href="${u}" target="_blank" rel="noopener">${t} ↗</a>`).join('')}</div></div>`}).join(''):'<div class="fempty">No NASA experiment covers all of these conditions. Widen a range or remove a filter.</div>')}
+$('#fform').addEventListener('input',ftest);$('#fform').addEventListener('change',ftest);
+$('#freset').onclick=()=>{$('#fform').reset();ftest()};ftest();
 
 </script></body></html>

@@ -9,8 +9,8 @@ import uvicorn
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Serve the FireLens API.")
-    parser.add_argument("--host", default="127.0.0.1")
-    parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--host", default="0.0.0.0")
+    parser.add_argument("--port", type=int, default=int(__import__("os").environ.get("PORT", "8000")))
     args = parser.parse_args()
     uvicorn.run("src.api.app:app", host=args.host, port=args.port)
     return 0
