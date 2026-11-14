@@ -1,0 +1,95 @@
+from fastapi.testclient import TestClient
+
+from src.api import create_app
+from src.explore.service import ExploreInputError
+
+
+class FakeResponse:
+    def to_dict(self):
+        return {"question": "q", "status": "insufficient_evidence"}
+
+
+class FakeExperimental:
+    def records(self):
+        class R:
+            def __init__(self, i):
+                self.i = i
+
+            def to_dict(self):
+                return {"record_id": str(self.i)}
+
+        return [R(i) for i in range(5)]
+
+
+class FakeService:
+    def __init__(self, error=None):
+        self.error = error
+        self.experimental_data = FakeExperimental()
+
+    def explore(self, request):
+        if self.error:
+            raise self.error
+        return FakeResponse()
+
+
+def client(error=None):
+    return TestClient(create_app(FakeService(error)))
+
+
+def test_health():
+    assert client().get("/health").json() == {"status": "ok"}
+
+
+def test_explore_ok():
+    response = client().post("/api/explore", json={"question": "q", "conditions": {"fuel": "methanol"}})
+    assert response.status_code == 200
+    assert response.json()["question"] == "q"
+
+
+def test_explore_bad_shape_is_422():
+    assert client().post("/api/explore", json={"question": "q", "bogus": 1}).status_code == 422
+
+
+def test_explore_input_error_is_422():
+    assert client(ExploreInputError("bad")).post("/api/explore", json={"question": "q"}).status_code == 422
+
+
+def test_explore_pipeline_failure_is_502():
+    assert client(RuntimeError("boom")).post("/api/explore", json={"question": "q"}).status_code == 502
+
+
+def test_experiments_pagination():
+    body = client().get("/api/experiments?limit=2&offset=1").json()
+    assert body["total"] == 5 and len(body["records"]) == 2
+    assert client().get("/api/experiments?limit=0").status_code == 422
+
+
+def test_question_only_chat_request_gets_inferred_conditions():
+    seen = {}
+
+    class Spy(FakeService):
+        def explore(self, request):
+            seen["conditions"] = request.conditions
+            return FakeResponse()
+
+    c = TestClient(create_app(Spy()))
+    assert c.post("/api/explore", json={"question": "burn times for methanol at 21% oxygen"}).status_code == 200
+    assert seen["conditions"] == {"fuel": "methanol", "oxygen_concentration": 21.0}
+
+
+def test_explicit_conditions_are_not_overridden():
+    seen = {}
+
+    class Spy(FakeService):
+        def explore(self, request):
+            seen["conditions"] = request.conditions
+            return FakeResponse()
+
+    c = TestClient(create_app(Spy()))
+    c.post("/api/explore", json={"question": "methanol", "conditions": {"fuel": "heptane"}})
+    assert seen["conditions"] == {"fuel": "heptane"}
+
+
+def test_index_page_is_served():
+    r = client().get("/")
+    assert r.status_code == 200 and "FireLens" in r.text

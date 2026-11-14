@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+import re
+from dataclasses import dataclass, replace
 from typing import Any, Callable
 
 from src.experimental_data.matching import MatchResult
@@ -128,12 +129,41 @@ def _finite_number(value: object, field: str) -> float:
     return float(value)
 
 
-def _planned_warning(result: MatchResult | None) -> tuple[str, ...]:
-    if result is None or not result.matches:
+_OBSERVED_INTENT = re.compile(
+    r"\b(observed|measured|measurements?|actual|outcomes?|results?|burn(?:ing)? (?:times?|rates?)|"
+    r"extinction diameters?|test[- ]end)\b",
+    re.IGNORECASE,
+)
+_STATUS_ORDER = {"observed": 0, "interpreted": 1}
+
+
+def prefer_observed(question: str, result: MatchResult | None) -> MatchResult | None:
+    """Put measured records first when the question asks for observed results.
+
+    The matcher ranks by match quality first, so many planned exact matches can
+    push observed close matches out of the bounded prompt. Only the order
+    changes; no record is added, removed, or relabelled.
+    """
+
+    if result is None or not result.matches or not _OBSERVED_INTENT.search(question):
+        return result
+    if re.search(r"\b(planned|test plan|proposed)\b", question, re.IGNORECASE):
+        return result
+    ordered = sorted(
+        result.matches,
+        key=lambda match: _STATUS_ORDER.get(match.record.evidence_status, 2),
+    )
+    return replace(result, matches=tuple(ordered))
+
+
+def _planned_warning(result: MatchResult | None, limit: int) -> tuple[str, ...]:
+    if result is None:
         return ()
-    if any(match.record.evidence_status == "planned" for match in result.matches):
+    returned = matching_experimental_matches(result)[:limit]
+    if any(match.record.evidence_status == "planned" for match in returned):
         return (
-            "Structured FLEX matches are planned test conditions, not observations or experimental results.",
+            "Matches with evidence_status 'planned' are proposed test conditions, "
+            "not observations or experimental results.",
         )
     return ()
 
@@ -152,7 +182,7 @@ def condition_availability(
                 "status": "UNAVAILABLE",
                 "available_record_count": 0,
                 "unit": None,
-                "reason": "This parameter is not represented in the structured FLEX dataset.",
+                "reason": "This parameter is not represented in the structured experiment dataset.",
             }
             continue
         if result is None or not result.matches:
@@ -164,7 +194,9 @@ def condition_availability(
             }
             continue
         matches_with_value = [
-            match for match in result.matches if getattr(match.record, field, None) is not None
+            match for match in result.matches
+            if getattr(match.record, field, None) is not None
+            or (field == "oxygen_concentration" and match.record.original_values.get("oxygen_concentration_range"))
         ]
         availability[field] = {
             "status": "AVAILABLE" if matches_with_value else "UNAVAILABLE",
@@ -239,7 +271,7 @@ class ExploreService:
         # independently, with no score arithmetic against document similarity.
         if conditions:
             matcher = getattr(self.experimental_data, "match_conditions", self.experimental_data)
-            match_result = matcher(normalized.values)
+            match_result = prefer_observed(request.question, matcher(normalized.values))
         else:
             match_result = None
 
@@ -289,17 +321,30 @@ class ExploreService:
             else "insufficient"
         )
 
-        warnings = list(_planned_warning(match_result))
+        warnings = list(_planned_warning(match_result, self.config.max_condition_evidence))
         if match_result is not None and not match_result.matches:
             warnings.append("No structured condition records were available to compare.")
-        if match_result is not None and any(
-            parameter.match_type == "parameter_unavailable"
-            for match in match_result.matches
-            for parameter in match.parameters
-        ):
-            warnings.append(
-                "One or more requested conditions are unavailable in the structured FLEX test-plan data."
+        returned_matches = matching_experimental_matches(match_result)[: self.config.max_condition_evidence]
+        if returned_matches:
+            unavailable_everywhere = sorted(
+                {
+                    parameter.parameter
+                    for parameter in returned_matches[0].parameters
+                    if parameter.match_type == "parameter_unavailable"
+                }
+                & set.intersection(
+                    *(
+                        {p.parameter for p in match.parameters if p.match_type == "parameter_unavailable"}
+                        for match in returned_matches
+                    )
+                )
             )
+            if unavailable_everywhere:
+                warnings.append(
+                    "Requested condition(s) not available in the returned structured records: "
+                    + ", ".join(unavailable_everywhere)
+                    + "."
+                )
         unavailable_fields = [
             name for name, item in availability.items() if item["status"] == "UNAVAILABLE"
         ]

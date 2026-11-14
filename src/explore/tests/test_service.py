@@ -134,7 +134,7 @@ def test_unified_service_preserves_independent_scores_and_planned_status():
     assert response.condition_availability["gravity"]["status"] == "UNAVAILABLE"
     assert response.evidence_mode == "combined"
     assert response.status == response.answer.status
-    assert any("planned test conditions" in warning for warning in response.warnings)
+    assert any("'planned' are proposed test conditions" in warning for warning in response.warnings)
     assert "0.61" not in str(experimental.to_dict())
     assert "planned conditions are not observed results" in llm_provider.calls[0][1]
 
@@ -167,3 +167,46 @@ def test_frontend_response_is_bounded_and_machine_readable():
     assert payload["status_counts"]["exact_match"] == 30
     assert payload["matches_truncated"] is True
     assert len(payload["matches"]) == 5
+
+
+def _record(status, test_id):
+    from dataclasses import replace
+    return replace(planned_record(), record_id=f"{status}-{test_id}", experiment_id=test_id, evidence_status=status)
+
+
+def _match_result(*pairs):
+    matches = tuple(
+        ExperimentMatch(_record(status, test_id), match_type, ())
+        for status, test_id, match_type in pairs
+    )
+    return MatchResult({"fuel": "methanol"}, {}, matches[0].match_type, matches)
+
+
+def test_observed_records_move_ahead_of_planned_when_question_asks_for_observed_results():
+    from src.explore.service import prefer_observed
+
+    result = _match_result(("planned", "1", "exact_match"), ("planned", "2", "exact_match"),
+                           ("observed", "3", "close_match"))
+    reordered = prefer_observed("What were the observed burn times?", result)
+    assert [m.record.experiment_id for m in reordered.matches] == ["3", "1", "2"]
+    assert [m.match_type for m in reordered.matches] == ["close_match", "exact_match", "exact_match"]
+    assert {m.record.evidence_status for m in reordered.matches} == {"observed", "planned"}
+
+
+def test_ranking_is_unchanged_for_plan_questions_and_neutral_questions():
+    from src.explore.service import prefer_observed
+
+    result = _match_result(("planned", "1", "exact_match"), ("observed", "3", "close_match"))
+    assert prefer_observed("Which conditions are in the test plan?", result) is result
+    assert prefer_observed("Tell me about methanol", result) is result
+    assert prefer_observed("planned observed burn times", result) is result
+
+
+def test_planned_warning_only_when_planned_records_are_returned():
+    from src.explore.service import _planned_warning
+
+    observed_only = _match_result(("observed", "3", "exact_match"))
+    mixed = _match_result(("observed", "3", "exact_match"), ("planned", "1", "exact_match"))
+    assert _planned_warning(observed_only, 25) == ()
+    assert _planned_warning(mixed, 25) != ()
+    assert _planned_warning(mixed, 1) == ()

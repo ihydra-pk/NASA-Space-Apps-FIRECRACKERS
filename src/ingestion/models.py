@@ -15,7 +15,7 @@ DocumentType = Literal[
     "unknown",
 ]
 EvidenceStatus = Literal["planned", "observed", "interpreted", "metadata"]
-FileType = Literal["pdf", "docx"]
+FileType = Literal["pdf", "docx", "md"]
 
 
 @dataclass(frozen=True, slots=True)

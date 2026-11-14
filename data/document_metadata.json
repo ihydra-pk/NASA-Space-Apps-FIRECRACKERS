@@ -10,5 +10,117 @@
     "evidence_status": "metadata",
     "source_url": null,
     "source_accession": null
+  },
+  "flex/PSI-69_FLEX_summary.md": {
+    "document_type": "experiment_metadata",
+    "evidence_status": "metadata",
+    "experiment": "FLEX",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-69",
+    "source_accession": "PSI-69"
+  },
+  "flex/PSI-68_FLEX-2_summary.md": {
+    "document_type": "experiment_metadata",
+    "evidence_status": "metadata",
+    "experiment": "FLEX-2",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-68",
+    "source_accession": "PSI-68"
+  },
+  "bass/PSI-25_BASS-II_summary.md": {
+    "document_type": "experiment_metadata",
+    "evidence_status": "metadata",
+    "experiment": "BASS-II",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+    "source_accession": "PSI-25"
+  },
+  "bass/PSI-26_BASS_summary.md": {
+    "document_type": "experiment_metadata",
+    "evidence_status": "metadata",
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "saffire/PSI-98_SAFFIRE-I_summary.md": {
+    "document_type": "experiment_metadata",
+    "evidence_status": "metadata",
+    "experiment": "SAFFIRE-I",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+    "source_accession": "PSI-98"
+  },
+  "saffire/PSI-99_SAFFIRE-II_summary.md": {
+    "document_type": "experiment_metadata",
+    "evidence_status": "metadata",
+    "experiment": "SAFFIRE-II",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-99",
+    "source_accession": "PSI-99"
+  },
+  "saffire/PSI-100_SAFFIRE-III_summary.md": {
+    "document_type": "experiment_metadata",
+    "evidence_status": "metadata",
+    "experiment": "SAFFIRE-III",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-100",
+    "source_accession": "PSI-100"
+  },
+  "bass/BASS-II_Science_Requirements.pdf": {
+    "document_type": "test_plan",
+    "evidence_status": "planned",
+    "experiment": "BASS-II",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+    "source_accession": "PSI-25"
+  },
+  "bass/BASS-II_ReadMe.docx": {
+    "document_type": "data_description",
+    "evidence_status": "metadata",
+    "experiment": "BASS-II",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+    "source_accession": "PSI-25"
+  },
+  "bass/BASS_Science_Requirements.pdf": {
+    "document_type": "test_plan",
+    "evidence_status": "planned",
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "bass/BASS_Data_Layout.pdf": {
+    "document_type": "data_description",
+    "evidence_status": "metadata",
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "bass/BASS_Overview_of_ISS_Results.pdf": {
+    "document_type": "publication",
+    "evidence_status": "interpreted",
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "bass/BASS_Flammability_Aspects_of_Fabric_2013.pdf": {
+    "document_type": "publication",
+    "evidence_status": "interpreted",
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "bass/BASS_Cotton_Fiberglass_Fabric_ASGSR2012.pdf": {
+    "document_type": "publication",
+    "evidence_status": "interpreted",
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "saffire/SAFFIRE_Objectives_Development_Status.pdf": {
+    "document_type": "publication",
+    "evidence_status": "interpreted",
+    "experiment": "SAFFIRE",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+    "source_accession": "PSI-98"
+  },
+  "saffire/SAFFIRE-I_and_III_Readme.docx": {
+    "document_type": "data_description",
+    "evidence_status": "metadata",
+    "experiment": "SAFFIRE",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+    "source_accession": "PSI-98"
   }
 }

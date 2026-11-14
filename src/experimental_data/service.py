@@ -10,6 +10,7 @@ from .loaders import discover_sources, load_docx_metadata, load_pdf
 from .matching import MatchResult, match_experiments
 from .models import ExperimentRecord
 from .store import ExperimentStore
+from .tables import discover_tables, load_table
 from .validation import validate_record
 
 
@@ -72,6 +73,33 @@ class ExperimentalDataService:
                 processed.append(relative)
             except Exception as exc:
                 errors.append(f"{relative}: {type(exc).__name__}: {exc}")
+
+        structured_dir = self.config.resolve(self.config.structured_dir).resolve()
+        tables = discover_tables(structured_dir)
+        download_dir = self.config.resolve(self.config.psi_download_dir).resolve()
+        if download_dir.exists():
+            tables.extend(
+                path for path in download_dir.rglob("PSI-68_*.csv")
+                if "Experimental table" in path.parts
+            )
+        tables = sorted(set(tables), key=lambda path: path.as_posix().casefold())
+        for table in tables:
+            relative = table.relative_to(self.config.project_root.resolve()).as_posix()
+            try:
+                records, diagnostics = load_table(table, source_file=relative)
+                discovered_count += diagnostics.discovered
+                rejected.extend(f"{relative}: {item}" for item in diagnostics.rejected)
+                issues.extend(f"{relative}: {item}" for item in diagnostics.missing_fields)
+                for record in records:
+                    problems = validate_record(record)
+                    if problems:
+                        rejected.append(f"{relative} [{record.source_locator}]: {'; '.join(problems)}")
+                    else:
+                        valid.append(record)
+                processed.append(relative)
+            except Exception as exc:
+                errors.append(f"{relative}: {type(exc).__name__}: {exc}")
+        sources = [*sources, *tables]
 
         # A failed source is not deleted from a prior successful store run.
         if processed:

@@ -13,7 +13,10 @@ The current original sources are:
 | --- | --- | --- | --- |
 | `data/documents/flex/FLEX_Test_Plan.pdf` | PDF pages; FLEX proposed test matrix Tables 6–12 and descriptive text | Numbered matrix rows: test number, fuel formula, pressure, oxygen mole fraction; suppressant and its mole fraction for Tables 8–12; flow specified in the table preamble; fiber support when stated | `planned` only |
 | `data/documents/flex/FLEX DoD.docx` | Word document; description of FLEX data-record organization and file types | One `source_metadata` record, not fabricated test rows | `metadata` |
+| `data/psi-download/PSI-68/Experimental table/PSI-68_Experimental table_Flex2.csv` | FLEX-2 sample/design matrix with ranges and alternatives, not individual tests | One source-faithful planned design row per sample description; alternatives remain text in `measurement.design_conditions` | `planned` |
 
+The PSI-68 FLEX-2 design CSV is already present under `data/psi-download/` and
+is ingested directly from that local copy; ingestion does not download files.
 The project also contains generated `data/processed/`, `data/chunks/`, and
 `data/embeddings/` JSONL artifacts derived from those two sources. They preserve
 document text/chunks/vectors rather than independently reported test-result
@@ -33,23 +36,27 @@ equality after whitespace normalization. Fiber support retains the source
 phrase/value (`none` or the stated support type) rather than being inferred for
 tables where it is omitted.
 
-The project has no separate observed experiment-level measurement file. The
-test plan describes measurement requirements (including ambient temperature
-and pressure), outcomes such as extinction, and proposed test procedures, but
-does not supply per-test observed temperature, measurement series, or results.
-Accordingly, no `observed_result`/measurement values are populated and no plan
-row is labeled observed. The DOCX describes external raw/analyzed TXT records,
-videos, and images (and names record groups), but those assets are not present
-in this project's data directories. It also supplies no row-level experiment
-conditions. NASA URL/accession is null in the project metadata, and the planned
-test matrix is stated to be subject to change during the experiment.
+Observed per-test tables downloaded from NASA PSI live in `data/structured/`
+(`PSI-69` FLEX, `PSI-25` BASS-II, `PSI-98`/`PSI-99` SAFFIRE-I/II). They are parsed
+by `tables.py` into `observed` records whose `measurement` keeps the source
+columns (for example FLEX burn time, burning rate, visible flame extinction
+diameter and the `Test end` outcome; BASS-II initial/final O2, CO and CO2;
+SAFFIRE burn time, burn/spread length and flow direction). Values are taken as
+written; blank cells stay absent. Ranges such as `21.5 - 21.7` leave the
+numeric point condition null, preserve normalized bounds in
+`original_values.oxygen_concentration_range`, and match requests inside that
+range without being represented as a single measurement.
+Rows with no outcome values (original BASS and SAFFIRE-III) are `metadata`, not
+`observed`. The FLEX test plan PDF still supplies `planned` rows, and a planned
+row is never relabeled observed. Fuel matching also accepts the requested fuel
+as a whole word inside a material description (`PMMA` matches
+`100 micron PMMA film 2 cm wide`).
 
-Fields not currently available per test and therefore not treated as
-matchable: gravity, temperature, observed outcome, actual test date/time,
-uncertainties, and calibrated measurements. Gravity/environment appears in
-document prose, not as a per-row condition. The plan specifies temperature
-measurement accuracy in prose, not actual temperature values. These omissions
-remain null/unavailable; the component does not synthesize values from prose.
+The test plan itself, and the DOCX, still describe measurement requirements and
+external TXT/video assets that are not in this project. Fields not available per
+test and therefore not matchable: gravity, temperature, time series,
+uncertainties and calibrated measurements. These stay null/unavailable; the
+component does not synthesize values from prose.
 
 ## Record and provenance behavior
 
@@ -99,8 +106,9 @@ are explicitly `parameter_unavailable`. A record-level `partial_match` means
 some requested parameters matched but others did not or were unavailable.
 No-match records remain in results so the caller can inspect every comparison.
 
-There is no physics model or inference: matching identifies existing planned
-conditions only. It cannot answer what a real experiment observed.
+There is no physics model or inference: matching identifies stored `planned`
+conditions and `observed` NASA table rows. It does not predict what an
+unrecorded experiment would do.
 
 ## Tests
 

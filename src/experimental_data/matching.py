@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Literal
 
@@ -51,7 +52,12 @@ def _categorical_equal(field: str, requested: object, actual: object) -> bool:
     if field == "fuel":
         requested_value = normalize_fuel(str(requested))
         actual_value = normalize_fuel(str(actual)) if actual is not None else None
-        return normalize_categorical(requested_value) == normalize_categorical(actual_value)
+        wanted, found = normalize_categorical(requested_value), normalize_categorical(actual_value)
+        if wanted == found:
+            return True
+        # Source material descriptions such as "100 micron PMMA film 2 cm wide"
+        # contain the requested fuel as whole words.
+        return bool(wanted and found and re.search(rf"(?<!\w){re.escape(wanted)}(?!\w)", found))
     return normalize_categorical(str(requested)) == normalize_categorical(str(actual))
 
 
@@ -77,6 +83,27 @@ def match_experiments(
                 ))
                 continue
             actual = getattr(record, field)
+            actual_range = (
+                record.original_values.get(f"{field}_range")
+                if field == "oxygen_concentration" and actual is None
+                else None
+            )
+            if actual_range and field in NUMERIC_FIELDS:
+                if not isinstance(requested, (float, int)) or isinstance(requested, bool):
+                    details.append(ParameterMatch(field, "parameter_unavailable", requested, actual_range,
+                                                  record.units.get(field), message="Requested numeric parameter must be a number."))
+                    continue
+                low, high = (float(v) for v in actual_range)
+                value = float(requested)
+                inside = low <= value <= high
+                tolerance = tolerances.get(field, 0.0)
+                distance = 0.0 if inside else min(abs(value - low), abs(value - high))
+                status = "close_match" if inside or (tolerance > 0 and distance <= tolerance) else "no_match"
+                details.append(ParameterMatch(
+                    field, status, requested, actual_range, record.units.get(field), distance, tolerance,
+                    "Request falls within source-reported range." if inside else None,
+                ))
+                continue
             if actual is None:
                 details.append(ParameterMatch(
                     field, "parameter_unavailable", requested, None,
@@ -120,6 +147,14 @@ def match_experiments(
         parameter_results.append(ExperimentMatch(record, overall, tuple(details)))
 
     rank = {"exact_match": 0, "close_match": 1, "partial_match": 2, "parameter_unavailable": 3, "no_match": 4}
-    parameter_results.sort(key=lambda result: (rank[result.match_type], result.record.record_id))
+    # Within a match type, measured outcomes outrank proposed conditions.
+    status_rank = {"observed": 0, "interpreted": 1, "planned": 2}
+    parameter_results.sort(
+        key=lambda result: (
+            rank[result.match_type],
+            status_rank.get(result.record.evidence_status, 3),
+            result.record.record_id,
+        )
+    )
     overall = parameter_results[0].match_type if parameter_results else "no_match"
     return MatchResult(dict(requested_conditions), tolerances, overall, tuple(parameter_results))

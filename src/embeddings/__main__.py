@@ -27,6 +27,11 @@ def main() -> int:
     parser.add_argument(
         "--batch-size", type=int, default=int(os.environ.get("FIRELENS_EMBEDDING_BATCH_SIZE", "16"))
     )
+    parser.add_argument(
+        "--skip-existing",
+        action="store_true",
+        help="Do not re-embed files whose chunk IDs already have embeddings in the output.",
+    )
     args = parser.parse_args()
 
     default_model, default_dimension = {
@@ -53,6 +58,7 @@ def main() -> int:
                 batch_size=args.batch_size,
             ),
             provider=provider,
+            skip_existing=args.skip_existing,
         )
     except ValueError as exc:
         parser.error(str(exc))
