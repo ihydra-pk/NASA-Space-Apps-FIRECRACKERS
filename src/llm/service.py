@@ -9,7 +9,7 @@ from typing import Any
 from src.rag.models import EvidenceItem, RAGContext
 
 from .config import LLMConfig
-from .models import AnswerCitation, AnswerResponse, EvidenceReference
+from .models import AnswerCitation, AnswerFinding, AnswerResponse, EvidenceReference
 from .policy import EvidencePolicy
 from .providers import LLMProvider, create_llm_provider
 
@@ -51,92 +51,178 @@ def _reference(item: EvidenceItem) -> EvidenceReference:
     )
 
 
+_STATUSES = ("grounded", "partial", "insufficient_evidence")
+_OBSERVATION_CLAIM = re.compile(
+    r"\b(?:NASA|FLEX|the experiments?|the tests?|the results)\s+"
+    r"(?:observed|measured|found|demonstrated|showed|recorded)\b",
+    re.IGNORECASE,
+)
+# Statuses whose sources are known not to report results. `unknown` is only
+# unlabelled, so it can support an observation claim.
+_NOT_RESULTS = frozenset({"planned", "metadata"})
+# Real chunk IDs look like this; one that was not supplied is invented.
+_CHUNK_ID_SHAPE = re.compile(r"\bchunk-[0-9a-f]{8,}\b")
+_BRACKETS = re.compile(r"\[([^\[\]]+)\]")
+_SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
+
+
+def _text_field(parsed: dict[str, Any], key: str, *, required: bool) -> str:
+    value = parsed.get(key)
+    if value is None and not required:
+        return ""
+    if not required and isinstance(value, list) and all(isinstance(part, str) for part in value):
+        # Models sometimes write limitations as a list of points.
+        value = "\n".join(part.strip() for part in value if part.strip())
+    if not isinstance(value, str) or (required and not value.strip()):
+        raise LLMResponseError(f"LLM response {key} must be a {'non-empty ' if required else ''}string")
+    return value.strip()
+
+
+def _cited_ids(text: str, supplied: dict[str, EvidenceItem]) -> list[str]:
+    """Supplied chunk IDs cited in square brackets, in order of first appearance.
+
+    ``[chunk-a]`` and ``[chunk-a, chunk-b]`` both count; the web page renders
+    bracketed IDs as citation links.
+    """
+
+    cited = [
+        token
+        for group in _BRACKETS.findall(text)
+        for token in re.split(r"[,;\s]+", group)
+        if token in supplied
+    ]
+    return list(dict.fromkeys(cited))
+
+
+def _reject_invented_ids(text: str, supplied: dict[str, EvidenceItem], *, where: str) -> None:
+    invented = [token for token in _CHUNK_ID_SHAPE.findall(text) if token not in supplied]
+    if invented:
+        raise LLMResponseError(f"{where} references chunk_id {invented[0]!r} not present in supplied RAGContext")
+
+
+def _check_observation_claim(
+    text: str, chunk_ids: list[str] | tuple[str, ...], supplied: dict[str, EvidenceItem], *, where: str
+) -> None:
+    if not _OBSERVATION_CLAIM.search(text):
+        return
+    not_results = sorted({supplied[chunk_id].evidence_status for chunk_id in chunk_ids} & _NOT_RESULTS)
+    if not_results:
+        raise LLMResponseError(
+            f"{where} claims an observation but cites {' and '.join(not_results)} evidence; planned "
+            "conditions and metadata are not observed results. Describe them as planned or as metadata."
+        )
+
+
+def _findings(raw_findings: Any, supplied: dict[str, EvidenceItem]) -> tuple[AnswerFinding, ...]:
+    if raw_findings is None:
+        return ()
+    if not isinstance(raw_findings, list):
+        raise LLMResponseError("LLM response findings must be a JSON array")
+    findings: list[AnswerFinding] = []
+    for index, raw in enumerate(raw_findings, start=1):
+        if not isinstance(raw, dict):
+            raise LLMResponseError(f"finding {index} must be a JSON object")
+        statement = raw.get("statement")
+        if not isinstance(statement, str) or not statement.strip():
+            raise LLMResponseError(f"finding {index} statement must be a non-empty string")
+        support = raw.get("support")
+        if support not in ("direct", "inference"):
+            raise LLMResponseError(f"finding {index} support must be 'direct' or 'inference'")
+        chunk_ids = raw.get("chunk_ids")
+        if not isinstance(chunk_ids, list) or not chunk_ids:
+            raise LLMResponseError(
+                f"finding {index} must cite at least one chunk_id; general background belongs in scientific_context"
+            )
+        for chunk_id in chunk_ids:
+            if not isinstance(chunk_id, str) or chunk_id not in supplied:
+                raise LLMResponseError(
+                    f"finding {index} references chunk_id {chunk_id!r} not present in supplied RAGContext"
+                )
+        unique_ids = tuple(dict.fromkeys(chunk_ids))
+        _check_observation_claim(statement, unique_ids, supplied, where=f"finding {index}")
+        findings.append(AnswerFinding(statement.strip(), support, unique_ids))
+    return tuple(findings)
+
+
 def _validate_response(parsed: dict[str, Any], context: RAGContext, config: LLMConfig) -> AnswerResponse:
-    answer = parsed.get("answer")
     status = parsed.get("status")
-    raw_citations = parsed.get("citations")
-    if not isinstance(answer, str) or not answer.strip():
-        raise LLMResponseError("LLM response answer must be a non-empty string")
-    if status not in {"grounded", "insufficient_evidence"}:
-        raise LLMResponseError("LLM response status must be grounded or insufficient_evidence")
-    if not isinstance(raw_citations, list):
-        raise LLMResponseError("LLM response citations must be a JSON array")
+    if status not in _STATUSES:
+        raise LLMResponseError("LLM response status must be grounded, partial or insufficient_evidence")
+    answer = _text_field(parsed, "answer", required=True)
+    scientific_context = _text_field(parsed, "scientific_context", required=False)
+    limitations = _text_field(parsed, "limitations", required=False)
 
     supplied = {item.chunk_id: item for item in context.evidence_items}
-    citations: list[AnswerCitation] = []
-    seen: set[str] = set()
-    for index, raw in enumerate(raw_citations):
-        if not isinstance(raw, dict):
-            raise LLMResponseError(f"citation {index + 1} must be a JSON object")
-        chunk_id = raw.get("chunk_id")
-        if not isinstance(chunk_id, str) or chunk_id not in supplied:
-            raise LLMResponseError(
-                f"citation {index + 1} references chunk_id {chunk_id!r} not present in supplied RAGContext"
-            )
-        if chunk_id in seen:
-            raise LLMResponseError(f"duplicate citation for chunk_id {chunk_id!r}")
-        seen.add(chunk_id)
-        item = supplied[chunk_id]
-        expected = {
-            "source_id": item.source_id,
-            "source_locator": item.source_locator,
-            "page_number": item.page_number,
-            "evidence_status": item.evidence_status,
-        }
-        for field, expected_value in expected.items():
-            if raw.get(field) != expected_value:
-                raise LLMResponseError(
-                    f"citation {chunk_id!r} has invalid {field}; it must match supplied provenance"
-                )
-        citations.append(
-            AnswerCitation(
-                chunk_id=item.chunk_id,
-                source_id=item.source_id,
-                source_locator=item.source_locator,
-                page_number=item.page_number,
-                evidence_status=item.evidence_status,
-            )
-        )
+    findings = _findings(parsed.get("findings"), supplied)
+    _reject_invented_ids(answer, supplied, where="answer")
+    _reject_invented_ids(limitations, supplied, where="limitations")
+    for index, finding in enumerate(findings, start=1):
+        _reject_invented_ids(finding.statement, supplied, where=f"finding {index}")
+    answer_ids = _cited_ids(answer, supplied)
+    finding_ids = [chunk_id for finding in findings for chunk_id in finding.chunk_ids]
+    for sentence in _SENTENCE_END.split(answer):
+        # A sentence without its own marker is judged by everything the findings cite.
+        _check_observation_claim(sentence, _cited_ids(sentence, supplied) or finding_ids, supplied, where="answer")
 
-    if status == "grounded":
+    if _cited_ids(scientific_context, supplied) or _CHUNK_ID_SHAPE.search(scientific_context):
+        raise LLMResponseError(
+            "scientific_context is general background and must not cite chunk_ids; "
+            "put claims supported by NASA evidence in findings"
+        )
+    if status in ("grounded", "partial"):
         if not context.evidence_items:
             raise LLMResponseError("Cannot return a grounded answer without supplied evidence")
-        if not citations:
-            raise LLMResponseError("A grounded answer must cite at least one supplied evidence item")
-        cited_statuses = {citation.evidence_status for citation in citations}
-        claims_observation = re.search(
-            r"\b(?:NASA|FLEX|the experiment|the test|the tests|the results)\s+"
-            r"(?:observed|measured|found|demonstrated|showed|recorded)\b",
-            answer,
-            flags=re.IGNORECASE,
+        if not findings:
+            raise LLMResponseError(
+                "A grounded or partial answer must cite at least one supplied evidence item in findings"
+            )
+    if status == "partial" and not limitations:
+        raise LLMResponseError("A partial answer must state in limitations what the evidence does not cover")
+    if status == "insufficient_evidence" and "insufficient" not in answer.casefold():
+        raise LLMResponseError(
+            "An insufficient_evidence response must explicitly state that evidence is insufficient"
         )
-        if claims_observation and cited_statuses != {"observed"}:
-            raise LLMResponseError(
-                "Answer claims an observation but citations are not exclusively "
-                "evidence_status='observed'; planned, metadata, and interpreted "
-                "evidence cannot substantiate that claim."
-            )
-    else:
-        if "insufficient" not in answer.casefold():
-            raise LLMResponseError(
-                "An insufficient_evidence response must explicitly state that evidence is insufficient"
-            )
-    if re.search(r"\bconfidence\b", answer, flags=re.IGNORECASE):
+    prose = "\n".join([answer, scientific_context, limitations, *(finding.statement for finding in findings)])
+    if re.search(r"\bconfidence\b", prose, flags=re.IGNORECASE):
         raise LLMResponseError(
             "Do not describe retrieval similarity as confidence or include confidence claims"
         )
 
-    # Evidence references are built locally from the exact context, not from
-    # model-generated metadata, so the model cannot invent trace identifiers.
+    # The model supplies chunk IDs only; provenance is copied from the context,
+    # so a citation can never carry an invented source, page or status.
+    citations = tuple(
+        AnswerCitation(
+            chunk_id=chunk_id,
+            source_id=supplied[chunk_id].source_id,
+            source_locator=supplied[chunk_id].source_locator,
+            page_number=supplied[chunk_id].page_number,
+            evidence_status=supplied[chunk_id].evidence_status,
+        )
+        for chunk_id in dict.fromkeys([*answer_ids, *finding_ids, *_cited_ids(limitations, supplied)])
+    )
     references = tuple(_reference(item) for item in context.evidence_items)
     return AnswerResponse(
-        answer=answer.strip(),
+        answer=answer,
         status=status,
-        citations=tuple(citations),
+        citations=citations,
         evidence_summary=references,
         query=context.query,
         model_name=config.model_name,
         provider=config.provider,
+        findings=findings,
+        scientific_context=scientific_context,
+        limitations=limitations,
+    )
+
+
+def _repair_prompt(user_prompt: str, rejected: str, error: LLMResponseError) -> str:
+    return (
+        f"{user_prompt}\n\n"
+        "YOUR PREVIOUS REPLY WAS REJECTED\n"
+        "--------------------------------\n"
+        f"Reason: {error}\n"
+        f"Rejected reply: {rejected}\n\n"
+        "Return a corrected JSON object that fixes this problem and follows every rule in the system prompt."
     )
 
 
@@ -181,7 +267,17 @@ class LLMService:
             user_prompt=decision.user_prompt,
             config=self.config,
         )
-        return _validate_response(_parse_json(raw), context, self.config)
+        try:
+            return _validate_response(_parse_json(raw), context, self.config)
+        except LLMResponseError as error:
+            # One repair attempt: the model sees why its reply was rejected.
+            # A second failure is raised to the caller unchanged.
+            raw = self.provider.generate(
+                system_prompt=decision.system_prompt,
+                user_prompt=_repair_prompt(decision.user_prompt, raw, error),
+                config=self.config,
+            )
+            return _validate_response(_parse_json(raw), context, self.config)
 
 
 def answer_question(

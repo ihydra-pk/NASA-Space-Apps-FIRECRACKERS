@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import os
+import threading
 from dataclasses import replace
 from pathlib import Path
 from typing import Any
@@ -22,17 +23,21 @@ from src.explore.models import ExploreRequest
 from src.explore.router import QuestionRouter
 from src.explore.service import ExploreInputError, ExploreService
 from src.llm.config import LLMConfig
-from src.llm.service import LLMService
+from src.llm.service import LLMResponseError, LLMService
 from src.rag.config import RAGContextConfig
 from src.vectorstore.config import VectorStoreConfig
-from src.vectorstore.search import search
-from src.vectorstore.sqlite_store import SQLiteVectorStore
+from src.vectorstore.memory import CachedCollection
+from src.vectorstore.search import search_many
 
 logger = logging.getLogger("firelens.api")
 
 
 def _env(name: str, default: str) -> str:
     return os.environ.get(f"FIRELENS_API_{name}", default)
+
+
+def _flag(name: str, default: str) -> bool:
+    return _env(name, default).lower() not in {"off", "0", "false", "no"}
 
 
 ALL_EXPERIMENTS_INDEX = (Path("data/vectorstore/firelens.sqlite3"), "firelens-qwen3-embedding-4b")
@@ -59,8 +64,10 @@ def build_explore_service() -> ExploreService:
         provider=_env("EMBEDDING_PROVIDER", "openai-compatible"),
         model_name=_env("EMBEDDING_MODEL", "gwdg.qwen3-embedding-4b"),
         dimension=int(_env("EMBEDDING_DIMENSION", "2560")),
-        top_k=int(_env("TOP_K", "5")),
+        top_k=int(_env("TOP_K", "10")),
         min_chunk_words=int(_env("MIN_CHUNK_WORDS", "25")),
+        demote_reference_lists=_flag("DEMOTE_REFERENCES", "on"),
+        neighbour_chunks=int(_env("NEIGHBOURS", "3")),
     )
     if vector_config.provider == "openai-compatible":
         embedding_provider = OpenAICompatibleEmbeddingProvider()
@@ -74,9 +81,20 @@ def build_explore_service() -> ExploreService:
             )
         )
 
-    def retrieve(query: str, *, top_k: int):
-        with SQLiteVectorStore(vector_config) as store:
-            return search(query, store, vector_config, provider=embedding_provider, top_k=top_k, mode=search_mode)
+    # The index is read into memory on the first question and kept for the
+    # life of the process; reading it from SQLite takes several seconds.
+    loaded: list[CachedCollection] = []
+    load_lock = threading.Lock()
+
+    def retrieve(query: str, *, top_k: int, extra_queries: tuple[str, ...] = ()):
+        with load_lock:
+            if not loaded:
+                logger.info("Loading search index %s into memory", vector_config.database_path)
+                loaded.append(CachedCollection.load(vector_config))
+        return search_many(
+            [query, *extra_queries], loaded[0], vector_config,
+            provider=embedding_provider, top_k=top_k, mode=search_mode,
+        )
 
     llm_config = replace(
         LLMConfig.from_env(provider=_env("LLM_PROVIDER", "openai-compatible")),
@@ -87,7 +105,7 @@ def build_explore_service() -> ExploreService:
         store_path=Path(_env("EXPERIMENTAL_DATABASE", "data/experimental_data/experiments.sqlite3")),
     )
     llm_service = LLMService(config=llm_config)
-    use_router = _env("ROUTER", "on").lower() not in {"off", "0", "false", "no"}
+    use_router = _flag("ROUTER", "on")
     return ExploreService(
         retrieve,
         ExperimentalDataService(experimental_config),
@@ -144,6 +162,11 @@ def create_app(service: ExploreService | None = None) -> FastAPI:
                 if inferred:
                     request = replace(request, conditions=inferred)
             return get_service().explore(request).to_dict()
+        except LLMResponseError as exc:
+            # A ValueError subclass, but the request was fine: the model's
+            # answer broke the evidence rules twice (see LLMService.answer).
+            logger.warning("Answer failed validation: %s", exc)
+            raise HTTPException(502, f"The model's answer failed validation: {exc}") from exc
         except (ExploreInputError, ValueError) as exc:
             raise HTTPException(422, str(exc)) from exc
         except HTTPException:

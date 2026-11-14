@@ -158,13 +158,65 @@ def test_explore_skips_matching_on_the_documents_route():
     assert response.condition_match is None
 
 
-def test_conditions_supplied_by_the_caller_bypass_the_router():
+def test_conditions_supplied_by_the_caller_win_over_the_router():
     matcher = RecordingMatcher()
     response = _service({"route": "test_data", "conditions": {"fuel": "heptane"}}, matcher).explore(
         ExploreRequest(QUESTION, {"fuel": "Methanol"})
     )
     assert matcher.calls == [{"fuel": "Methanol"}]
-    assert response.routing is None
+    # The router still ran (for its search queries) but its conditions were not used.
+    assert response.routing["conditions_applied"] is False
+
+
+def test_search_queries_are_bounded_deduplicated_and_never_repeat_the_question():
+    decision = validate_route(
+        {
+            "route": "documents",
+            "conditions": {},
+            "search_queries": [
+                "cool flame extinction mechanism",
+                "  cool flame   extinction mechanism ",
+                QUESTION.lower(),
+                "",
+                42,
+                "x" * 201,
+                "NTC low-temperature chemistry droplet",
+                "helium dilution extinction diameter",
+                "CFI final report findings",
+                "one too many",
+            ],
+        },
+        QUESTION,
+    )
+    assert decision.search_queries == (
+        "cool flame extinction mechanism",
+        "NTC low-temperature chemistry droplet",
+        "helium dilution extinction diameter",
+        "CFI final report findings",
+    )
+    assert validate_route({"route": "documents", "search_queries": "not a list"}, QUESTION).search_queries == ()
+    assert decision.to_dict()["search_queries"][0] == "cool flame extinction mechanism"
+
+
+def test_search_queries_reach_the_retriever_and_the_response():
+    calls = []
+
+    def retriever(query, *, top_k, extra_queries=()):
+        calls.append((query, extra_queries))
+        return _retriever(query, top_k=top_k)
+
+    llm = LLMService(config=CONFIG, provider=MockLLMProvider())
+    router = QuestionRouter(
+        MockLLMProvider({"route": "documents", "conditions": {}, "search_queries": ["cool flame kinetics"]}),
+        CONFIG,
+    )
+    response = ExploreService(retriever, RecordingMatcher(), llm, router=router).explore(
+        ExploreRequest("Why do cool flames go out?")
+    )
+
+    assert calls == [("Why do cool flames go out?", ("cool flame kinetics",))]
+    assert response.routing["search_queries"] == ["cool flame kinetics"]
+    assert response.routing["conditions_applied"] is False
 
 
 def test_router_failure_is_reported_as_a_warning_not_an_error():

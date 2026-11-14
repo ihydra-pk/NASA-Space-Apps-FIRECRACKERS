@@ -15,7 +15,7 @@ from src.llm.config import LLMConfig
 from src.llm.service import LLMService
 from src.rag.config import RAGContextConfig
 from src.vectorstore.config import VectorStoreConfig
-from src.vectorstore.search import search
+from src.vectorstore.search import search_many
 from src.vectorstore.sqlite_store import SQLiteVectorStore
 
 from .config import ExploreConfig
@@ -34,10 +34,18 @@ def main() -> int:
     parser.add_argument("--embedding-provider", default="openai-compatible")
     parser.add_argument("--embedding-model", default="gwdg.qwen3-embedding-4b")
     parser.add_argument("--embedding-dimension", type=int, default=2560)
-    parser.add_argument("--top-k", type=int, default=5)
+    parser.add_argument("--top-k", type=int, default=10, help="document passages given to the answer model")
     parser.add_argument(
         "--min-chunk-words", type=int, default=25,
         help="skip chunks shorter than this when ranking; 0 keeps title-only chunks",
+    )
+    parser.add_argument(
+        "--neighbours", type=int, default=3,
+        help="add the next passage of the same report after each of this many top hits; 0 turns it off",
+    )
+    parser.add_argument(
+        "--keep-reference-lists", action="store_true",
+        help="rank bibliographies like any other passage instead of after all others",
     )
     parser.add_argument("--llm-provider", default="openai-compatible")
     parser.add_argument("--llm-model", default="openai.gpt-6-luna")
@@ -47,7 +55,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--no-router", action="store_true",
-        help="do not read test conditions from the question; use --conditions only",
+        help="do not read the question with the LLM (no test conditions from it, no extra search queries)",
     )
     parser.add_argument("--experimental-database", type=Path, default=Path("data/experimental_data/experiments.sqlite3"))
     args = parser.parse_args()
@@ -68,6 +76,8 @@ def main() -> int:
         dimension=args.embedding_dimension,
         top_k=args.top_k,
         min_chunk_words=args.min_chunk_words,
+        demote_reference_lists=not args.keep_reference_lists,
+        neighbour_chunks=args.neighbours,
     )
     embedding_config = EmbeddingConfig(
         provider=vector_config.provider,
@@ -81,10 +91,10 @@ def main() -> int:
         else create_embedding_provider(embedding_config)
     )
 
-    def retrieve(query: str, *, top_k: int):
+    def retrieve(query: str, *, top_k: int, extra_queries: tuple[str, ...] = ()):
         with SQLiteVectorStore(vector_config) as store:
-            return search(
-                query, store, vector_config,
+            return search_many(
+                [query, *extra_queries], store, vector_config,
                 provider=embedding_provider, top_k=top_k, mode=args.search_mode,
             )
 

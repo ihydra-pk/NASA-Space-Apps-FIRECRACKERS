@@ -6,7 +6,7 @@ import json
 import math
 import sqlite3
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any, Iterator, Sequence
 
 from .config import VectorStoreConfig
 
@@ -133,12 +133,19 @@ class SQLiteVectorStore:
         return (self.config.provider, self.config.model_name, self.config.dimension)
 
     def records(self) -> list[tuple[dict[str, Any], tuple[float, ...]]]:
-        rows = self._connection.execute(
+        return list(self.iter_records())
+
+    def iter_records(self) -> Iterator[tuple[dict[str, Any], tuple[float, ...]]]:
+        """Yield records one row at a time, in chunk_id order.
+
+        Unlike ``records()`` this never holds the whole table in memory, which
+        matters for the 441 MB all-experiment index on a 512 MB server.
+        """
+
+        cursor = self._connection.execute(
             "SELECT record_json, vector_json FROM vectors "
             "WHERE collection = ? ORDER BY chunk_id",
             (self.config.collection,),
-        ).fetchall()
-        return [
-            (json.loads(row["record_json"]), tuple(json.loads(row["vector_json"])))
-            for row in rows
-        ]
+        )
+        for row in cursor:
+            yield json.loads(row["record_json"]), tuple(json.loads(row["vector_json"]))

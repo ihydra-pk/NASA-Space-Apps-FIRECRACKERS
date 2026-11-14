@@ -15,7 +15,8 @@ class RAGContextConfig:
     """
 
     top_k: int = 5
-    max_context_chars: int | None = 20_000
+    # Room for about a dozen 800-token chunks with their provenance headers.
+    max_context_chars: int | None = 60_000
     max_estimated_tokens: int | None = None
     include_similarity_scores: bool = True
     include_full_provenance: bool = True

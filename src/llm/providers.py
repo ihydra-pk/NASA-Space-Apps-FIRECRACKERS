@@ -113,7 +113,7 @@ class MockLLMProvider:
         # Deterministic protocol fixture only: no attempt at scientific reasoning.
         try:
             structured = user_prompt.split("STRUCTURED EVIDENCE ITEMS\n-------------------------\n", 1)[1]
-            evidence = json.loads(structured)
+            evidence = json.loads(structured.split("\n\nRequired output format:", 1)[0])
         except (IndexError, json.JSONDecodeError):
             evidence = []
         if not evidence:
@@ -121,19 +121,25 @@ class MockLLMProvider:
                 {
                     "answer": "The indexed evidence is insufficient to answer this question.",
                     "status": "insufficient_evidence",
-                    "citations": [],
+                    "findings": [],
+                    "scientific_context": "",
+                    "limitations": "No evidence items were supplied.",
                 }
             )
-        first = evidence[0]
-        citation = {
-            key: first[key]
-            for key in ("chunk_id", "source_id", "source_locator", "page_number", "evidence_status")
-        }
+        chunk_id = evidence[0]["chunk_id"]
         return json.dumps(
             {
-                "answer": "Mock response fixture: retrieved evidence is available; inspect the cited source text.",
+                "answer": f"Mock response fixture: retrieved evidence is available; inspect the cited source text. [{chunk_id}]",
                 "status": "grounded",
-                "citations": [citation],
+                "findings": [
+                    {
+                        "statement": "Mock response fixture: the first supplied evidence item is cited for inspection.",
+                        "support": "direct",
+                        "chunk_ids": [chunk_id],
+                    }
+                ],
+                "scientific_context": "",
+                "limitations": "Mock fixture; no scientific reasoning was performed.",
             },
             ensure_ascii=False,
         )

@@ -1,13 +1,16 @@
-"""Route a plain-language question and extract the test conditions it states.
+"""Route a plain-language question, extract its test conditions, plan searches.
 
 Without a router the caller must pass ``conditions`` as a separate structured
 object. The router reads the question once with the LLM, decides whether the
-structured FLEX test data is relevant, and returns any conditions the question
-states so that the existing matcher can run on them.
+structured test data is relevant, returns any conditions the question states
+so that the existing matcher can run on them, and writes a few focused search
+queries so that document retrieval also finds evidence the question's own
+wording misses (mechanisms, conditions, experiment names, acronyms).
 
 The LLM's output is treated as untrusted: unknown keys, wrong types, unknown
-units and numbers that do not appear in the question are dropped and reported.
-If the router cannot be used the question falls back to document search.
+units and numbers that do not appear in the question are dropped and reported;
+search queries are limited in number and length. If the router cannot be used
+the question falls back to a plain document search.
 """
 
 from __future__ import annotations
@@ -31,25 +34,28 @@ _ALLOWED_UNITS = {
     "suppressant_concentration": {"mole_fraction", "%"},
 }
 
-SYSTEM_PROMPT = """You route questions for a NASA microgravity combustion assistant.
+SYSTEM_PROMPT = """You plan the searches of a NASA microgravity combustion assistant.
 
 Two sources exist:
 1. documents: NASA reports, science requirement documents and presentations for
-   combustion experiments (FLEX, BASS, SAFFIRE, ACME, CFI and others). Use them
-   for explanations, objectives, methods and findings.
-2. test_data: a table of PLANNED FLEX droplet-combustion test conditions. Each
-   row has fuel, oxygen_concentration, pressure, flow_velocity, suppressant,
-   suppressant_concentration, diluent and fiber_support. It contains no
-   results, temperatures or gravity levels.
+   combustion experiments (FLEX, CFI, BASS, SAFFIRE, ACME, SPICE, SAME and
+   others). Use them for explanations, objectives, methods and findings.
+2. test_data: a table of NASA test conditions: FLEX droplet tests (a planned
+   test matrix and observed runs), BASS-II solid-fuel tests (observed) and
+   SAFFIRE runs. Each row has fuel, oxygen_concentration, pressure,
+   flow_velocity, suppressant, suppressant_concentration, diluent and
+   fiber_support. Observed rows hold measured outcomes; planned rows are only
+   proposed conditions. It contains no temperatures or gravity levels.
 
 Reply with one JSON object:
 {"route": "documents" | "test_data" | "both",
  "conditions": {},
  "condition_units": {},
+ "search_queries": [],
  "reason": "one short sentence"}
 
 Routing:
-- "test_data": the question asks which or how many planned tests have stated conditions.
+- "test_data": the question asks which or how many tests have stated conditions, or what they measured.
 - "both": the question states test conditions and also asks for an explanation.
 - "documents": everything else. Use this whenever the question states no test condition.
 
@@ -57,13 +63,27 @@ Conditions:
 - Include only values the question states explicitly. Never guess, infer or add defaults.
 - Allowed keys: fuel, oxygen_concentration, pressure, flow_velocity, suppressant,
   suppressant_concentration, diluent, fiber_support.
-- fuel is "heptane" or "methanol" (C7H16 is heptane, CH3OH is methanol).
+- fuel is "heptane" or "methanol" for droplets (C7H16 is heptane, CH3OH is
+  methanol); for a solid sample copy the material as written, e.g. "PMMA" or "SIBAL".
   suppressant is "CO2", "He" or "SF6". diluent is "N2". fiber_support is "SiC" or "none".
 - Numbers: copy the number exactly as written in the question and put its unit in
   condition_units under the same key. Do not convert units.
   Allowed units: oxygen_concentration "%" or "mole_fraction"; pressure "atm", "kPa" or "Pa";
   flow_velocity "cm/s" or "m/s"; suppressant_concentration "mole_fraction" or "%".
+
+Search queries:
+- Always write 2 to 4 short search queries that would find the NASA document
+  passages needed to answer the question, whatever the route.
+- Each targets a different aspect: the physical mechanism, the variables or
+  conditions involved, the experiments that studied it, or other terms and
+  acronyms the documents may use (e.g. "cool flame" and "low-temperature
+  chemistry", "NTC").
+- Write them as phrases a report would contain, not as questions, and do not
+  repeat the question.
 """
+# Bounds on planner output, which is untrusted like everything the model writes.
+_MAX_SEARCH_QUERIES = 4
+_MAX_QUERY_CHARS = 200
 
 
 @dataclass(frozen=True, slots=True)
@@ -74,6 +94,8 @@ class RouteDecision:
     reason: str = ""
     ignored: tuple[str, ...] = ()
     fallback: bool = False
+    # Extra document searches; the question itself is always searched too.
+    search_queries: tuple[str, ...] = ()
 
     @property
     def uses_test_data(self) -> bool:
@@ -84,6 +106,7 @@ class RouteDecision:
             "route": self.route,
             "conditions": dict(self.conditions),
             "condition_units": dict(self.condition_units),
+            "search_queries": list(self.search_queries),
             "reason": self.reason,
             "ignored": list(self.ignored),
             "fallback": self.fallback,
@@ -92,6 +115,26 @@ class RouteDecision:
 
 def _numbers_in(text: str) -> set[float]:
     return {float(match) for match in re.findall(r"\d+(?:\.\d+)?", text)}
+
+
+def _search_queries(raw: object, question: str) -> tuple[str, ...]:
+    """Up to four distinct, non-empty search queries that differ from the question."""
+
+    if not isinstance(raw, list):
+        return ()
+    seen = {" ".join(question.split()).casefold()}
+    kept: list[str] = []
+    for item in raw:
+        if not isinstance(item, str):
+            continue
+        text = " ".join(item.split())
+        if not text or len(text) > _MAX_QUERY_CHARS or text.casefold() in seen:
+            continue
+        seen.add(text.casefold())
+        kept.append(text)
+        if len(kept) == _MAX_SEARCH_QUERIES:
+            break
+    return tuple(kept)
 
 
 def _fallback(reason: str) -> RouteDecision:
@@ -147,6 +190,7 @@ def validate_route(parsed: dict[str, object], question: str) -> RouteDecision:
         condition_units=units,
         reason=reason.strip() if isinstance(reason, str) else "",
         ignored=tuple(ignored),
+        search_queries=_search_queries(parsed.get("search_queries"), question),
     )
 
 

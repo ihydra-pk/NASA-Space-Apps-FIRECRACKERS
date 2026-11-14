@@ -259,6 +259,12 @@ class ExploreService:
         self.llm = llm
         self.config = config or ExploreConfig()
 
+    def retrieve_documents(self, question: str, *, routing: RouteDecision | None = None) -> RAGContext:
+        """Search the documents for the question and the router's search queries."""
+
+        extra_queries = routing.search_queries if routing is not None else ()
+        return retrieve_context(question, self.retriever, self.config.rag, extra_queries=extra_queries)
+
     def explore(self, request: ExploreRequest) -> ExploreResponse:
         if not isinstance(request.question, str) or not request.question.strip():
             raise ExploreInputError("question must not be empty")
@@ -266,18 +272,19 @@ class ExploreService:
         if not isinstance(conditions, dict):
             raise ExploreInputError("conditions must be an object")
         condition_units = request.condition_units
-        # Conditions chosen by the caller win. Otherwise the router reads them
-        # from the question; document retrieval runs on every route because
-        # answers are cited against retrieved chunks.
-        routing: RouteDecision | None = None
-        if self.router is not None and not conditions:
-            routing = self.router.route(request.question)
-            if routing.uses_test_data:
-                conditions, condition_units = routing.conditions, routing.condition_units
+        caller_conditions = bool(conditions)
+        # The router reads every question: its search queries widen document
+        # retrieval, and its conditions are used only when the caller gave
+        # none. Document retrieval runs on every route because answers are
+        # cited against retrieved chunks.
+        routing = self.router.route(request.question) if self.router is not None else None
+        conditions_from_router = not caller_conditions and routing is not None and routing.uses_test_data
+        if conditions_from_router:
+            conditions, condition_units = routing.conditions, routing.condition_units
         normalized = normalize_conditions(conditions, condition_units)
 
         # A. Existing retrieval function -> existing RAGContext builder.
-        context = retrieve_context(request.question, self.retriever, self.config.rag)
+        context = self.retrieve_documents(request.question, routing=routing)
 
         # B. Existing experimental-data service/matcher. Conditions are matched
         # independently, with no score arithmetic against document similarity.
@@ -335,8 +342,12 @@ class ExploreService:
 
         warnings = list(_planned_warning(match_result, self.config.max_condition_evidence))
         if routing is not None and routing.fallback:
-            warnings.append(f"Question routing fell back to document search. {routing.reason}")
-        if routing is not None and routing.ignored:
+            warnings.append(
+                f"Question planning was unavailable, so only the question itself was searched. {routing.reason}"
+                if caller_conditions
+                else f"Question routing fell back to document search. {routing.reason}"
+            )
+        if routing is not None and routing.ignored and not caller_conditions:
             warnings.append(
                 "The router dropped conditions it could not verify: " + "; ".join(routing.ignored) + "."
             )
@@ -398,7 +409,11 @@ class ExploreService:
             requested_conditions=dict(conditions),
             normalized_conditions=normalized.values,
             requested_condition_units=dict(condition_units or {}),
-            routing=routing.to_dict() if routing is not None else None,
+            routing=(
+                {**routing.to_dict(), "conditions_applied": conditions_from_router}
+                if routing is not None
+                else None
+            ),
             condition_units=normalized.units,
             condition_availability=availability,
             condition_match_summary=_match_summary(conditions, match_result, availability),

@@ -58,6 +58,14 @@ def test_explore_pipeline_failure_is_502():
     assert client(RuntimeError("boom")).post("/api/explore", json={"question": "q"}).status_code == 502
 
 
+def test_answer_that_fails_validation_is_502_not_a_client_error():
+    from src.llm.service import LLMResponseError
+
+    response = client(LLMResponseError("finding 1 references chunk_id 'x'")).post("/api/explore", json={"question": "q"})
+    assert response.status_code == 502
+    assert "failed validation" in response.json()["detail"]
+
+
 def test_experiments_pagination():
     body = client().get("/api/experiments?limit=2&offset=1").json()
     assert body["total"] == 5 and len(body["records"]) == 2
@@ -93,3 +101,15 @@ def test_explicit_conditions_are_not_overridden():
 def test_index_page_is_served():
     r = client().get("/")
     assert r.status_code == 200 and "FireLens" in r.text
+
+
+def test_host_and_port_come_from_the_environment(monkeypatch):
+    from src.api.__main__ import parse_args
+
+    monkeypatch.delenv("HOST", raising=False)
+    monkeypatch.delenv("PORT", raising=False)
+    assert (parse_args([]).host, parse_args([]).port) == ("127.0.0.1", 8000)
+    monkeypatch.setenv("HOST", "0.0.0.0")
+    monkeypatch.setenv("PORT", "10000")
+    assert (parse_args([]).host, parse_args([]).port) == ("0.0.0.0", 10000)
+    assert parse_args(["--port", "9000"]).port == 9000

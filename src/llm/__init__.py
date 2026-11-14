@@ -1,7 +1,7 @@
 """Evidence-policy-controlled LLM answer generation for NASA FireLens."""
 
 from .config import LLMConfig
-from .models import AnswerCitation, AnswerResponse, EvidenceReference
+from .models import AnswerCitation, AnswerFinding, AnswerResponse, EvidenceReference
 from .policy import EvidencePolicy, PolicyDecision
 from .providers import (
     LLMProvider,
@@ -13,6 +13,7 @@ from .service import LLMResponseError, LLMService, answer_question
 
 __all__ = [
     "AnswerCitation",
+    "AnswerFinding",
     "AnswerResponse",
     "EvidencePolicy",
     "EvidenceReference",

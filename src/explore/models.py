@@ -99,7 +99,7 @@ class ExploreResponse:
     condition_availability: dict[str, dict[str, object]]
     condition_match_summary: dict[str, object]
     evidence_mode: EvidenceMode
-    status: Literal["grounded", "insufficient_evidence"]
+    status: Literal["grounded", "partial", "insufficient_evidence"]
     max_serialized_condition_matches: int = 25
     warnings: tuple[str, ...] = ()
     # How the router read the question; None when it was not used.

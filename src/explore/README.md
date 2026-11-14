@@ -36,9 +36,9 @@ unhelpful records to the dashboard.
 
 `evidence_mode` reports which evidence classes were actually returned:
 `document_only`, `experimental_only`, `combined`, or `insufficient`. This is
-about evidence presence, not a quality or certainty rating. `status` remains
-the existing grounded-answer validator's `grounded` or `insufficient_evidence`
-status. An experimental-only evidence set can therefore accompany an
+about evidence presence, not a quality or certainty rating. `status` is the
+answer validator's `grounded`, `partial` (part of the question is answered;
+`answer.limitations` says what is missing) or `insufficient_evidence`. An experimental-only evidence set can therefore accompany an
 `insufficient_evidence` answer when there are no document citations available.
 
 ## Evidence and status
@@ -58,8 +58,11 @@ Explore evidence; they are not misrepresented as document chunks or citations.
 If no document chunks are retrieved, the existing LLM service returns its
 insufficient-evidence response rather than asking the model to answer from
 memory. Structured matching results remain available in the Explore response.
-The existing LLM response and citation schema is returned unchanged; use the
-top-level unified `evidence` list for both evidence types and provenance.
+`answer` carries the LLM service's contract (see `src/llm/README.md`): the
+direct `answer`, `findings` marked `direct` or `inference` with their chunk IDs,
+`scientific_context` (general science, never cited or attributed to NASA) and
+`limitations`. Use the top-level unified `evidence` list for both evidence types
+and provenance.
 
 ## Request fields and units
 
@@ -88,9 +91,10 @@ fields. Temperature is retained with its stated unit and the matcher reports
 it unavailable (temperature is not present per test in the current structured
 dataset). Gravity is similarly unavailable as a test-level field.
 
-The RAG query is the `question` string, as expected by the existing retriever.
-Structured conditions are matched separately; request fields are not merged
-into semantic text or converted into another document-search query.
+Document search always uses the `question` string, plus the router's search
+queries when the router is on (see below). Structured conditions are matched
+separately; request fields are not merged into semantic text or converted into
+another document-search query.
 
 Unrecognized condition names are preserved through to the matcher, which marks
 them `parameter_unavailable`; they are not silently dropped. Units for unknown
@@ -107,14 +111,14 @@ from src.experimental_data.service import ExperimentalDataService
 from src.llm.service import LLMService
 from src.rag.config import RAGContextConfig
 from src.vectorstore.config import VectorStoreConfig
-from src.vectorstore.search import search
+from src.vectorstore.search import search_many
 from src.vectorstore.sqlite_store import SQLiteVectorStore
 
 vector_config = VectorStoreConfig(...)  # same collection/profile as indexed vectors
 
-def retrieve(query, *, top_k):
+def retrieve(query, *, top_k, extra_queries=()):
     with SQLiteVectorStore(vector_config) as store:
-        return search(query, store, vector_config, top_k=top_k)
+        return search_many([query, *extra_queries], store, vector_config, top_k=top_k)
 
 explore = ExploreService(
     retriever=retrieve,
@@ -158,26 +162,39 @@ See [EVALUATION.md](EVALUATION.md) for scenario outcomes and known limitations.
 
 `python -m src.explore "question"` no longer needs `--conditions`. A router
 (`router.py`) reads the question with one LLM call, labels it `documents`,
-`test_data` or `both`, and extracts the conditions it states:
+`test_data` or `both`, extracts the conditions it states, and writes 2 to 4
+search queries for the aspects the question's own wording may miss (mechanism,
+conditions, experiment names, acronyms):
 
 ```text
 "Which FLEX tests are planned for methanol at 21% oxygen and 1 atm?"
   -> route: test_data
      conditions: {"fuel": "methanol", "oxygen_concentration": 21, "pressure": 1}
      condition_units: {"oxygen_concentration": "%", "pressure": "atm"}
+     search_queries: ["FLEX methanol droplet test matrix", ...]
 ```
 
 The decision is returned as `routing` in the response. The router's output is
 checked before use: fields the test data does not have, unsupported units and
 numbers that are not written in the question are dropped and listed in
-`routing.ignored`. Conditions passed by the caller take precedence and skip the
-router. If the router cannot be reached or returns something unusable, the
-request continues as a document question and a warning is added. Document
-retrieval runs on every route, because answers are cited against retrieved
-chunks. Use `--no-router` to turn it off.
+`routing.ignored`. The router runs on every question. Conditions passed by
+the caller (or read from the question by the API's regexes) take precedence
+over the router's; `routing.conditions_applied` says whether the router's were
+used. Its search queries are searched together with the question
+(`search_many`), at most four of at most 200 characters each. If the router
+cannot be reached or returns something unusable, the request continues as a
+plain document question and a warning is added. Document retrieval runs on
+every route, because answers are cited against retrieved chunks. Use
+`--no-router` to turn it off.
 
 Retrieval defaults to `--search-mode hybrid`: chunks are ranked by cosine
 similarity and by keyword match, and the two rankings are fused by rank. This
 helps questions that name a test number, acronym or formula. The reported
 `similarity_score` is unchanged; it is always the cosine similarity. Use
 `--search-mode semantic` for the previous behaviour.
+
+
+Search also ranks reference lists after findings and adds the next page of a
+report after each of the top 3 hits (`--keep-reference-lists`, `--neighbours`);
+see `src/vectorstore/README.md`. The CLI gives the answer model 10 passages by
+default (`--top-k`).

@@ -51,55 +51,80 @@ def _context(*results):
     return build_context("What does the FLEX source say?", search_result)
 
 
-def _citation(item):
-    return {
-        "chunk_id": item.chunk_id,
-        "source_id": item.source_id,
-        "source_locator": item.source_locator,
-        "page_number": item.page_number,
-        "evidence_status": item.evidence_status,
-    }
-
-
-def _mock_response(context, *, status="grounded", answer="The supplied source describes a planned condition.", citations=None):
-    return {
+def _mock_response(
+    context,
+    *,
+    status="grounded",
+    answer="The supplied source describes a planned condition.",
+    chunk_ids=None,
+    statement="The source lists 21% oxygen as a planned condition.",
+    support="direct",
+    **fields,
+):
+    ids = [context.evidence_items[0].chunk_id] if chunk_ids is None else chunk_ids
+    response = {
         "answer": answer,
         "status": status,
-        "citations": citations if citations is not None else [_citation(context.evidence_items[0])],
+        "findings": [{"statement": statement, "support": support, "chunk_ids": ids}] if ids else [],
+        "scientific_context": "",
+        "limitations": "",
     }
+    response.update(fields)
+    return response
+
+
+def _answer(context, provider):
+    return LLMService(LLMConfig(provider="mock", model_name="fixture"), provider).answer(context.query, context)
+
+
+class SequenceProvider:
+    """Returns the given replies in order, one per call."""
+
+    provider_name = "mock"
+
+    def __init__(self, *replies):
+        self.replies = list(replies)
+        self.calls = []
+
+    def generate(self, *, system_prompt, user_prompt, config):
+        self.calls.append((system_prompt, user_prompt))
+        return json.dumps(self.replies.pop(0))
 
 
 def test_evidence_policy_prompt_has_explicit_scientific_rules():
     context = _context(_result())
     provider = MockLLMProvider(_mock_response(context))
-    service = LLMService(LLMConfig(provider="mock", model_name="fixture"), provider)
 
-    service.answer(context.query, context)
+    _answer(context, provider)
     system, user = provider.calls[0]
 
     for required in (
-        "ONLY the supplied evidence",
         "planned ≠ observed",
         "metadata ≠ experimental result",
         "interpreted ≠ direct observation",
+        "unknown = not labelled yet",
+        "A bibliography or reference-list entry shows that a paper exists",
+        "Science Documents: SRD/SCR science requirements written before flight",
+        "scientific_context",
         "Similarity scores are retrieval/ranking signals only",
         "Never invent numerical values",
     ):
         assert required in system
+    assert "ONLY the supplied evidence" not in system
     assert context.context_text in user
-    assert context.evidence_items[0].text in user
+    # Chunk text is sent once, in the context block; the structured items
+    # carry identifiers and provenance only.
+    assert user.count(context.evidence_items[0].text) == 1
 
 
 def test_grounded_end_to_end_response_has_validated_citation_and_summary():
     context = _context(_result())
-    provider = MockLLMProvider(_mock_response(context))
-    service = LLMService(LLMConfig(provider="mock", model_name="fixture"), provider)
-
-    response = service.answer(context.query, context)
+    response = _answer(context, MockLLMProvider(_mock_response(context)))
 
     assert response.status == "grounded"
     assert response.citations[0].chunk_id == context.evidence_items[0].chunk_id
     assert response.citations[0].evidence_status == "planned"
+    assert response.findings[0].support == "direct"
     assert response.evidence_summary[0].source_path == "flex/FLEX_Test_Plan.pdf"
     assert response.model_name == "fixture"
     assert "confidence" not in response.to_dict()
@@ -125,75 +150,61 @@ def test_model_insufficient_evidence_response_is_supported():
             context,
             status="insufficient_evidence",
             answer="The indexed evidence is insufficient to establish an observed outcome.",
-            citations=[],
+            chunk_ids=[],
+            scientific_context="In general, oxygen concentration controls the flame temperature.",
         )
     )
 
-    response = LLMService(LLMConfig(provider="mock"), provider).answer(context.query, context)
+    response = _answer(context, provider)
 
     assert response.status == "insufficient_evidence"
     assert response.citations == ()
+    assert response.scientific_context.startswith("In general")
     assert response.evidence_summary[0].evidence_status == "planned"
 
 
-def test_invalid_or_invented_citation_ids_are_rejected():
+def test_invented_chunk_ids_are_rejected():
     context = _context(_result())
-    invalid = _citation(context.evidence_items[0])
-    invalid["chunk_id"] = "not-retrieved"
-    service = LLMService(
-        LLMConfig(provider="mock"),
-        MockLLMProvider(_mock_response(context, citations=[invalid])),
-    )
+    provider = MockLLMProvider(_mock_response(context, chunk_ids=["not-retrieved"]))
 
     with pytest.raises(LLMResponseError, match="not present in supplied RAGContext"):
-        service.answer(context.query, context)
+        _answer(context, provider)
 
 
-@pytest.mark.parametrize(
-    ("field", "value"),
-    [
-        ("source_id", "invented-source"),
-        ("source_locator", "page:999"),
-        ("page_number", 999),
-        ("evidence_status", "observed"),
-    ],
-)
-def test_citation_provenance_must_match_supplied_context(field, value):
+def test_citation_provenance_is_copied_from_context_not_from_model_output():
     context = _context(_result(status="planned"))
-    invalid = _citation(context.evidence_items[0])
-    invalid[field] = value
-    service = LLMService(
-        LLMConfig(provider="mock"),
-        MockLLMProvider(_mock_response(context, citations=[invalid])),
+    item = context.evidence_items[0]
+    reply = _mock_response(context)
+    # Provenance the model writes anywhere is ignored, including a citations
+    # array in the old format.
+    reply["findings"][0].update(source_id="forged", page_number=999, evidence_status="observed")
+    reply["citations"] = [{"chunk_id": item.chunk_id, "source_id": "forged", "evidence_status": "observed"}]
+
+    response = _answer(context, MockLLMProvider(reply))
+
+    citation = response.citations[0]
+    assert (citation.source_id, citation.source_locator, citation.page_number, citation.evidence_status) == (
+        item.source_id,
+        item.source_locator,
+        item.page_number,
+        "planned",
     )
 
-    with pytest.raises(LLMResponseError, match=f"invalid {field}"):
-        service.answer(context.query, context)
 
-
-def test_grounded_response_requires_citations_and_known_status():
+def test_grounded_response_requires_findings_and_known_status():
     context = _context(_result())
-    no_citations = LLMService(
-        LLMConfig(provider="mock"),
-        MockLLMProvider(_mock_response(context, citations=[])),
-    )
     with pytest.raises(LLMResponseError, match="must cite"):
-        no_citations.answer(context.query, context)
+        _answer(context, MockLLMProvider(_mock_response(context, chunk_ids=[])))
 
-    no_status = LLMService(
-        LLMConfig(provider="mock"),
-        MockLLMProvider({"answer": "Test", "status": "unknown", "citations": []}),
-    )
     with pytest.raises(LLMResponseError, match="status"):
-        no_status.answer(context.query, context)
+        _answer(context, MockLLMProvider({"answer": "Test", "status": "unknown", "findings": []}))
 
 
 def test_invalid_response_json_and_missing_fields_fail_clearly():
     context = _context(_result())
     for raw in ("not json", json.dumps({"answer": "no schema"})):
-        service = LLMService(LLMConfig(provider="mock"), MockLLMProvider(raw))
         with pytest.raises(LLMResponseError):
-            service.answer(context.query, context)
+            _answer(context, MockLLMProvider(raw))
 
 
 @pytest.mark.parametrize("status", ["metadata", "observed", "interpreted", "unknown"])
@@ -201,7 +212,7 @@ def test_evidence_status_is_preserved_in_prompt_summary_and_citation(status):
     context = _context(_result(status=status))
     provider = MockLLMProvider(_mock_response(context))
 
-    response = LLMService(LLMConfig(provider="mock"), provider).answer(context.query, context)
+    response = _answer(context, provider)
 
     assert response.citations[0].evidence_status == status
     assert response.evidence_summary[0].evidence_status == status
@@ -212,7 +223,7 @@ def test_planned_is_never_converted_to_observed_by_service():
     context = _context(_result(status="planned"))
     provider = MockLLMProvider(_mock_response(context, answer="A planned condition is described."))
 
-    response = LLMService(LLMConfig(provider="mock"), provider).answer(context.query, context)
+    response = _answer(context, provider)
 
     assert response.citations[0].evidence_status == "planned"
     assert response.evidence_summary[0].evidence_status == "planned"
@@ -222,14 +233,40 @@ def test_planned_is_never_converted_to_observed_by_service():
 def test_planned_evidence_cannot_cite_a_claim_that_nasa_observed_results():
     context = _context(_result(status="planned"))
     provider = MockLLMProvider(
-        _mock_response(
-            context,
-            answer="NASA observed that 21% oxygen caused the flame to extinguish.",
-        )
+        _mock_response(context, answer="NASA observed that 21% oxygen caused the flame to extinguish.")
     )
 
     with pytest.raises(LLMResponseError, match="claims an observation"):
-        LLMService(LLMConfig(provider="mock"), provider).answer(context.query, context)
+        _answer(context, provider)
+
+
+def test_a_finding_cannot_present_planned_evidence_as_an_observation():
+    context = _context(_result(status="planned"))
+    provider = MockLLMProvider(
+        _mock_response(context, statement="The tests measured extinction at 21% oxygen.")
+    )
+
+    with pytest.raises(LLMResponseError, match="finding 1 claims an observation"):
+        _answer(context, provider)
+
+
+def test_observation_claim_citing_unlabelled_evidence_is_accepted():
+    # Nearly every indexed document is unlabelled; "unknown" is not "planned".
+    context = _context(_result(status="unknown", text="Cool flames were observed after hot-flame extinction."))
+    chunk_id = context.evidence_items[0].chunk_id
+    response = _answer(
+        context,
+        MockLLMProvider(
+            _mock_response(
+                context,
+                answer=f"NASA found that cool flames follow radiative extinction of the hot flame [{chunk_id}].",
+                statement="The experiments showed cool flames after hot-flame extinction.",
+            )
+        ),
+    )
+
+    assert response.status == "grounded"
+    assert response.citations[0].evidence_status == "unknown"
 
 
 def test_answer_does_not_report_similarity_as_confidence():
@@ -239,21 +276,129 @@ def test_answer_does_not_report_similarity_as_confidence():
     )
 
     with pytest.raises(LLMResponseError, match="confidence"):
-        LLMService(LLMConfig(provider="mock"), provider).answer(context.query, context)
+        _answer(context, provider)
 
 
 def test_observation_claim_cannot_be_supported_by_mixed_planned_and_observed_citations():
     context = _context(_result(status="planned"), _result(status="observed", chunk_id="observed"))
     provider = MockLLMProvider(
-        _mock_response(
-            context,
-            answer="NASA observed the result.",
-            citations=[_citation(context.evidence_items[0]), _citation(context.evidence_items[1])],
-        )
+        _mock_response(context, answer="NASA observed the result.", chunk_ids=["chunk-1", "observed"])
     )
 
-    with pytest.raises(LLMResponseError, match="not exclusively"):
-        LLMService(LLMConfig(provider="mock"), provider).answer(context.query, context)
+    with pytest.raises(LLMResponseError, match="claims an observation"):
+        _answer(context, provider)
+
+
+def test_partial_answer_keeps_inference_and_limitations():
+    context = _context(_result(status="unknown"))
+    response = _answer(
+        context,
+        MockLLMProvider(
+            _mock_response(
+                context,
+                status="partial",
+                support="inference",
+                scientific_context="Lower oxygen generally slows chemical reactions.",
+                limitations="The evidence gives no extinction diameters.",
+            )
+        ),
+    )
+
+    assert response.status == "partial"
+    assert response.findings[0].support == "inference"
+    payload = response.to_dict()
+    assert payload["limitations"] == "The evidence gives no extinction diameters."
+    assert payload["scientific_context"] == "Lower oxygen generally slows chemical reactions."
+    assert payload["findings"][0]["chunk_ids"] == ["chunk-1"]
+
+
+def test_partial_answer_must_state_its_limitations():
+    context = _context(_result())
+    with pytest.raises(LLMResponseError, match="limitations"):
+        _answer(context, MockLLMProvider(_mock_response(context, status="partial")))
+
+
+def test_limitations_written_as_a_list_are_joined():
+    context = _context(_result())
+    response = _answer(
+        context,
+        MockLLMProvider(_mock_response(context, status="partial", limitations=["No outcomes.", "No temperatures."])),
+    )
+    assert response.limitations == "No outcomes.\nNo temperatures."
+
+
+def test_scientific_context_cannot_cite_evidence():
+    context = _context(_result())
+    provider = MockLLMProvider(
+        _mock_response(context, scientific_context="Kinetics explain this [chunk-1].")
+    )
+
+    with pytest.raises(LLMResponseError, match="scientific_context"):
+        _answer(context, provider)
+
+
+def test_finding_without_chunk_ids_is_rejected():
+    context = _context(_result())
+    reply = _mock_response(context)
+    reply["findings"].append({"statement": "Flames are hot.", "support": "direct", "chunk_ids": []})
+
+    with pytest.raises(LLMResponseError, match="finding 2 must cite at least one chunk_id"):
+        _answer(context, MockLLMProvider(reply))
+
+
+def test_inline_markers_become_citations_and_unknown_markers_are_rejected():
+    context = _context(_result(), _result(chunk_id="chunk-2"))
+    response = _answer(
+        context,
+        MockLLMProvider(_mock_response(context, answer="The plan lists 21% oxygen [chunk-2].", chunk_ids=["chunk-1"])),
+    )
+    assert [citation.chunk_id for citation in response.citations] == ["chunk-2", "chunk-1"]
+
+    invented = _mock_response(context, answer="The plan lists 21% oxygen [chunk-deadbeef00].")
+    with pytest.raises(LLMResponseError, match="'chunk-deadbeef00' not present"):
+        _answer(context, MockLLMProvider(invented))
+    in_limitations = _mock_response(context, limitations="Only [chunk-deadbeef00] covers methanol.")
+    with pytest.raises(LLMResponseError, match="limitations references chunk_id"):
+        _answer(context, MockLLMProvider(in_limitations))
+
+
+def test_limitations_may_cite_supplied_chunks_and_they_become_citations():
+    context = _context(_result(), _result(chunk_id="chunk-2"))
+    response = _answer(
+        context,
+        MockLLMProvider(_mock_response(context, status="partial", limitations="[chunk-2, chunk-1] cover methanol only.")),
+    )
+    assert [citation.chunk_id for citation in response.citations] == ["chunk-1", "chunk-2"]
+
+
+def test_rejected_reply_is_retried_once_with_the_reason():
+    context = _context(_result())
+    bad = _mock_response(context, chunk_ids=["not-retrieved"])
+    provider = SequenceProvider(bad, _mock_response(context))
+
+    response = _answer(context, provider)
+
+    assert response.status == "grounded"
+    assert len(provider.calls) == 2
+    retry_prompt = provider.calls[1][1]
+    assert "YOUR PREVIOUS REPLY WAS REJECTED" in retry_prompt
+    assert "not present in supplied RAGContext" in retry_prompt
+
+
+def test_second_rejection_is_raised():
+    context = _context(_result())
+    provider = MockLLMProvider(_mock_response(context, chunk_ids=["not-retrieved"]))
+
+    with pytest.raises(LLMResponseError):
+        _answer(context, provider)
+    assert len(provider.calls) == 2
+
+
+def test_default_mock_fixture_cites_the_first_supplied_item():
+    context = _context(_result(), _result(chunk_id="chunk-2"))
+    response = _answer(context, MockLLMProvider())
+    assert response.status == "grounded"
+    assert [citation.chunk_id for citation in response.citations] == ["chunk-1"]
 
 
 def test_deterministic_mock_provider_produces_repeatable_structured_fixture():
@@ -345,7 +490,7 @@ def test_live_llm_smoke_is_opt_in_and_requires_gateway_configuration():
 
     context = _context(_result())
     response = LLMService(LLMConfig.from_env()).answer(context.query, context)
-    assert response.status in {"grounded", "insufficient_evidence"}
+    assert response.status in {"grounded", "partial", "insufficient_evidence"}
     if response.status == "grounded":
         assert response.citations
 

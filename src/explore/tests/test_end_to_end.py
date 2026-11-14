@@ -117,15 +117,19 @@ class CitationFixtureProvider:
         section = user_prompt.split(marker, 1)[1].split("\n\nRequired output format:", 1)[0]
         evidence = json.loads(section)
         item = evidence[0]
-        citation = {
-            key: item[key]
-            for key in ("chunk_id", "source_id", "source_locator", "page_number", "evidence_status")
-        }
         return json.dumps(
             {
                 "answer": "Fixture answer: the supplied source identifies a planned condition; it does not report an observation.",
                 "status": "grounded",
-                "citations": [citation],
+                "findings": [
+                    {
+                        "statement": "The source lists a planned test condition.",
+                        "support": "direct",
+                        "chunk_ids": [item["chunk_id"]],
+                    }
+                ],
+                "scientific_context": "",
+                "limitations": "",
             }
         )
 
@@ -377,14 +381,8 @@ def test_invented_citation_is_rejected_by_existing_grounded_llm_validator():
                 {
                     "answer": "The retrieved evidence supports a response.",
                     "status": "grounded",
-                    "citations": [
-                        {
-                            "chunk_id": "invented-chunk",
-                            "source_id": "invented-source",
-                            "source_locator": "page:999",
-                            "page_number": 999,
-                            "evidence_status": "observed",
-                        }
+                    "findings": [
+                        {"statement": "An invented claim.", "support": "direct", "chunk_ids": ["invented-chunk"]}
                     ],
                 }
             )
@@ -409,17 +407,14 @@ def test_claim_of_observation_cannot_be_supported_by_planned_citation():
         def generate(self, *, system_prompt, user_prompt, config):
             marker = "STRUCTURED EVIDENCE ITEMS\n-------------------------\n"
             section = user_prompt.split(marker, 1)[1].split("\n\nRequired output format:", 1)[0]
-            evidence = json.loads(section)
-            item = evidence[0]
-            citation = {
-                key: item[key]
-                for key in ("chunk_id", "source_id", "source_locator", "page_number", "evidence_status")
-            }
+            item = json.loads(section)[0]
             return json.dumps(
                 {
                     "answer": "NASA observed the test outcome at this condition.",
                     "status": "grounded",
-                    "citations": [citation],
+                    "findings": [
+                        {"statement": "A test condition is listed.", "support": "direct", "chunk_ids": [item["chunk_id"]]}
+                    ],
                 }
             )
 
@@ -431,12 +426,12 @@ def test_claim_of_observation_cannot_be_supported_by_planned_citation():
     try:
         explore.explore(ExploreRequest("What did NASA observe?"))
     except LLMResponseError as exc:
-        assert "evidence_status='observed'" in str(exc)
+        assert "claims an observation" in str(exc)
     else:
         raise AssertionError("Planned citation incorrectly supported an observation claim")
 
 
-def test_valid_chunk_id_with_forged_source_provenance_is_rejected():
+def test_forged_source_provenance_in_model_output_never_reaches_citations():
     class ForgedProvenanceProvider:
         provider_name = "mock"
 
@@ -448,15 +443,15 @@ def test_valid_chunk_id_with_forged_source_provenance_is_rejected():
                 {
                     "answer": "The retrieved document describes the plan.",
                     "status": "grounded",
-                    "citations": [
+                    "findings": [
                         {
-                            "chunk_id": item["chunk_id"],
+                            "statement": "The plan lists methanol at 21% oxygen.",
+                            "support": "direct",
+                            "chunk_ids": [item["chunk_id"]],
                             "source_id": "forged-source",
-                            "source_locator": item["source_locator"],
-                            "page_number": item["page_number"],
-                            "evidence_status": item["evidence_status"],
                         }
                     ],
+                    "citations": [{"chunk_id": item["chunk_id"], "source_id": "forged-source"}],
                 }
             )
 
@@ -465,9 +460,6 @@ def test_valid_chunk_id_with_forged_source_provenance_is_rejected():
         provider=ForgedProvenanceProvider(),
     )
     explore = ExploreService(document_search(), FixtureExperimentalData(planned_records()), llm)
-    try:
-        explore.explore(ExploreRequest("What does the FLEX plan say?"))
-    except LLMResponseError as exc:
-        assert "invalid source_id" in str(exc)
-    else:
-        raise AssertionError("Forged citation source provenance was not rejected")
+    response = explore.explore(ExploreRequest("What does the FLEX plan say?"))
+    assert response.citations[0]["source_id"] == "nasa-document-sha256"
+    assert response.citations[0]["evidence_status"] == "planned"

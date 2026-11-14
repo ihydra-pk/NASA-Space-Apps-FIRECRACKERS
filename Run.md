@@ -67,7 +67,7 @@ curl -X POST http://127.0.0.1:8000/api/explore \
   -d '{"question":"What happens to a flame in microgravity when the forced flow velocity changes?"}'
 ```
 
-The second command returns JSON with `"status": "grounded"`, an answer and its citations. Expect roughly 30 seconds per question, longer when several are asked at once.
+The second command returns JSON with `"status": "grounded"` (or `"partial"` when the documents answer only part of the question), an answer, its findings, a separately labelled `scientific_context` and the citations. The first question after starting the server takes about 10 seconds longer while the search index is read into memory. Expect roughly 30 seconds per question, longer when several are asked at once.
 
 ## Troubleshooting
 
@@ -77,7 +77,7 @@ The second command returns JSON with `"status": "grounded"`, an answer and its c
 | Answers only ever cite FLEX documents                                      | `data/vectorstore/firelens.sqlite3` is missing, so the server fell back to the small FLEX-only index. Do step 2 and restart.                                 |
 | `address already in use`                                                   | Another server is on port 8000. Stop it, or start with `--port 8080`.                                                                                        |
 | `No module named fastapi`                                                  | The virtual environment is not active, or step 1 was skipped.                                                                                                |
-| "Insufficient evidence" for a question the documents should cover          | Check you have pulled the latest `SI_Dashboard_Ravish` and restarted the server.                                                                             |
+| "Insufficient evidence" for a question the documents should cover          | Check you have pulled the latest `SI_Dashboard_Ravish` and restarted the server. Add the question to `src/evaluation/questions.jsonl` with the page that answers it, and run the benchmark (below) to see whether that page is retrieved. |
 
 ## Optional settings
 
@@ -86,8 +86,27 @@ Set these before starting the server to change its defaults:
 | Variable                                                  | Default              | Meaning                                                           |
 | --------------------------------------------------------- | -------------------- | ----------------------------------------------------------------- |
 | `FIRELENS_API_LLM_MODEL`                                  | `openai.gpt-6-luna`  | chat model that writes the answer                                 |
-| `FIRELENS_API_TOP_K`                                      | `5`                  | passages given to the model per question                          |
+| `FIRELENS_API_TOP_K`                                      | `10`                 | passages given to the model per question                          |
+| `FIRELENS_API_NEIGHBOURS`                                 | `3`                  | add the next page of a report after this many top passages; `0` turns it off |
+| `FIRELENS_API_DEMOTE_REFERENCES`                          | `on`                 | `off` lets bibliography pages compete with findings again         |
 | `FIRELENS_API_MIN_CHUNK_WORDS`                            | `25`                 | passages shorter than this (slide titles) are ignored             |
 | `FIRELENS_API_SEARCH_MODE`                                | `hybrid`             | `hybrid` (meaning plus keywords) or `semantic`                    |
 | `FIRELENS_API_VECTOR_DATABASE`, `FIRELENS_API_COLLECTION` | all-experiment index | use a different search index                                      |
-| `FIRELENS_API_ROUTER`                                     | `on`                 | `off` skips the step that reads test conditions from the question |
+| `FIRELENS_API_ROUTER`                                     | `on`                 | `off` skips the step that reads test conditions from the question and writes extra search queries |
+
+## Deploy for a demo (Render)
+
+The whole site (page and AI server) runs as one Render service described by `render.yaml`; see [RENDER_DEPLOY.md](RENDER_DEPLOY.md). In short: Render → New → Blueprint → this repository, branch `SI_Dashboard_Ravish`, enter `UPB_AI_GATEWAY_KEY`. Each deploy builds the search index itself. On the free plan, open the site a few minutes before presenting so it is awake.
+
+## Measure answer quality
+
+`src/evaluation/questions.jsonl` holds benchmark questions, each with the NASA document pages that answer it (or marked `should_abstain` when the documents cannot). The benchmark runs them through the same service as the web page and writes a report to `data/evaluation/`:
+
+```bash
+python -m src.evaluation --label after                  # retrieval and answers, about 20 minutes
+python -m src.evaluation --retrieval-only --label quick # search only, a few minutes
+FIRELENS_API_NEIGHBOURS=0 python -m src.evaluation --retrieval-only --label no-neighbours
+```
+
+The summary reports how often the answering page is among the first 5 and 10 passages (`hit@5`, `hit@10`, `mrr`), whether answerable questions were answered and unanswerable ones refused, whether the answering page was cited, and the time per question. Compare runs before and after a change; the per-question results show which page was retrieved instead.
+

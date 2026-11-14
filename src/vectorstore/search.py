@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 import math
+import operator
+from dataclasses import dataclass
+from typing import Any, Sequence
 
 from src.embeddings.config import EmbeddingConfig
 from src.embeddings.pipeline import _validate_vectors
@@ -11,7 +14,12 @@ from src.embeddings.providers import EmbeddingProvider, create_embedding_provide
 from .config import VectorStoreConfig
 from .keyword import bm25_scores
 from .models import RetrievalResult, SearchResult
+from .references import asks_for_publications, looks_like_reference_list
 from .store import VectorStore
+
+# math.sumprod (Python 3.12+) is a dot product in C, several times faster than
+# the equivalent generator that older interpreters fall back to.
+_dot = getattr(math, "sumprod", None) or (lambda left, right: sum(map(operator.mul, left, right)))
 
 
 def cosine_similarity(left: tuple[float, ...], right: tuple[float, ...]) -> float:
@@ -40,9 +48,14 @@ def query_text_for_embedding(query_text: str, config: VectorStoreConfig) -> str:
     return query_text
 
 
-def _rankable(
-    scored: list[tuple[float, dict, tuple[float, ...]]], min_chunk_words: int
-) -> list[tuple[float, dict, tuple[float, ...]]]:
+Scored = list[tuple[float, dict[str, Any], Sequence[float]]]
+
+
+def _text_key(record: dict[str, Any]) -> str:
+    return " ".join(record["text"].split()).casefold()
+
+
+def _rankable(scored: Scored, min_chunk_words: int) -> Scored:
     """Drop title-only chunks and repeats of a passage already ranked higher.
 
     The same paper is often filed under several names, so identical text would
@@ -50,13 +63,12 @@ def _rankable(
     the first copy kept is the best-scoring one.
     """
 
-    kept: list[tuple[float, dict, tuple[float, ...]]] = []
+    kept: Scored = []
     seen: set[str] = set()
     for item in scored:
-        words = item[1]["text"].split()
-        if len(words) < min_chunk_words:
+        if len(item[1]["text"].split()) < min_chunk_words:
             continue
-        key = " ".join(words).casefold()
+        key = _text_key(item[1])
         if key in seen:
             continue
         seen.add(key)
@@ -69,18 +81,51 @@ SEARCH_MODES = ("semantic", "hybrid")
 # k keeps the top semantic hits well ahead; the keyword ranking counts for less,
 # so it promotes exact-term matches without letting word overlap alone outrank
 # a close match in meaning. Chosen by checking a handful of questions against
-# the full index; revisit once there is a question set with known answers.
+# the full index; revisit with the benchmark in src/evaluation.
 _RRF_K = 10
 _KEYWORD_WEIGHT = 0.3
+# Fusing several queries works the same way. The user's question counts 1.5
+# times as much as each planner sub-query: its own best hits stay on top, but
+# each sub-query's best hit still beats the question's hits from rank 7 down,
+# and a passage several queries agree on rises above both. At 2.0 a passage
+# found only by a sub-query barely reached the top 10 in a check on the full
+# index. Tune with the benchmark in src/evaluation.
+_QUESTION_WEIGHT = 1.5
+_SUBQUERY_WEIGHT = 1.0
+# Passages taken from each query's ranking before the rankings are fused.
+_CANDIDATES_PER_QUERY = 15
+# The next page of a slide deck or of a per-test data sheet is usually about
+# something else, so neighbours are only added for prose documents.
+_NO_NEIGHBOURS = ("_Presentations_", "_Analyzed Data_")
 
 
-def _fuse_with_keywords(
-    query_text: str,
-    scored: list[tuple[float, dict, tuple[float, ...]]],
-    count: int,
-) -> tuple[RetrievalResult, ...]:
-    """Re-rank similarity-sorted chunks by fusing semantic and keyword ranks."""
+@dataclass(frozen=True, slots=True)
+class _Ranking:
+    """One query's ordering of the rankable passages."""
 
+    scored: Scored  # similarity order, after _rankable
+    order: list[int]  # indices into ``scored``, best first
+    keyword_rank: dict[int, int]  # hybrid mode only
+    keyword_scores: list[float]  # hybrid mode only
+    hybrid: bool
+
+    def result(self, rank: int, index: int) -> RetrievalResult:
+        score, record, _ = self.scored[index]
+        if not self.hybrid:
+            return RetrievalResult.from_record(rank, score, record)
+        return RetrievalResult.from_record(
+            rank,
+            score,
+            record,
+            semantic_rank=index + 1,
+            keyword_rank=self.keyword_rank.get(index),
+            keyword_score=self.keyword_scores[index] if index in self.keyword_rank else None,
+        )
+
+
+def _rank(query_text: str, scored: Scored, mode: str) -> _Ranking:
+    if mode != "hybrid":
+        return _Ranking(scored, list(range(len(scored))), {}, [], False)
     keyword_scores = bm25_scores(query_text, [record["text"] for _, record, _ in scored])
     by_keyword = sorted(
         (index for index, score in enumerate(keyword_scores) if score > 0),
@@ -95,21 +140,124 @@ def _fuse_with_keywords(
         return value
 
     order = sorted(range(len(scored)), key=lambda index: (-fused(index), scored[index][1]["chunk_id"]))
-    return tuple(
-        RetrievalResult.from_record(
-            rank,
-            scored[index][0],
-            scored[index][1],
-            semantic_rank=index + 1,
-            keyword_rank=keyword_rank.get(index),
-            keyword_score=keyword_scores[index] if index in keyword_rank else None,
-        )
-        for rank, index in enumerate(order[:count], start=1)
-    )
+    return _Ranking(scored, order, keyword_rank, keyword_scores, True)
 
 
-def search(
-    query_text: str,
+def _similarities(
+    query_vectors: list[tuple[float, ...]],
+    entries: list[tuple[dict[str, Any], Sequence[float]]],
+    dimension: int,
+) -> list[list[float]]:
+    """Cosine similarity of every stored vector to each query vector."""
+
+    query_norms = [math.sqrt(_dot(vector, vector)) for vector in query_vectors]
+    if not all(query_norms):
+        raise ValueError("Cosine similarity is undefined for a zero vector")
+    columns: list[list[float]] = [[] for _ in query_vectors]
+    for record, vector in entries:
+        if len(vector) != dimension:
+            raise ValueError(
+                f"Stored chunk {record.get('chunk_id')!r} has dimension {len(vector)}; "
+                f"expected {dimension}"
+            )
+        norm = math.sqrt(_dot(vector, vector))
+        if norm == 0:
+            raise ValueError("Cosine similarity is undefined for a zero vector")
+        for column, query, query_norm in zip(columns, query_vectors, query_norms):
+            # Roundoff can move a bounded cosine a few ulps outside [-1, 1].
+            column.append(max(-1.0, min(1.0, _dot(query, vector) / (query_norm * norm))))
+    return columns
+
+
+def _fuse_queries(rankings: list[_Ranking], depth: int) -> list[int]:
+    """Reciprocal rank fusion of each query's top ``depth`` passages.
+
+    Returns indices into the question's ranking. Passages are matched by text,
+    so a duplicate that one query kept under another chunk ID still counts.
+    """
+
+    question = rankings[0]
+    position = {_text_key(record): index for index, (_, record, _) in enumerate(question.scored)}
+    fused: dict[int, float] = {}
+    for number, ranking in enumerate(rankings):
+        weight = _QUESTION_WEIGHT if number == 0 else _SUBQUERY_WEIGHT
+        for rank, index in enumerate(ranking.order[:depth], start=1):
+            target = position.get(_text_key(ranking.scored[index][1]))
+            if target is not None:
+                fused[target] = fused.get(target, 0.0) + weight / (_RRF_K + rank)
+    return sorted(fused, key=lambda index: (-fused[index], question.scored[index][1]["chunk_id"]))
+
+
+def _demote_reference_lists(candidates: list[int], scored: Scored, count: int) -> list[int]:
+    """Rank reference-list passages after all others (see ``references.py``)."""
+
+    findings: list[int] = []
+    references: list[int] = []
+    for index in candidates:
+        (references if looks_like_reference_list(scored[index][1]["text"]) else findings).append(index)
+        if len(findings) == count:
+            break
+    return findings + references
+
+
+def _next_in_document(record: dict[str, Any], scored: Scored) -> int | None:
+    """The following chunk of the same page, or the first one of the next page."""
+
+    page = record.get("page_number") or 0
+    here = (page, record.get("chunk_index") or 0)
+    best: tuple[tuple[int, int], int] | None = None
+    for index, (_, other, _) in enumerate(scored):
+        if other["source_id"] != record["source_id"]:
+            continue
+        key = (other.get("page_number") or 0, other.get("chunk_index") or 0)
+        if here < key and key[0] <= page + 1 and (best is None or key < best[0]):
+            best = (key, index)
+    return best[1] if best else None
+
+
+def _with_neighbours(
+    selected: list[int], scored: Scored, neighbours: int, count: int, *, skip_references: bool
+) -> list[int]:
+    """Insert the next passage of the same document after each of the top hits.
+
+    A finding often continues on the next page of a report. The added passage
+    sits right after the hit it continues; the lowest-ranked hits make room.
+    """
+
+    result = list(selected)
+    for parent in selected[:neighbours]:
+        record = scored[parent][1]
+        if any(tag in record["filename"] for tag in _NO_NEIGHBOURS):
+            continue
+        neighbour = _next_in_document(record, scored)
+        if neighbour is None or neighbour in result:
+            continue
+        if skip_references and looks_like_reference_list(scored[neighbour][1]["text"]):
+            continue
+        result.insert(result.index(parent) + 1, neighbour)
+    return result[:count]
+
+
+def _distinct_queries(queries: Sequence[str]) -> list[str]:
+    if isinstance(queries, str):
+        raise TypeError("queries must be a sequence of query strings")
+    texts = list(queries)
+    if not texts or not isinstance(texts[0], str) or not texts[0].strip():
+        raise ValueError("query_text must not be empty")
+    # The question is kept exactly as given: RAG checks it against the result.
+    kept = [texts[0]]
+    seen = {texts[0].strip().casefold()}
+    for text in texts[1:]:
+        if not isinstance(text, str):
+            raise ValueError("search queries must be strings")
+        if text.strip() and text.strip().casefold() not in seen:
+            seen.add(text.strip().casefold())
+            kept.append(text.strip())
+    return kept
+
+
+def search_many(
+    queries: Sequence[str],
     store: VectorStore,
     config: VectorStoreConfig,
     *,
@@ -117,16 +265,24 @@ def search(
     top_k: int | None = None,
     mode: str = "semantic",
 ) -> SearchResult:
-    """Embed a query with the indexed profile and return ranked evidence.
+    """Rank passages for a question and any planner sub-queries in one pass.
 
-    ``mode="semantic"`` ranks by cosine similarity alone. ``mode="hybrid"``
-    also scores chunk text by keyword (BM25) and orders by reciprocal rank
-    fusion of the two rankings. Fusion uses ranks only, so the two score
-    scales are never added together and ``similarity_score`` stays cosine.
+    ``queries[0]`` is the user's question; further entries are sub-queries.
+    All are embedded in one request and each is ranked as :func:`search`
+    would rank it alone. With several queries the rankings are fused by
+    reciprocal rank, the question weighted highest. ``similarity_score`` is
+    always the cosine similarity to the question, and ``semantic_rank`` and
+    ``keyword_rank`` describe the question's own ranking.
+
+    Two optional search-time rules come from ``config``:
+    ``demote_reference_lists`` ranks chunks that are mostly citations after
+    all others, unless the question asks about publications, and
+    ``neighbour_chunks`` adds the next passage of the same document after each
+    of that many top hits.
     """
 
-    if not isinstance(query_text, str) or not query_text.strip():
-        raise ValueError("query_text must not be empty")
+    texts = _distinct_queries(queries)
+    question = texts[0]
     if mode not in SEARCH_MODES:
         raise ValueError(f"mode must be one of {SEARCH_MODES}; got {mode!r}")
     count = config.top_k if top_k is None else top_k
@@ -155,37 +311,65 @@ def search(
         provider=config.provider,
         model_name=config.model_name,
         dimension=config.dimension,
-        batch_size=1,
+        batch_size=len(texts),
     )
     try:
-        vectors = _validate_vectors(provider.embed_batch([query_text_for_embedding(query_text, config)], embedding_config), 1, embedding_config)
+        vectors = _validate_vectors(
+            provider.embed_batch([query_text_for_embedding(text, config) for text in texts], embedding_config),
+            len(texts),
+            embedding_config,
+        )
     except Exception as exc:
         raise RuntimeError(f"Could not embed retrieval query: {exc}") from exc
-    query_vector = vectors[0]
 
-    scored: list[tuple[float, dict, tuple[float, ...]]] = []
-    for record, vector in store.records():
-        if len(vector) != config.dimension:
-            raise ValueError(
-                f"Stored chunk {record.get('chunk_id')!r} has dimension {len(vector)}; "
-                f"expected {config.dimension}"
-            )
-        scored.append((cosine_similarity(query_vector, vector), record, vector))
-    scored.sort(key=lambda item: (-item[0], item[1]["chunk_id"]))
-    scored = _rankable(scored, config.min_chunk_words)
-    if mode == "hybrid":
-        results = _fuse_with_keywords(query_text, scored, count)
+    entries = store.records()
+    rankings: list[_Ranking] = []
+    for text, scores in zip(texts, _similarities(vectors, entries, config.dimension)):
+        scored = sorted(
+            ((score, record, vector) for score, (record, vector) in zip(scores, entries)),
+            key=lambda item: (-item[0], item[1]["chunk_id"]),
+        )
+        rankings.append(_rank(text, _rankable(scored, config.min_chunk_words), mode))
+
+    question_ranking = rankings[0]
+    if len(rankings) == 1:
+        candidates = question_ranking.order
     else:
-        results = tuple(
-            RetrievalResult.from_record(rank, score, record)
-            for rank, (score, record, _) in enumerate(scored[:count], start=1)
+        candidates = _fuse_queries(rankings, max(count, _CANDIDATES_PER_QUERY))
+    demote = config.demote_reference_lists and not asks_for_publications(question)
+    if demote:
+        candidates = _demote_reference_lists(candidates, question_ranking.scored, count)
+    selected = candidates[:count]
+    if config.neighbour_chunks:
+        selected = _with_neighbours(
+            selected, question_ranking.scored, config.neighbour_chunks, count, skip_references=demote
         )
     return SearchResult(
         mode=mode,
-        query=query_text,
+        query=question,
         provider=config.provider,
         model_name=config.model_name,
         dimension=config.dimension,
         similarity_metric=config.similarity_metric,
-        matches=results,
+        matches=tuple(question_ranking.result(rank, index) for rank, index in enumerate(selected, start=1)),
     )
+
+
+def search(
+    query_text: str,
+    store: VectorStore,
+    config: VectorStoreConfig,
+    *,
+    provider: EmbeddingProvider | None = None,
+    top_k: int | None = None,
+    mode: str = "semantic",
+) -> SearchResult:
+    """Embed a query with the indexed profile and return ranked evidence.
+
+    ``mode="semantic"`` ranks by cosine similarity alone. ``mode="hybrid"``
+    also scores chunk text by keyword (BM25) and orders by reciprocal rank
+    fusion of the two rankings. Fusion uses ranks only, so the two score
+    scales are never added together and ``similarity_score`` stays cosine.
+    """
+
+    return search_many([query_text], store, config, provider=provider, top_k=top_k, mode=mode)

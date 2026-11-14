@@ -16,14 +16,23 @@ retrieval-result-to-context construction.
 
 ```python
 from src.rag import RAGContextConfig, retrieve_context
-from src.vectorstore.search import search
+from src.vectorstore.search import search_many
 
 context = retrieve_context(
     "How is limiting oxygen index defined?",
-    lambda query, top_k: search(query, store, vector_config, provider=provider, top_k=top_k),
-    RAGContextConfig(top_k=5, max_context_chars=20_000),
+    lambda query, top_k, extra_queries=(): search_many(
+        [query, *extra_queries], store, vector_config, provider=provider, top_k=top_k
+    ),
+    RAGContextConfig(top_k=10, max_context_chars=60_000),
+    extra_queries=("limiting oxygen index definition", "LOI test procedure"),
 )
 ```
+
+`extra_queries` are planner sub-queries (see `src/explore/router.py`). They are
+passed to the retriever as `extra_queries=` only when there are any, so a
+retriever written as `retriever(query, *, top_k)` keeps working without them.
+The default `max_context_chars` (60,000) leaves room for about a dozen
+800-token chunks with their provenance headers.
 
 Evidence items preserve rank, similarity score, exact retrieved text, source
 IDs/hashes, document and page locator, and the original evidence status.

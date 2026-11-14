@@ -51,3 +51,28 @@ Query-provider errors and dimension/profile mismatches fail explicitly. The
 mock provider remains available for deterministic unit tests but is rejected
 when querying the real Qwen collection. This layer stops at ranked evidence; it
 does not build RAG context or generate answers.
+
+## Several queries, and rules used by the API
+
+`search_many([question, *sub_queries], store, config, ...)` embeds all queries
+in one request, ranks each one as `search` would, and fuses the rankings by
+reciprocal rank, with the question weighted 1.5 times each sub-query.
+`similarity_score` stays the cosine similarity to the question. `search(q, ...)`
+is `search_many([q], ...)`.
+
+Two search-time rules are off by default and switched on by `src.api` and
+`src.explore`. Neither changes the index or any stored label:
+
+- `demote_reference_lists`: chunks that are mostly citations (12 or more
+  author, year or volume patterns per 100 words, see `references.py`) rank after
+  every other passage, unless the question asks about papers or publications.
+  A paper title in a bibliography reads like a question, so these pages
+  otherwise outrank the findings they cite.
+- `neighbour_chunks=N`: after each of the top N hits, the next chunk of the same
+  page, or the first chunk of the next page, is inserted; the lowest hits make
+  room. Slides (`_Presentations_`) and per-test data sheets (`_Analyzed Data_`)
+  are not expanded.
+
+`CachedCollection.load(config)` reads a collection into memory once (about 9 s
+and 84 MB for the full 4,103-chunk index) and can be passed to `search` in place
+of a store; the API keeps one per process.

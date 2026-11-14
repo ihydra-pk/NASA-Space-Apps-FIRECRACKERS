@@ -30,6 +30,12 @@ class VectorStoreConfig:
     query_instruction: str | None = DEFAULT_QUERY_INSTRUCTION
     # Chunks with fewer words are skipped when ranking (they stay in the index).
     min_chunk_words: int = 0
+    # Rank chunks that are mostly citations (bibliographies, publication
+    # lists) after all others; see references.py. They stay in the index.
+    demote_reference_lists: bool = False
+    # After each of this many top hits, add the next passage of the same
+    # document (the next chunk of the page, or the next page).
+    neighbour_chunks: int = 0
 
     def __post_init__(self) -> None:
         if not self.collection.strip():
@@ -42,5 +48,7 @@ class VectorStoreConfig:
             raise ValueError("top_k must be greater than zero")
         if self.min_chunk_words < 0:
             raise ValueError("min_chunk_words must not be negative")
+        if self.neighbour_chunks < 0:
+            raise ValueError("neighbour_chunks must not be negative")
         if self.similarity_metric != "cosine":
             raise ValueError("Only cosine similarity is currently supported")

@@ -1,0 +1,568 @@
+{
+  "label": "baseline",
+  "created": "2026-11-14T22:50:54+00:00",
+  "retrieval_only": false,
+  "settings": {},
+  "summary": {
+    "questions": 23,
+    "errors": 1,
+    "hit@5": 0.632,
+    "hit@10": 0.632,
+    "mrr": 0.398,
+    "coverage@10": 0.491,
+    "statuses": {
+      "insufficient_evidence": 7,
+      "grounded": 15,
+      "error": 1
+    },
+    "answered_when_answerable": 0.789,
+    "abstained_when_unanswerable": 1.0,
+    "gold_cited": 0.632,
+    "terms_mentioned": 0.842,
+    "mean_seconds": 17.8
+  },
+  "results": [
+    {
+      "id": "cool-flame-extinction-cause",
+      "category": "inference",
+      "question": "What causes cool flame extinction in microgravity?",
+      "error": null,
+      "seconds": 19.83,
+      "status": "insufficient_evidence",
+      "gold_rank": null,
+      "hit@5": false,
+      "hit@10": false,
+      "coverage@10": 0.0,
+      "gold_cited": false,
+      "terms_found": [],
+      "missing_terms": [
+        "kinetic"
+      ],
+      "retrieved": [
+        "PSI-39_Science Documents_CFI_SCR.pdf p.3",
+        "PSI-39_Science Documents_SRD_CFI.pdf p.23",
+        "PSI-117_Presentations_Oscillatory_Cool Flame_TFarouk.pdf p.2",
+        "PSI-39_Reports_CFI Science Final Report.pdf p.12",
+        "PSI-117_Reports_Dissertation_Combustion Behavior Of Sub-Millimeter Sized Oxygenated And N-Alka.pdf p.214"
+      ]
+    },
+    {
+      "id": "cool-flame-helium-dilution",
+      "category": "single_doc",
+      "question": "How does helium dilution affect cool flame extinction of n-dodecane droplets?",
+      "error": null,
+      "seconds": 20.5,
+      "status": "grounded",
+      "gold_rank": 1,
+      "hit@5": true,
+      "hit@10": true,
+      "coverage@10": 0.5,
+      "gold_cited": true,
+      "terms_found": [
+        "larger"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-39_Reports_CFI Science Final Report.pdf p.9",
+        "PSI-39_Science Documents_SRD_CFI.pdf p.26",
+        "PSI-39_Science Documents_SRD_CFI.pdf p.32",
+        "PSI-39_Reports_CFI Science Final Report.pdf p.13",
+        "PSI-117_Presentations_Three_Stage_Cool_Flame_TFarouk.pdf p.17"
+      ]
+    },
+    {
+      "id": "cool-flame-chain-length",
+      "category": "single_doc",
+      "question": "How does n-alkane chain length affect cool flame extinction diameters?",
+      "error": null,
+      "seconds": 17.07,
+      "status": "grounded",
+      "gold_rank": 2,
+      "hit@5": true,
+      "hit@10": true,
+      "coverage@10": 1.0,
+      "gold_cited": true,
+      "terms_found": [
+        "smaller"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-117_Reports_Dissertation_Combustion Behavior Of Sub-Millimeter Sized Oxygenated And N-Alka.pdf p.214",
+        "PSI-117_Presentations_Extinction_Characteristics_TFarouk.pdf p.16",
+        "PSI-39_Presentations_Aspects of Cool-Flame Supported Droplet Combustion in Microgravity_CFI.pdf p.18",
+        "PSI-39_Science Documents_SRD_CFI.pdf p.30",
+        "PSI-39_Reports_CFI Science Final Report.pdf p.12"
+      ]
+    },
+    {
+      "id": "hot-to-cool-transition-temperature",
+      "category": "numeric_conditions",
+      "question": "At roughly what maximum flame temperature did n-alkane droplet flames transition from hot to cool flame burning?",
+      "error": null,
+      "seconds": 18.51,
+      "status": "grounded",
+      "gold_rank": 1,
+      "hit@5": true,
+      "hit@10": true,
+      "coverage@10": 1.0,
+      "gold_cited": true,
+      "terms_found": [
+        "1200"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-117_Presentations_Extinction_Characteristics_TFarouk.pdf p.16",
+        "PSI-117_Presentations_Three_Stage_Cool_Flame_TFarouk.pdf p.1",
+        "PSI-117_Presentations_PSI_Users_Group_Cool_Flames_in_Space_03302026.pdf p.35",
+        "PSI-117_Reports_Dissertation_Combustion Behavior Of Sub-Millimeter Sized Oxygenated And N-Alka.pdf p.189",
+        "PSI-117_Reports_Dissertation_Combustion Behavior Of Sub-Millimeter Sized Oxygenated And N-Alka.pdf p.214"
+      ]
+    },
+    {
+      "id": "hot-vs-cool-extinction",
+      "category": "comparison",
+      "question": "How does cool flame extinction of n-alkane droplets differ from hot flame extinction?",
+      "error": null,
+      "seconds": 17.45,
+      "status": "insufficient_evidence",
+      "gold_rank": null,
+      "hit@5": false,
+      "hit@10": false,
+      "coverage@10": 0.0,
+      "gold_cited": false,
+      "terms_found": [
+        "cool"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-39_Presentations_Aspects of Cool-Flame Supported Droplet Combustion in Microgravity_CFI.pdf p.18",
+        "PSI-117_Reports_Dissertation_Combustion Behavior Of Sub-Millimeter Sized Oxygenated And N-Alka.pdf p.214",
+        "PSI-117_Presentations_Extinction_Characteristics_TFarouk.pdf p.1",
+        "PSI-117_Presentations_PSI_Users_Group_Cool_Flames_in_Space_03302026.pdf p.35",
+        "PSI-39_Reports_CFI Science Final Report.pdf p.12"
+      ]
+    },
+    {
+      "id": "cool-flame-discovery",
+      "category": "multi_doc",
+      "question": "How were cool flames discovered in microgravity droplet experiments, and when do they appear?",
+      "error": null,
+      "seconds": 23.13,
+      "status": "grounded",
+      "gold_rank": 1,
+      "hit@5": true,
+      "hit@10": true,
+      "coverage@10": 0.333,
+      "gold_cited": true,
+      "terms_found": [
+        "hot flame"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-39_Science Documents_SRD_CFI.pdf p.23",
+        "PSI-39_Reports_CFI Science Final Report.pdf p.12",
+        "PSI-39_Reports_CFI Science Final Report.pdf p.12",
+        "PSI-39_Presentations_Aspects of Cool-Flame Supported Droplet Combustion in Microgravity_CFI.pdf p.1",
+        "PSI-39_Science Documents_CFI_SCR.pdf p.3"
+      ]
+    },
+    {
+      "id": "cool-flame-long-duration",
+      "category": "inference",
+      "question": "Why do cool flame experiments need long-duration microgravity instead of drop towers?",
+      "error": null,
+      "seconds": 22.32,
+      "status": "grounded",
+      "gold_rank": 3,
+      "hit@5": true,
+      "hit@10": true,
+      "coverage@10": 0.5,
+      "gold_cited": true,
+      "terms_found": [
+        "drop"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-39_Science Documents_SRD_CFI.pdf p.23",
+        "PSI-39_Science Documents_SRD_CFI.pdf p.34",
+        "PSI-39_Science Documents_CFI_SCR.pdf p.5",
+        "PSI-117_Presentations_Oscillatory_Cool Flame_TFarouk.pdf p.2",
+        "PSI-39_Presentations_Cool Flames in Space, a Hot Prospect on Earth_CFI.pdf p.9"
+      ]
+    },
+    {
+      "id": "cfig-flame-counts",
+      "category": "numeric_conditions",
+      "question": "How many hot diffusion flames were observed in ACME CFI-G, and how many of them experienced radiative extinction?",
+      "error": null,
+      "seconds": 17.67,
+      "status": "grounded",
+      "gold_rank": 5,
+      "hit@5": true,
+      "hit@10": true,
+      "coverage@10": 1.0,
+      "gold_cited": true,
+      "terms_found": [
+        "280",
+        "189"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-159_Reports_FinalRpt_ACME.CFI-G.pdf p.1",
+        "PSI-23_Reports_s_Flame_final_report_20210729.pdf p.70",
+        "PSI-159_Reports_FinalRpt_ACME.CFI-G.pdf p.51",
+        "PSI-159_Reports_FinalRpt_ACME.CFI-G.pdf p.53",
+        "PSI-159_Reports_FinalRpt_ACME.CFI-G.pdf p.44"
+      ]
+    },
+    {
+      "id": "flex-methanol-test",
+      "category": "numeric_conditions",
+      "question": "Which FLEX test plan test uses methanol at 1 atm and 21% oxygen in the quiescent matrix?",
+      "error": "LLMResponseError: citation 1 references chunk_id 'chunk-da9f5a0bb9fb060e2e? ' not present in supplied RAGContext",
+      "seconds": 13.89,
+      "status": null,
+      "gold_rank": null,
+      "hit@5": null,
+      "hit@10": null,
+      "coverage@10": null,
+      "gold_cited": null,
+      "terms_found": null,
+      "missing_terms": null,
+      "retrieved": []
+    },
+    {
+      "id": "saffire-objectives",
+      "category": "single_doc",
+      "question": "What are the objectives of the SAFFIRE experiments?",
+      "error": null,
+      "seconds": 15.46,
+      "status": "grounded",
+      "gold_rank": 1,
+      "hit@5": true,
+      "hit@10": true,
+      "coverage@10": 0.667,
+      "gold_cited": true,
+      "terms_found": [
+        "large"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-98_Science Documents_SAFFIRE-I and SAFFIRE-III Readme.docx p.None",
+        "PSI-98_Science Documents_SAFFIRE Objectives, Development and Status.pdf p.5",
+        "PSI-98_Science Documents_SAFFIRE Objectives, Development and Status.pdf p.1",
+        "PSI-98_Science Documents_SAFFIRE Objectives, Development and Status.pdf p.5",
+        "PSI-23_Reports_s_Flame_final_report_20210729.pdf p.95"
+      ]
+    },
+    {
+      "id": "saffire-flow-velocity",
+      "category": "numeric_conditions",
+      "question": "What air flow velocities were planned for Saffire-I and Saffire-III?",
+      "error": null,
+      "seconds": 13.43,
+      "status": "grounded",
+      "gold_rank": 1,
+      "hit@5": true,
+      "hit@10": true,
+      "coverage@10": 1.0,
+      "gold_cited": true,
+      "terms_found": [
+        "20",
+        "30"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-98_Science Documents_SAFFIRE Objectives, Development and Status.pdf p.2",
+        "PSI-98_Science Documents_SAFFIRE-I and SAFFIRE-III Readme.docx p.None",
+        "PSI-98_Science Documents_SAFFIRE Objectives, Development and Status.pdf p.5",
+        "PSI-98_Science Documents_SAFFIRE Objectives, Development and Status.pdf p.3",
+        "PSI-25_Reports_BASS-II Summary Report.pdf p.120"
+      ]
+    },
+    {
+      "id": "bass2-opposed-flow",
+      "category": "single_doc",
+      "question": "How does opposed-flow velocity affect flame spread over PMMA rods in BASS-II?",
+      "error": null,
+      "seconds": 17.2,
+      "status": "grounded",
+      "gold_rank": 2,
+      "hit@5": true,
+      "hit@10": true,
+      "coverage@10": 1.0,
+      "gold_cited": true,
+      "terms_found": [
+        "increase"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-25_Reports_BASS-II Summary Report.pdf p.55",
+        "PSI-25_Reports_BASS-II Summary Report.pdf p.56",
+        "PSI-25_Reports_BASS-II Summary Report.pdf p.29",
+        "PSI-25_Reports_BASS-II Summary Report.pdf p.64",
+        "PSI-25_Science Documents_BASS-II_ReadMe.docx p.None"
+      ]
+    },
+    {
+      "id": "low-flow-extinction-solids",
+      "category": "inference",
+      "question": "Why can a flame spreading over a solid fuel extinguish at very low flow velocities in microgravity?",
+      "error": null,
+      "seconds": 23.9,
+      "status": "grounded",
+      "gold_rank": 5,
+      "hit@5": true,
+      "hit@10": true,
+      "coverage@10": 0.333,
+      "gold_cited": true,
+      "terms_found": [
+        "radiat"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-25_Reports_BASS-II Summary Report.pdf p.101",
+        "PSI-26_Science Documents_FlammabilityAspectsofFabric_USNationalCombustion.2013.docx p.None",
+        "PSI-23_Presentations_ISS Researchers Guide - Combustion In Reduced Gravity.pdf p.31",
+        "PSI-26_Science Documents_FlammabilityAspectsofFabric_USNationalCombustion.2013.docx p.None",
+        "PSI-25_Reports_BASS-II Summary Report.pdf p.27"
+      ]
+    },
+    {
+      "id": "bass2-critical-velocity",
+      "category": "numeric_conditions",
+      "question": "What critical opposed-flow velocity was measured for PMMA at 1 atm and 21% oxygen?",
+      "error": null,
+      "seconds": 16.86,
+      "status": "insufficient_evidence",
+      "gold_rank": null,
+      "hit@5": false,
+      "hit@10": false,
+      "coverage@10": 0.0,
+      "gold_cited": false,
+      "terms_found": [],
+      "missing_terms": [
+        "10"
+      ],
+      "retrieved": [
+        "PSI-25_Reports_BASS-II Summary Report.pdf p.139",
+        "PSI-25_Reports_BASS-II Summary Report.pdf p.56",
+        "PSI-25_Science Documents_BASS-II_ReadMe.docx p.None",
+        "PSI-25_Science Documents_BASS-II_ReadMe.docx p.None",
+        "PSI-25_Reports_BASS-II Summary Report.pdf p.28"
+      ]
+    },
+    {
+      "id": "same-smoke-particle-size",
+      "category": "single_doc",
+      "question": "What sizes were the smoke particles measured in the SAME experiments?",
+      "error": null,
+      "seconds": 17.92,
+      "status": "grounded",
+      "gold_rank": 3,
+      "hit@5": true,
+      "hit@10": true,
+      "coverage@10": 1.0,
+      "gold_cited": true,
+      "terms_found": [
+        "200",
+        "400"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-23_Presentations_CIR Paper 59th IAC 2008.pdf p.1",
+        "PSI-23_Presentations_CIR Paper 59th IAC 2008.pdf p.2",
+        "PSI-101_Reports_SAME-R_Final Report.pdf p.72",
+        "PSI-102_Reports_SAME_Final Science Report.pdf p.3",
+        "PSI-102_Reports_SAME_Final Science Report.pdf p.44"
+      ]
+    },
+    {
+      "id": "spice-smoke-points",
+      "category": "single_doc",
+      "question": "How many laminar smoke points did SPICE find, and for which fuels?",
+      "error": null,
+      "seconds": 16.36,
+      "status": "grounded",
+      "gold_rank": 2,
+      "hit@5": true,
+      "hit@10": true,
+      "coverage@10": 1.0,
+      "gold_cited": true,
+      "terms_found": [
+        "ethylene",
+        "propane"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-107_Reports_SPICE_30-DayPostFlightReport.pdf p.1",
+        "PSI-107_Reports_SPICE_FinalReport.pdf p.2",
+        "PSI-26_Presentations_Crew Training 2010.pdf p.4",
+        "PSI-26_Presentations_Crew Training 2011.pdf p.3",
+        "PSI-26_Presentations_Crew Training 2010.pdf p.3"
+      ]
+    },
+    {
+      "id": "flame-design-permanently-blue",
+      "category": "single_doc",
+      "question": "How did ACME Flame Design produce permanently blue (soot-free) flames?",
+      "error": null,
+      "seconds": 22.53,
+      "status": "grounded",
+      "gold_rank": null,
+      "hit@5": false,
+      "hit@10": false,
+      "coverage@10": 0.0,
+      "gold_cited": false,
+      "terms_found": [
+        "nitrogen"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-23_Reports_s_Flame_final_report_20210729.pdf p.75",
+        "PSI-10_Reports_FinalRpt_ACMEFlameDesign.pdf p.31",
+        "PSI-10_Reports_FinalRpt_ACMEFlameDesign.pdf p.77",
+        "PSI-10_Reports_FinalRpt_ACMEFlameDesign.pdf p.79",
+        "PSI-23_Reports_s_Flame_final_report_20210729.pdf p.88"
+      ]
+    },
+    {
+      "id": "stdce-objectives",
+      "category": "single_doc",
+      "question": "What were the objectives of the Surface Tension Driven Convection Experiment (STDCE)?",
+      "error": null,
+      "seconds": 20.68,
+      "status": "grounded",
+      "gold_rank": null,
+      "hit@5": false,
+      "hit@10": false,
+      "coverage@10": 0.0,
+      "gold_cited": false,
+      "terms_found": [
+        "thermocapillary"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-108_Reports_STDCE-1 NASA Contractor Report Jun 1996.pdf p.1",
+        "PSI-108_Reports_STDCE-1 NASA Contractor Report Jun 1996.pdf p.2",
+        "PSI-108_Reports_STDCE-1 NASA Contractor Report Jun 1996.pdf p.38",
+        "PSI-108_Reports_STDCE-1 NASA Contractor Report Jun 1996.pdf p.35",
+        "PSI-108_Reports_STDCE-1 - Joint L+1 Science Review for USML-1 and USMP-1 with Microtravity Measurement Group.pdf p.1"
+      ]
+    },
+    {
+      "id": "daft-objective",
+      "category": "single_doc",
+      "question": "What was the functional objective of the DAFT experiment?",
+      "error": null,
+      "seconds": 18.15,
+      "status": "grounded",
+      "gold_rank": null,
+      "hit@5": false,
+      "hit@10": false,
+      "coverage@10": 0.0,
+      "gold_cited": false,
+      "terms_found": [
+        "P-Trak"
+      ],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-23_Presentations_AIAA presentation - ACME on the ISS Jan2012.pdf p.15",
+        "PSI-23_Science Documents_ACME Integrated Science Requirements Definition Review 20100505.pdf p.4",
+        "PSI-47_Reports_DAFT_30Day.PostFlightReport.pdf p.13",
+        "PSI-23_Reports_s_Flame_final_report_20210729.pdf p.3",
+        "PSI-23_Presentations_CIR Paper 59th IAC 2008.pdf p.1"
+      ]
+    },
+    {
+      "id": "psi115-smoke-simulation",
+      "category": "single_doc",
+      "question": "What does the PSI-115 final report study about smoke in spacecraft?",
+      "error": null,
+      "seconds": 19.84,
+      "status": "insufficient_evidence",
+      "gold_rank": null,
+      "hit@5": false,
+      "hit@10": false,
+      "coverage@10": 0.0,
+      "gold_cited": false,
+      "terms_found": [],
+      "missing_terms": [
+        "simulat"
+      ],
+      "retrieved": [
+        "PSI-101_Reports_SAME-R_Final Report.pdf p.87",
+        "PSI-101_Reports_SAME-R_Final Report.pdf p.88",
+        "PSI-107_Presentations_Laminar Smoke Points in Coflow Measured Aboard ISS.pdf p.1",
+        "PSI-101_Reports_SAME-R_Final Report.pdf p.88",
+        "PSI-101_Reports_SAME-R_Final Report.pdf p.89"
+      ]
+    },
+    {
+      "id": "abstain-bone-density",
+      "category": "should_abstain",
+      "question": "How does long-duration spaceflight affect astronaut bone density?",
+      "error": null,
+      "seconds": 12.05,
+      "status": "insufficient_evidence",
+      "gold_rank": null,
+      "hit@5": null,
+      "hit@10": null,
+      "coverage@10": null,
+      "gold_cited": null,
+      "terms_found": [],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-10_Reports_TaskbookRpts.pdf p.5",
+        "PSI-23_Presentations_AIAA presentation - ACME on the ISS Jan2012.pdf p.1",
+        "PSI-23_Presentations_ISS Researchers Guide - Combustion In Reduced Gravity.pdf p.3",
+        "PSI-23_Presentations_ACME_CSSCI_20140317.pdf p.3",
+        "PSI-26_Presentations_FlammabilityAspectsofCottonFiberglassFabric_ASGSR2012.pdf p.5"
+      ]
+    },
+    {
+      "id": "abstain-cold-atoms",
+      "category": "should_abstain",
+      "question": "What did the Cold Atom Laboratory measure about Bose-Einstein condensates?",
+      "error": null,
+      "seconds": 13.14,
+      "status": "insufficient_evidence",
+      "gold_rank": null,
+      "hit@5": null,
+      "hit@10": null,
+      "coverage@10": null,
+      "gold_cited": null,
+      "terms_found": [],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-159_Reports_FinalRpt_ACME.CFI-G.pdf p.1",
+        "PSI-159_Reports_FinalRpt_ACME.CFI-G.pdf p.51",
+        "PSI-159_Reports_FinalRpt_ACME.CFI-G.pdf p.74",
+        "PSI-159_Reports_FinalRpt_ACME.CFI-G.pdf p.71",
+        "PSI-23_Presentations_AIAA presentation - ACME on the ISS Jan2012.pdf p.1"
+      ]
+    },
+    {
+      "id": "abstain-solder-fatigue",
+      "category": "should_abstain",
+      "question": "What fatigue life did solder joints show under thermal cycling in microgravity?",
+      "error": null,
+      "seconds": 11.99,
+      "status": "insufficient_evidence",
+      "gold_rank": null,
+      "hit@5": null,
+      "hit@10": null,
+      "coverage@10": null,
+      "gold_cited": null,
+      "terms_found": [],
+      "missing_terms": [],
+      "retrieved": [
+        "PSI-23_Presentations_ISS Researchers Guide - Combustion In Reduced Gravity.pdf p.5",
+        "PSI-25_Reports_BASS-II Summary Report.pdf p.99",
+        "PSI-101_Reports_SAME-R_Final Report.pdf p.88",
+        "PSI-98_Science Documents_SAFFIRE Objectives, Development and Status.pdf p.3",
+        "PSI-101_Reports_SAME-R_Final Report.pdf p.87"
+      ]
+    }
+  ]
+}
