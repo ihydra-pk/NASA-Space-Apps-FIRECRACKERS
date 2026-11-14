@@ -1,0 +1,14 @@
+{
+  "flex/FLEX_Test_Plan.pdf": {
+    "document_type": "test_plan",
+    "evidence_status": "planned",
+    "source_url": null,
+    "source_accession": null
+  },
+  "flex/FLEX DoD.docx": {
+    "document_type": "experiment_metadata",
+    "evidence_status": "metadata",
+    "source_url": null,
+    "source_accession": null
+  }
+}

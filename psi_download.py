@@ -40,6 +40,8 @@ USER_AGENT = "psi-download-script/1.0 (python-urllib)"
 
 TEXT_TYPES = {".pdf", ".doc", ".docx", ".ppt", ".pptx", ".txt"}
 TABLE_TYPES = {".csv", ".xls", ".xlsx", ".dat"}
+PSI69_EXPERIMENTAL_TABLE = "PSI-69_Experimental table_FLEX.csv"
+PSI69_EXPERIMENTAL_TABLE_SIZE = 24776
 
 # Categories whose documents explain the experiment and its findings.
 TEXT_CATEGORIES = {"Reports", "Science Documents", "Presentations", "Reference Data"}
@@ -93,9 +95,9 @@ def id_number(accession):
     return int(digits) if digits else 0
 
 
-def load_catalogue(accession, folder, refresh, timeout, attempts):
+def load_catalogue(accession, folder, refresh, timeout, attempts, persist=True):
     path = os.path.join(folder, "catalogue.json")
-    if os.path.exists(path) and not refresh:
+    if persist and os.path.exists(path) and not refresh:
         try:
             with open(path, encoding="utf-8") as handle:
                 return json.load(handle)
@@ -103,11 +105,12 @@ def load_catalogue(accession, folder, refresh, timeout, attempts):
             pass  # damaged copy from an interrupted run: fetch again
     catalogue = fetch_json(f"{BASE}/repo/investigations/{accession}",
                            timeout, attempts, f"{accession} catalogue")
-    os.makedirs(folder, exist_ok=True)
-    temporary = path + ".part"
-    with open(temporary, "w", encoding="utf-8") as handle:
-        json.dump(catalogue, handle)
-    os.replace(temporary, path)
+    if persist:
+        os.makedirs(folder, exist_ok=True)
+        temporary = path + ".part"
+        with open(temporary, "w", encoding="utf-8") as handle:
+            json.dump(catalogue, handle)
+        os.replace(temporary, path)
     return catalogue
 
 
@@ -243,6 +246,39 @@ def decide(item, options):
     return wanted, why
 
 
+def experimental_table_only(catalogue):
+    """Return only the catalog-identified PSI-69 FLEX experimental CSV.
+
+    Treat any filename/category/size drift as a hard stop rather than widening
+    the selection or risking an unintended product download.
+    """
+
+    candidates = [
+        item for item in list_files(catalogue)
+        if item["category"] == "Experimental table"
+        and item["name"] == PSI69_EXPERIMENTAL_TABLE
+    ]
+    if len(candidates) != 1:
+        raise ValueError(
+            f"Expected exactly one PSI-69 experimental table {PSI69_EXPERIMENTAL_TABLE!r}; "
+            f"found {len(candidates)}"
+        )
+    entry = candidates[0]
+    if str(entry.get("restricted")) == "True" or str(entry.get("visible", "True")) == "False":
+        raise ValueError("NASA marks the PSI-69 experimental table restricted or hidden")
+    try:
+        reported_size = int(entry.get("size") or 0)
+    except (TypeError, ValueError):
+        reported_size = 0
+    if reported_size != PSI69_EXPERIMENTAL_TABLE_SIZE:
+        raise ValueError(
+            f"NASA-listed size changed: expected {PSI69_EXPERIMENTAL_TABLE_SIZE}, "
+            f"got {reported_size}; refusing to download"
+        )
+    entry["size"] = reported_size
+    return entry
+
+
 # ---------------------------------------------------------------- downloading
 
 def safe_name(name):
@@ -301,6 +337,8 @@ def main():
                         help="search word used to find experiments (default: combustion)")
     parser.add_argument("--ids", nargs="+", metavar="PSI-N",
                         help="download only these experiments, e.g. --ids PSI-101 PSI-47")
+    parser.add_argument("--experimental-table-only", action="store_true",
+                        help="download only the catalog-verified PSI-69 FLEX experimental-table CSV")
     parser.add_argument("--out", default="data", help="output folder (default: data)")
     parser.add_argument("--dry-run", action="store_true",
                         help="list what would be downloaded, without downloading files")
@@ -320,7 +358,11 @@ def main():
                         help="fetch NASA's catalogues again instead of using saved copies")
     options = parser.parse_args()
 
-    if options.ids:
+    if options.experimental_table_only:
+        if options.ids and [i.upper() for i in options.ids] != ["PSI-69"]:
+            parser.error("--experimental-table-only can only be used with PSI-69")
+        ids = ["PSI-69"]
+    elif options.ids:
         ids = [i.upper() for i in options.ids]
     else:
         print(f"Searching NASA PSI for '{options.term}' experiments...")
@@ -335,20 +377,41 @@ def main():
     for accession in ids:
         folder = os.path.join(options.out, accession)
         try:
-            catalogue = load_catalogue(accession, folder, options.refresh,
-                                       options.timeout, options.attempts)
+            catalogue = load_catalogue(
+                accession, folder, options.refresh, options.timeout, options.attempts,
+                persist=not options.experimental_table_only,
+            )
+        except ValueError as error:
+            print(f"{accession}: safe download preflight failed ({error})")
+            problems.append(accession)
+            continue
         except (urllib.error.URLError, OSError, ValueError) as error:
             print(f"{accession}: could not read catalogue ({error})")
             problems.append(accession)
             continue
-        meta = clean_metadata(accession, catalogue)
-        with open(os.path.join(folder, "metadata.json"), "w", encoding="utf-8") as handle:
-            json.dump(meta, handle, indent=2, ensure_ascii=False)
-        with open(os.path.join(folder, "summary.md"), "w", encoding="utf-8") as handle:
-            handle.write(summary_markdown(meta))
+        if options.experimental_table_only:
+            try:
+                selected_table = experimental_table_only(catalogue)
+            except ValueError as error:
+                print(f"{accession}: safe download preflight failed ({error})")
+                problems.append(accession)
+                continue
+            meta = {"acronym": "FLEX", "title": "Flame Extinguishment Experiment"}
+        else:
+            meta = clean_metadata(accession, catalogue)
+            os.makedirs(folder, exist_ok=True)
+            with open(os.path.join(folder, "metadata.json"), "w", encoding="utf-8") as handle:
+                json.dump(meta, handle, indent=2, ensure_ascii=False)
+            with open(os.path.join(folder, "summary.md"), "w", encoding="utf-8") as handle:
+                handle.write(summary_markdown(meta))
 
         kept = kept_size = total = 0
-        for item in list_files(catalogue):
+        catalogue_files = (
+            [selected_table]
+            if options.experimental_table_only
+            else list_files(catalogue)
+        )
+        for item in catalogue_files:
             total += 1
             keep, reason = decide(item, options)
             local = os.path.join(folder, safe_name(item["category"]), safe_name(item["name"]))
