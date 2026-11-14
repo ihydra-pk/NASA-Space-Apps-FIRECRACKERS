@@ -10,5 +10,845 @@
     "evidence_status": "metadata",
     "source_url": null,
     "source_accession": null
+  },
+  "acme-flame-design/PSI-10_Reports_FinalRpt_ACMEFlameDesign.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME/Flame Design",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-10",
+    "source_accession": "PSI-10"
+  },
+  "acme-flame-design/PSI-10_Reports_TaskbookPubsList_Feb2023.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME/Flame Design",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-10",
+    "source_accession": "PSI-10"
+  },
+  "acme-flame-design/PSI-10_Reports_TaskbookRpts.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME/Flame Design",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-10",
+    "source_accession": "PSI-10"
+  },
+  "acme-flame-design/PSI-10_Science Documents_ACME_ISRD.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME/Flame Design",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-10",
+    "source_accession": "PSI-10"
+  },
+  "acme-flame-design/PSI-10_Science Documents_ACME_SORD.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME/Flame Design",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-10",
+    "source_accession": "PSI-10"
+  },
+  "acme-flame-design/PSI-10_Science Documents_SRD_ACMEFlameDesign.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME/Flame Design",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-10",
+    "source_accession": "PSI-10"
+  },
+  "acme-s-flame/PSI-23_Presentations_20120015928.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_ACME fact sheet 20180519.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_ACME fact sheet 20180820.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_ACME pictorial overview slides 20170601.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_ACME_ASGSR_20121127.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_ACME_ASGSR_20131107.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_ACME_CSSCI_2014.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_ACME_CSSCI_20140317.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_AIAA presentation - ACME on the ISS Jan2012.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_CIR Paper 59th IAC 2008.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_ISS Researchers Guide - Combustion In Reduced Gravity.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_PS-01374 ACME posterFinal.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_PS-01548 ACME info sheet.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_PS-02788 ACME info sheet.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_PS-03055 ACME info sheet.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_PS-03403 ACME on the ISS.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Presentations_PS_00538  Unlocking Mysteries.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Reference Data_ACME-DOC-010_D Software Interface Design Description.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Reports_s-Flame 30-day report Inc 63 20201216.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Reports_s_Flame_final_report_20210729.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Science Documents_ACME Integrated Science Requirements Definition Review 20100505.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Science Documents_ACME non-imaging data file description.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Science Documents_ACME s-Flame  DoD.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Science Documents_ACME_Integrated_Science_Requirements_RevB.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Science Documents_s-Flame SCR 200802.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "acme-s-flame/PSI-23_Science Documents_s-Flame_SRD_20100125.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME s-Flame",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-23",
+    "source_accession": "PSI-23"
+  },
+  "bass-ii/PSI-25_Reports_BASS-II Summary Report.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "BASS-II",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+    "source_accession": "PSI-25"
+  },
+  "bass-ii/PSI-25_Science Documents_BASS-II_ReadMe.docx": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "BASS-II",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+    "source_accession": "PSI-25"
+  },
+  "bass-ii/PSI-25_Science Documents_BASS-II_SRD.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "BASS-II",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+    "source_accession": "PSI-25"
+  },
+  "bass/PSI-26_Presentations_BASS_Overview of Recent ISS Results.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "bass/PSI-26_Presentations_Crew Training 2010.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "bass/PSI-26_Presentations_Crew Training 2011.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "bass/PSI-26_Presentations_Flammability Aspects of Fabric_USNationalCombustion2013.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "bass/PSI-26_Presentations_FlammabilityAspectsofCottonFiberglassFabric_ASGSR2012.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "bass/PSI-26_Science Documents_DLD_BASS.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "bass/PSI-26_Science Documents_FlammabilityAspectsofFabric_USNationalCombustion.2013.docx": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "bass/PSI-26_Science Documents_SRD_BASS.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "BASS",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-26",
+    "source_accession": "PSI-26"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1206_Summary-prelim.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1206_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1207_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1208_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1209_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1210_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1211_PrelimSummary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1211_PrelimSummary_1.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1211_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1213_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1215_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1218_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1221_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1223_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1226_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1227_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1231_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1231_Summary_1.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1232_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1238_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1239_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1239_Summary_v2.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1240_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1248_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1249_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1250_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1253_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1261_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1261_Summary_prelim.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1264_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Analyzed Data_FLEX-1393_Summary.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Presentations_Aspects of Cool-Flame Supported Droplet Combustion in Microgravity_CFI.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Presentations_Cool Flames in Space, a Hot Prospect on Earth_CFI.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Reports_CFI Science Final Report.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Science Documents_CFI_SCR.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "cfi/PSI-39_Science Documents_SRD_CFI.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "CFI",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-39",
+    "source_accession": "PSI-39"
+  },
+  "daft-daft-2/PSI-47_Presentations_Daft_FactSheet.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "DAFT / DAFT-2",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-47",
+    "source_accession": "PSI-47"
+  },
+  "daft-daft-2/PSI-47_Reports_DAFT_30Day.PostFlightReport.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "DAFT / DAFT-2",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-47",
+    "source_accession": "PSI-47"
+  },
+  "saffire-i/PSI-98_Science Documents_SAFFIRE Objectives, Development and Status.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SAFFIRE-I",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+    "source_accession": "PSI-98"
+  },
+  "saffire-i/PSI-98_Science Documents_SAFFIRE-I Image Directory Nomenclature.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SAFFIRE-I",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+    "source_accession": "PSI-98"
+  },
+  "saffire-i/PSI-98_Science Documents_SAFFIRE-I and SAFFIRE-III Readme.docx": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SAFFIRE-I",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+    "source_accession": "PSI-98"
+  },
+  "saffire-iii/PSI-100_Science Documents_SAFFIRE-III Image Directory Nomenclature_v3.0.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SAFFIRE-III",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-100",
+    "source_accession": "PSI-100"
+  },
+  "same-r/PSI-101_Analyzed Data_Sample descriptions tables.docx": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SAME-R",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-101",
+    "source_accession": "PSI-101"
+  },
+  "same-r/PSI-101_Reference Data_SAME_Software Description Document_003 Rev A.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SAME-R",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-101",
+    "source_accession": "PSI-101"
+  },
+  "same-r/PSI-101_Reference Data_SAME_Software Requirement Document_004 Rev D.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SAME-R",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-101",
+    "source_accession": "PSI-101"
+  },
+  "same-r/PSI-101_Reports_SAME-R_Final Report.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SAME-R",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-101",
+    "source_accession": "PSI-101"
+  },
+  "same-r/PSI-101_Science Documents_SAME_Baseline Concept Description Document_001 Rev A.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SAME-R",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-101",
+    "source_accession": "PSI-101"
+  },
+  "same-r/PSI-101_Science Documents_SAME_Operations Manual_007.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SAME-R",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-101",
+    "source_accession": "PSI-101"
+  },
+  "same/PSI-102_Reference Data_SAME_Crew Interface Description.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SAME",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-102",
+    "source_accession": "PSI-102"
+  },
+  "same/PSI-102_Reports_SAME_Final Science Report.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SAME",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-102",
+    "source_accession": "PSI-102"
+  },
+  "spice/PSI-107_Presentations_Laminar Smoke Points in Coflow Measured Aboard ISS.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SPICE",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-107",
+    "source_accession": "PSI-107"
+  },
+  "spice/PSI-107_Reference Data_SPICE_VIDEO OVERLAY RESET.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SPICE",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-107",
+    "source_accession": "PSI-107"
+  },
+  "spice/PSI-107_Reports_SMOKE POINTS OF MICROGRAVITY AND  NORMAL GRAVITY COFLOW DIFFUSION  FLAMES_DotsonThesis.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SPICE",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-107",
+    "source_accession": "PSI-107"
+  },
+  "spice/PSI-107_Reports_SPICE_30-DayPostFlightReport.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SPICE",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-107",
+    "source_accession": "PSI-107"
+  },
+  "spice/PSI-107_Reports_SPICE_FinalReport.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "SPICE",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-107",
+    "source_accession": "PSI-107"
+  },
+  "stdce-1/PSI-108_Analyzed Data_STDCE-1 Run 1 Details.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "stdce-1/PSI-108_Analyzed Data_STDCE-1 Run 2 Details.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "stdce-1/PSI-108_Analyzed Data_STDCE-1 Run 3 Details.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "stdce-1/PSI-108_Analyzed Data_STDCE-1 Run 4 and 5 Details.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "stdce-1/PSI-108_Reports_STDCE Completed.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "stdce-1/PSI-108_Reports_STDCE-1 - Joint L+1 Science Review for USML-1 and USMP-1 with Microtravity Measurement Group.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "stdce-1/PSI-108_Reports_STDCE-1 - The Solid Surface Combustion Experiment Aboard USML-1 Mission.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "stdce-1/PSI-108_Reports_STDCE-1 NASA Contractor Report Jun 1996.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "stdce-1/PSI-108_Reports_STDCE-1_NASA TM 101314 - Containment of a Silicone Fluid Free Surface in Reduced Gravity Using Barrier Coatings.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "stdce-1/PSI-108_Reports_STDCE-1_NASA TM 101353 - Infrared Surface Temperature Measurements for the Surface Tension Driven Convection Experiment.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "stdce-1/PSI-108_Reports_STDCE-1_NASA TM 101479 - Development of an Infrared Imaging System for the Surface Tension Driven Convection Experiment.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "stdce-1/PSI-108_Reports_STDCE-1_NASA TM 104482 - Particle Image Velocimetry for the Sufrace Tension Driven Convection Experiment Using a Particle Displacement Tracking Technique.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "stdce-1/PSI-108_Reports_STDCE-1_SO.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "stdce-1/PSI-108_Science Documents_SRD_STDCE.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "STDCE-1",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-108",
+    "source_accession": "PSI-108"
+  },
+  "psi-115/PSI-115_Reports_NNX17AF08A_FinalReport.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "PSI-115",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-115",
+    "source_accession": "PSI-115"
+  },
+  "psi-115/PSI-115_Science Documents_DataOrganizationDocument.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "PSI-115",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-115",
+    "source_accession": "PSI-115"
+  },
+  "psi-117/PSI-117_Presentations_Extinction_Characteristics_TFarouk.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "PSI-117",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-117",
+    "source_accession": "PSI-117"
+  },
+  "psi-117/PSI-117_Presentations_Oscillatory_Cool Flame_TFarouk.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "PSI-117",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-117",
+    "source_accession": "PSI-117"
+  },
+  "psi-117/PSI-117_Presentations_PSI_Users_Group_Cool_Flames_in_Space_03302026.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "PSI-117",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-117",
+    "source_accession": "PSI-117"
+  },
+  "psi-117/PSI-117_Presentations_Three_Stage_Cool_Flame_TFarouk.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "PSI-117",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-117",
+    "source_accession": "PSI-117"
+  },
+  "psi-117/PSI-117_Reports_Dissertation_Combustion Behavior Of Sub-Millimeter Sized Oxygenated And N-Alka.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "PSI-117",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-117",
+    "source_accession": "PSI-117"
+  },
+  "acme-cfi-g/PSI-159_Reports_FinalRpt_ACME.CFI-G.pdf": {
+    "document_type": "unknown",
+    "evidence_status": null,
+    "experiment": "ACME CFI-G",
+    "source_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-159",
+    "source_accession": "PSI-159"
   }
 }
