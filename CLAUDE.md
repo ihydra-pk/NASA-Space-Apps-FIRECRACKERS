@@ -88,9 +88,10 @@ Models are reached through an OpenAI-compatible gateway (`https://ai-gateway.uni
 
 ## Data state
 
-- Only FLEX is ingested: `data/documents/flex/` holds two files (test plan PDF, data-description DOCX), with derived artifacts committed under `data/processed`, `data/chunks`, `data/embeddings` and `data/vectorstore/flex-qwen3-embedding-4b.sqlite3`. The ingestion README mentions `bass/` and `saffire/` folders that do not exist yet.
-- `VectorStoreConfig` defaults to `data/vectorstore/firelens.sqlite3`, which does not exist; the `explore` CLI defaults to the real `flex-qwen3-embedding-4b.sqlite3`. Pass `--database` explicitly to `src.vectorstore`.
-- `data/experimental_data/experiments.sqlite3` is not committed; run `python -m src.experimental_data` before using `src.explore` with conditions.
+- 16 experiments are ingested (122 PDF and DOCX files under `data/documents/<experiment>/`), with derived artifacts committed under `data/processed`, `data/chunks` (4,103 chunks) and `data/embeddings/openai-compatible/gwdg.qwen3-embedding-4b/`. PSI-181 (a solder study) is left out. Every document except the two FLEX files has document type and evidence status `unknown` until someone labels it in `data/document_metadata.json`.
+- The all-experiment index `data/vectorstore/firelens.sqlite3` (collection `firelens-qwen3-embedding-4b`) is git-ignored because it is over GitHub's 100 MB file limit. Build it from the committed embeddings, which needs no network: `python -m src.vectorstore index --input-dir data/embeddings/openai-compatible/gwdg.qwen3-embedding-4b --database data/vectorstore/firelens.sqlite3 --collection firelens-qwen3-embedding-4b --provider openai-compatible --model gwdg.qwen3-embedding-4b --dimension 2560`.
+- The `explore` CLI still defaults to the committed FLEX-only index `flex-qwen3-embedding-4b.sqlite3`; pass `--vector-database data/vectorstore/firelens.sqlite3 --collection firelens-qwen3-embedding-4b` for all experiments.
+- `data/experimental_data/experiments.sqlite3` (291 FLEX test-plan records) is committed; `python -m src.experimental_data` rebuilds it.
 - Ingestion handles `.pdf` and `.docx` only, with no OCR. Legacy `.doc`/`.ppt` files from PSI are not extracted.
 
 ## psi_download.py
