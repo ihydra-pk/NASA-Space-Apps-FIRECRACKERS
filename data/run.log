@@ -1,0 +1,251 @@
+Searching NASA PSI for 'combustion' experiments...
+26 experiments: PSI-10 PSI-20 PSI-21 PSI-22 PSI-23 PSI-25 PSI-26 PSI-39 PSI-47 PSI-60 PSI-62 PSI-68 PSI-69 PSI-98 PSI-99 PSI-100 PSI-101 PSI-102 PSI-106 PSI-107 PSI-108 PSI-115 PSI-117 PSI-142 PSI-159 PSI-181
+
+PSI-10   ACME/Flame Design                          keep   8 of 3807 files (6.9 MB)
+PSI-20   ACME BRE                                   keep   1 of    1 files (0.0 MB)
+PSI-21   ACME CLD Flame                             keep   1 of    1 files (0.0 MB)
+PSI-22   ACME E-FIELD Flames                        keep   1 of    1 files (0.0 MB)
+PSI-23   ACME s-Flame                               keep  29 of 4164 files (65.1 MB)
+PSI-25   BASS-II                                    keep   4 of  695 files (47.8 MB)
+PSI-26   BASS                                       keep  12 of  212 files (24.7 MB)
+PSI-39   CFI                                        keep  37 of 2832 files (34.5 MB)
+PSI-47   DAFT / DAFT-2                              keep   7 of   33 files (27.7 MB)
+PSI-60   Computational and Experimental Analysis    keep   0 of    1 files (0.0 MB)
+PSI-62   Concurrent Flame Spread Modeling using F   keep   0 of    1 files (0.0 MB)
+PSI-68   FLEX-2                                     keep   1 of    1 files (0.0 MB)
+PSI-69   FLEX                                       keep   1 of    1 files (0.0 MB)
+PSI-98   SAFFIRE-I                                  keep   4 of   75 files (0.5 MB)
+PSI-99   SAFFIRE-II                                 keep   1 of    1 files (0.0 MB)
+PSI-100  SAFFIRE-III                                keep   7 of   86 files (10.3 MB)
+PSI-101  SAME-R                                     keep  11 of  343 files (64.9 MB)
+PSI-102  SAME                                       keep  13 of  105 files (64.4 MB)
+PSI-106  SLICE                                      keep   1 of    1 files (0.0 MB)
+PSI-107  SPICE                                      keep  11 of  187 files (40.2 MB)
+PSI-108  STDCE-1                                    keep  16 of   55 files (35.4 MB)
+PSI-115  Utilization of the Smoke Aerosol Measure   keep   2 of   47 files (10.2 MB)
+PSI-117  Effect of External Thermo-Convective Per   keep   5 of   15 files (67.3 MB)
+PSI-142  Quantitative Studies of Cool Flame Trans   keep   1 of    2 files (0.0 MB)
+PSI-159  ACME CFI-G                                 keep   3 of 3756 files (3.8 MB)
+PSI-181  Structure and Properties of Pb-Sn and Pb   keep  13 of  340 files (59.3 MB)
+
+190 files to download, 562.8 MB in total.
+  [1/190] downloaded       PSI-10 PSI-10_Experimental table_Flame Design_Normal Flame.csv
+  [2/190] downloaded       PSI-10 PSI-10_Experimental table_Flame Design_Inverse Flame.csv
+  [3/190] downloaded       PSI-10 PSI-10_Science Documents_SRD_ACMEFlameDesign.pdf
+  [4/190] downloaded       PSI-10 PSI-10_Reports_TaskbookPubsList_Feb2023.pdf
+  [5/190] downloaded       PSI-10 PSI-10_Reports_TaskbookRpts.pdf
+  [6/190] downloaded       PSI-10 PSI-10_Science Documents_ACME_SORD.pdf
+  [7/190] downloaded       PSI-20 PSI-20_Experimental table_ACME BRE.csv
+  [8/190] downloaded       PSI-21 PSI-21_Experimental table_CLD Flame.csv
+  [9/190] downloaded       PSI-22 PSI-22_Experimental table_ACME E-FIELD Flames.csv
+  [10/190] downloaded       PSI-10 PSI-10_Science Documents_ACME_ISRD.pdf
+  [11/190] downloaded       PSI-23 PSI-23_Experimental table_ACME s-Flame.csv
+  [12/190] downloaded       PSI-10 PSI-10_Reports_FinalRpt_ACMEFlameDesign.pdf
+  [13/190] downloaded       PSI-23 PSI-23_Presentations_PS-01548 ACME info sheet.pdf
+  [14/190] downloaded       PSI-23 PSI-23_Presentations_ACME fact sheet 20180519.pdf
+  [15/190] downloaded       PSI-23 PSI-23_Presentations_PS-02788 ACME info sheet.pdf
+  [16/190] downloaded       PSI-23 PSI-23_Presentations_20120015928.pdf
+  [17/190] downloaded       PSI-23 PSI-23_Presentations_PS-01374 ACME posterFinal.pdf
+  [18/190] downloaded       PSI-23 PSI-23_Presentations_PS-03055 ACME info sheet.pdf
+  [19/190] downloaded       PSI-23 PSI-23_Presentations_ACME pictorial overview slides 20170601.pdf
+  [20/190] downloaded       PSI-23 PSI-23_Presentations_ACME_ASGSR_20131107.pdf
+  [21/190] downloaded       PSI-23 PSI-23_Presentations_ACME_ASGSR_20121127.pdf
+  [22/190] downloaded       PSI-23 PSI-23_Presentations_ACME_CSSCI_2014.pdf
+  [23/190] downloaded       PSI-23 PSI-23_Presentations_ACME fact sheet 20180820.pdf
+  [24/190] downloaded       PSI-23 PSI-23_Science Documents_ACME non-imaging data file description.pdf
+  [25/190] downloaded       PSI-23 PSI-23_Presentations_ISS Researchers Guide - Combustion In Reduced Gravity.pdf
+  [26/190] downloaded       PSI-23 PSI-23_Reference Data_ACME-DOC-010_D.pdf
+  [27/190] downloaded       PSI-23 PSI-23_Reference Data_ACME-DOC-010_D Software Interface Design Description.pdf
+  [28/190] downloaded       PSI-23 PSI-23_Science Documents_ACME_Integrated_Science_Requirements_RevB.pdf
+  [29/190] downloaded       PSI-23 PSI-23_Presentations_CIR Paper 59th IAC 2008.pdf
+  [30/190] downloaded       PSI-23 PSI-23_Science Documents_ACME Science Operation Requirements revA 20111018.pdf
+  [31/190] downloaded       PSI-23 PSI-23_Presentations_PS_00538  Unlocking Mysteries.pdf
+  [32/190] downloaded       PSI-23 PSI-23_Presentations_AIAA presentation - ACME on the ISS Jan2012.pdf
+  [33/190] downloaded       PSI-23 PSI-23_Science Documents_s-Flame_SRD_20100125.pdf
+  [34/190] downloaded       PSI-23 PSI-23_Science Documents_s-Flame SCR 200802.pdf
+  [35/190] downloaded       PSI-23 PSI-23_Reports_s-Flame 30-day report Inc 63 20201216.pdf
+  [36/190] downloaded       PSI-23 PSI-23_Science Documents_ACME Integrated Science Requirements Definition Review 20100505.pdf
+  [37/190] downloaded       PSI-23 PSI-23_Science Documents_ACME s-Flame  DoD.pdf
+  [38/190] downloaded       PSI-23 PSI-23_Reports_s_Flame_final_report_20210729.pdf
+  [39/190] downloaded       PSI-25 PSI-25_Experimental table_BASS-II.csv
+  [40/190] downloaded       PSI-23 PSI-23_Presentations_PS-03403 ACME on the ISS.pdf
+  [41/190] downloaded       PSI-25 PSI-25_Science Documents_BASS-II_ReadMe.docx
+  [42/190] downloaded       PSI-26 PSI-26_Experimental table_BASS.csv
+  [43/190] downloaded       PSI-23 PSI-23_Presentations_ACME_CSSCI_20140317.pdf
+  [44/190] downloaded       PSI-25 PSI-25_Science Documents_BASS-II_SRD.pdf
+  [45/190] downloaded       PSI-26 PSI-26_Presentations_FlammabilityAspectsofCottonFiberglassFabric_ASGSR2012.pdf
+  [46/190] downloaded       PSI-26 PSI-26_Presentations_Flammability Aspects of Fabric_USNationalCombustion2013.pdf
+    retry 1/4 for PSI-26_Reports_SPICE_FinalReport.pdf in 5s (HTTP Error 404: Not Found)
+    retry 2/4 for PSI-26_Reports_SPICE_FinalReport.pdf in 10s (HTTP Error 404: Not Found)
+  [47/190] downloaded       PSI-26 PSI-26_Presentations_BASS_Overview of Recent ISS Results.pdf
+    retry 3/4 for PSI-26_Reports_SPICE_FinalReport.pdf in 15s (HTTP Error 404: Not Found)
+  [48/190] downloaded       PSI-26 PSI-26_Science Documents_FlammabilityAspectsofFabric_USNationalCombustion.2013.docx
+    retry 1/4 for PSI-26_Reports_BASS_FinalReport.pdf in 5s (HTTP Error 404: Not Found)
+  [49/190] downloaded       PSI-26 PSI-26_Presentations_Crew Training 2010.pdf
+  [50/190] downloaded       PSI-26 PSI-26_Presentations_Crew Training 2011.pdf
+    retry 2/4 for PSI-26_Reports_BASS_FinalReport.pdf in 10s (HTTP Error 404: Not Found)
+  [51/190] downloaded       PSI-26 PSI-26_Presentations_BASS Overview.pptx
+    retry 4/4 for PSI-26_Reports_SPICE_FinalReport.pdf in 20s (HTTP Error 404: Not Found)
+  [52/190] downloaded       PSI-26 PSI-26_Science Documents_SRD_BASS.pdf
+    retry 3/4 for PSI-26_Reports_BASS_FinalReport.pdf in 15s (HTTP Error 404: Not Found)
+  [53/190] downloaded       PSI-26 PSI-26_Science Documents_DLD_BASS.pdf
+  [54/190] downloaded       PSI-39 PSI-39_Experimental table_CFI.csv
+  [55/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1261_Summary_prelim.pdf
+  [56/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1261_Summary.pdf
+  [57/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1239_Summary.pdf
+  [58/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1239_Summary_v2.pdf
+    retry 4/4 for PSI-26_Reports_BASS_FinalReport.pdf in 20s (HTTP Error 404: Not Found)
+  [59/190] failed: HTTP Err PSI-26 PSI-26_Reports_SPICE_FinalReport.pdf
+  [60/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1253_Summary.pdf
+  [61/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1240_Summary.pdf
+  [62/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1238_Summary.pdf
+  [63/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1248_Summary.pdf
+  [64/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1249_Summary.pdf
+  [65/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1250_Summary.pdf
+  [66/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1232_Summary.pdf
+  [67/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1231_Summary.pdf
+  [68/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1227_Summary.pdf
+  [69/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1231_Summary_1.pdf
+  [70/190] failed: HTTP Err PSI-26 PSI-26_Reports_BASS_FinalReport.pdf
+  [71/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1226_Summary.pdf
+  [72/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1223_Summary.pdf
+  [73/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1221_Summary.pdf
+  [74/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1215_Summary.pdf
+  [75/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1213_Summary.pdf
+  [76/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1211_PrelimSummary.pdf
+  [77/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1211_PrelimSummary_1.pdf
+  [78/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1218_Summary.pdf
+  [79/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1211_Summary.pdf
+  [80/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1210_Summary.pdf
+  [81/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1208_Summary.pdf
+  [82/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1209_Summary.pdf
+  [83/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1207_Summary.pdf
+  [84/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1206_Summary-prelim.pdf
+  [85/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1206_Summary.pdf
+  [86/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1264_Summary.pdf
+  [87/190] downloaded       PSI-39 PSI-39_Reports_CFI Science Final Report.pdf
+  [88/190] downloaded       PSI-39 PSI-39_Presentations_Aspects of Cool-Flame Supported Droplet Combustion in Microgravity_CFI.pdf
+  [89/190] downloaded       PSI-39 PSI-39_Science Documents_CFI_SCR.pdf
+  [90/190] downloaded       PSI-39 PSI-39_Presentations_Cool Flames in Space, a Hot Prospect on Earth_CFI.pdf
+  [91/190] already present  PSI-47 PSI-47_Experimental table_DAFT.csv
+  [92/190] already present  PSI-47 PSI-47_Reports_DAFT_FinalReport.doc
+  [93/190] already present  PSI-47 PSI-47_Reports_DAFT_30Day.PostFlightReport.pdf
+  [94/190] already present  PSI-47 PSI-47_Presentations_DAFT_Increment13SciSymposium_2006.ppt
+  [95/190] already present  PSI-47 PSI-47_Presentations_SmokeDetectionfromMicrogravityFires.ppt
+  [96/190] already present  PSI-47 PSI-47_Reports_DAFT_1YearReport.doc
+  [97/190] already present  PSI-47 PSI-47_Presentations_Daft_FactSheet.pdf
+  [98/190] downloaded       PSI-39 PSI-39_Analyzed Data_FLEX-1393_Summary.pdf
+  [99/190] downloaded       PSI-68 PSI-68_Experimental table_Flex2.csv
+  [100/190] downloaded       PSI-98 PSI-98_Experimental table_SAFFIRE-1.csv
+  [101/190] downloaded       PSI-69 PSI-69_Experimental table_FLEX.csv
+  [102/190] downloaded       PSI-98 PSI-98_Science Documents_SAFFIRE-I Image Directory Nomenclature.pdf
+  [103/190] downloaded       PSI-98 PSI-98_Science Documents_SAFFIRE Objectives, Development and Status.pdf
+  [104/190] downloaded       PSI-98 PSI-98_Science Documents_SAFFIRE-I and SAFFIRE-III Readme.docx
+  [105/190] downloaded       PSI-99 PSI-99_Experimental table_SAFFIRE-2.csv
+  [106/190] downloaded       PSI-100 PSI-100_Experimental table_SAFFIRE-3.csv
+    retry 1/4 for PSI-100_Presentations_SAFFIRE_45 I Con of Env Sys presentation.pdf in 5s (HTTP Error 404: Not Found)
+    retry 1/4 for PSI-100_Presentations_SAFFIRE_46th I Con of Env Sys presentation.pdf in 5s (HTTP Error 404: Not Found)
+    retry 2/4 for PSI-100_Presentations_SAFFIRE_45 I Con of Env Sys presentation.pdf in 10s (HTTP Error 404: Not Found)
+    retry 2/4 for PSI-100_Presentations_SAFFIRE_46th I Con of Env Sys presentation.pdf in 10s (HTTP Error 404: Not Found)
+  [107/190] downloaded       PSI-39 PSI-39_Science Documents_SRD_CFI.pdf
+    retry 1/4 for PSI-100_Presentations_SAFFIRE_47th I Con of Env Sys presentation.pdf in 5s (HTTP Error 404: Not Found)
+    retry 3/4 for PSI-100_Presentations_SAFFIRE_46th I Con of Env Sys presentation.pdf in 15s (HTTP Error 404: Not Found)
+    retry 3/4 for PSI-100_Presentations_SAFFIRE_45 I Con of Env Sys presentation.pdf in 15s (HTTP Error 404: Not Found)
+    retry 2/4 for PSI-100_Presentations_SAFFIRE_47th I Con of Env Sys presentation.pdf in 10s (HTTP Error 404: Not Found)
+    retry 3/4 for PSI-100_Presentations_SAFFIRE_47th I Con of Env Sys presentation.pdf in 15s (HTTP Error 404: Not Found)
+    retry 4/4 for PSI-100_Presentations_SAFFIRE_45 I Con of Env Sys presentation.pdf in 20s (HTTP Error 404: Not Found)
+    retry 4/4 for PSI-100_Presentations_SAFFIRE_46th I Con of Env Sys presentation.pdf in 20s (HTTP Error 404: Not Found)
+    retry 4/4 for PSI-100_Presentations_SAFFIRE_47th I Con of Env Sys presentation.pdf in 20s (HTTP Error 404: Not Found)
+  [108/190] failed: HTTP Err PSI-100 PSI-100_Presentations_SAFFIRE_45 I Con of Env Sys presentation.pdf
+  [109/190] failed: HTTP Err PSI-100 PSI-100_Presentations_SAFFIRE_46th I Con of Env Sys presentation.pdf
+  [110/190] downloaded       PSI-100 PSI-100_Science Documents_SAFFIRE-III Image Directory Nomenclature_v3.0.pdf
+  [111/190] downloaded       PSI-100 PSI-100_Science Documents_SAFFIRE-I and SAFFIRE-III Readme.docx
+  [112/190] downloaded       PSI-101 PSI-101_Experimental table_SAME-R.csv
+  [113/190] failed: HTTP Err PSI-100 PSI-100_Presentations_SAFFIRE_47th I Con of Env Sys presentation.pdf
+  [114/190] downloaded       PSI-100 PSI-100_Science Documents_SAFFIRE Objectives, Development and Status.pdf
+  [115/190] downloaded       PSI-101 PSI-101_Reports_SAME-R_Final Report.pdf
+  [116/190] downloaded       PSI-101 PSI-101_Presentations_SAME-2_Comparison of Flight and Ground Test Results.pptx
+  [117/190] downloaded       PSI-101 PSI-101_Presentations_SAME_Measurement of Smoke Particle Size under Low-Gravity Conditions.ppt
+  [118/190] downloaded       PSI-101 PSI-101_Presentations_Detection of Smoke from Microgravity Fires.ppt
+  [119/190] downloaded       PSI-101 PSI-101_Presentations_SAME-R_Particle Morphology and Size Results from the Smoke Aerosol Measurement Experiment-2.pptx
+  [120/190] downloaded       PSI-101 PSI-101_Science Documents_SAME_Baseline Concept Description Document_001 Rev A.pdf
+  [121/190] downloaded       PSI-101 PSI-101_Science Documents_SAME_Operations Manual_007.pdf
+  [122/190] downloaded       PSI-25 PSI-25_Reports_BASS-II Summary Report.pdf
+  [123/190] downloaded       PSI-101 PSI-101_Reference Data_SAME_Software Description Document_003 Rev A.pdf
+  [124/190] downloaded       PSI-102 PSI-102_Experimental table_SAME.csv
+  [125/190] downloaded       PSI-101 PSI-101_Reference Data_SAME_Software Requirement Document_004 Rev D.pdf
+  [126/190] downloaded       PSI-102 PSI-102_Presentations_Detection of Smoke from Microgravity Fires_paper.2005.doc
+  [127/190] downloaded       PSI-102 PSI-102_Reports_SAME_Final Science Report.pdf
+  [128/190] downloaded       PSI-102 PSI-102_Presentations_SAME-2_ParticleMorphology and Size Results.pptx
+  [129/190] downloaded       PSI-102 PSI-102_Presentations_SAME2_FlightVSGroundTestResults.pptx
+  [130/190] downloaded       PSI-101 PSI-101_Analyzed Data_Sample descriptions tables.docx
+  [131/190] downloaded       PSI-102 PSI-102_Science Documents_SAME_Baseline Concept Description Doc.pdf
+  [132/190] downloaded       PSI-102 PSI-102_Reference Data_SAME_Crew Interface Description.pdf
+  [133/190] downloaded       PSI-102 PSI-102_Science Documents_SAME_Operations Manual_007.pdf
+  [134/190] downloaded       PSI-102 PSI-102_Reference Data_SAME_Software Description Document.pdf
+  [135/190] downloaded       PSI-102 PSI-102_Presentations_MeasurementofSmokeParticleSizeUnderLowGravityConditions.ppt
+  [136/190] downloaded       PSI-102 PSI-102_Presentations_Detection of Smoke from Microgravity Fires.2005.ppt
+  [137/190] downloaded       PSI-106 PSI-106_Experimental table_Slice.csv
+  [138/190] downloaded       PSI-102 PSI-102_Reference Data_SAME_Software Req Document.pdf
+  [139/190] downloaded       PSI-107 PSI-107_Experimental table_Spice.csv
+  [140/190] downloaded       PSI-107 PSI-107_Science Documents_SPICE_SRD.doc
+  [141/190] downloaded       PSI-107 PSI-107_Reports_SMOKE POINTS OF MICROGRAVITY AND  NORMAL GRAVITY COFLOW DIFFUSION  FLAMES_DotsonThesis.pdf
+  [142/190] downloaded       PSI-107 PSI-107_Reports_SPICE_30-DayPostFlightReport.pdf
+  [143/190] downloaded       PSI-107 PSI-107_Reports_SPICE_FinalReport.pdf
+  [144/190] downloaded       PSI-107 PSI-107_Presentations_Laminar Smoke Points in Coflow Measured Aboard ISS.pdf
+  [145/190] downloaded       PSI-107 PSI-107_Presentations_SPICE-1 Ops Overview and Smoke Point Cue Card.ppt
+  [146/190] downloaded       PSI-107 PSI-107_Presentations_IP-C Crew training 2010.pdf
+  [147/190] downloaded       PSI-107 PSI-107_Presentations_IP-D Crew training 2011.pdf
+  [148/190] downloaded       PSI-107 PSI-107_Reference Data_SPICE_VIDEO OVERLAY RESET.pdf
+  [149/190] downloaded       PSI-108 PSI-108_Experimental table_STDCE-1.csv
+  [150/190] downloaded       PSI-108 PSI-108_Experimental table_STDCE-1(1).csv
+  [151/190] downloaded       PSI-108 PSI-108_Reports_STDCE-1_SO.pdf
+  [152/190] downloaded       PSI-108 PSI-108_Reports_STDCE Completed.pdf
+  [153/190] downloaded       PSI-108 PSI-108_Reports_STDCE-1_NASA TM 104482 - Particle Image Velocimetry for the Sufrace Tension Driven Convection Experiment Using a Particle Displacement Tracking Technique.pdf
+  [154/190] downloaded       PSI-108 PSI-108_Reports_STDCE-1_NASA TM 101479 - Development of an Infrared Imaging System for the Surface Tension Driven Convection Experiment.pdf
+  [155/190] downloaded       PSI-102 PSI-102_Presentations_SAME_EarlyResults.ppt
+  [156/190] downloaded       PSI-108 PSI-108_Reports_STDCE-1_NASA TM 101314 - Containment of a Silicone Fluid Free Surface in Reduced Gravity Using Barrier Coatings.pdf
+  [157/190] downloaded       PSI-108 PSI-108_Reports_STDCE-1_NASA TM 101353 - Infrared Surface Temperature Measurements for the Surface Tension Driven Convection Experiment.pdf
+  [158/190] downloaded       PSI-108 PSI-108_Reports_STDCE-1 - The Solid Surface Combustion Experiment Aboard USML-1 Mission.pdf
+  [159/190] downloaded       PSI-108 PSI-108_Analyzed Data_STDCE-1 Run 1 Details.pdf
+  [160/190] downloaded       PSI-108 PSI-108_Analyzed Data_STDCE-1 Run 2 Details.pdf
+  [161/190] downloaded       PSI-108 PSI-108_Analyzed Data_STDCE-1 Run 3 Details.pdf
+  [162/190] downloaded       PSI-108 PSI-108_Reports_STDCE-1 - Joint L+1 Science Review for USML-1 and USMP-1 with Microtravity Measurement Group.pdf
+  [163/190] downloaded       PSI-108 PSI-108_Analyzed Data_STDCE-1 Run 4 and 5 Details.pdf
+  [164/190] downloaded       PSI-108 PSI-108_Reports_STDCE-1 NASA Contractor Report Jun 1996.pdf
+  [165/190] downloaded       PSI-115 PSI-115_Science Documents_DataOrganizationDocument.pdf
+  [166/190] downloaded       PSI-115 PSI-115_Reports_NNX17AF08A_FinalReport.pdf
+  [167/190] downloaded       PSI-117 PSI-117_Presentations_PSI_Users_Group_Cool_Flames_in_Space_03302026.pdf
+  [168/190] downloaded       PSI-108 PSI-108_Science Documents_SRD_STDCE.pdf
+  [169/190] downloaded       PSI-117 PSI-117_Presentations_Extinction_Characteristics_TFarouk.pdf
+  [170/190] downloaded       PSI-117 PSI-117_Presentations_Oscillatory_Cool Flame_TFarouk.pdf
+  [171/190] downloaded       PSI-142 PSI-142_Experimental table_Data Summary Table.csv
+  [172/190] downloaded       PSI-159 PSI-159_Experimental table_CFI-G_Normal Flames.csv
+  [173/190] downloaded       PSI-159 PSI-159_Experimental table_CFI-G_Inverse Flames.csv
+  [174/190] downloaded       PSI-117 PSI-117_Reports_Dissertation_Combustion Behavior Of Sub-Millimeter Sized Oxygenated And N-Alka.pdf
+  [175/190] downloaded       PSI-181 PSI-181_Experimental table_Experimental Table_PSI_181.csv
+  [176/190] downloaded       PSI-159 PSI-159_Reports_FinalRpt_ACME.CFI-G.pdf
+  [177/190] downloaded       PSI-181 PSI-181_Presentations_TMS_Manish Kumar_NASA Soldering_2024-03-02 v3.pdf
+  [178/190] downloaded       PSI-107 PSI-107_Presentations_SPICE Overview.ppt
+  [179/190] downloaded       PSI-181 PSI-181_Presentations_Soldering_NASA PSI User meeting 2024-03-13 SP - MK v2.pdf
+  [180/190] downloaded       PSI-181 PSI-181_Presentations_NCUR_2023_Hellyer_Ogden_23_3_23_Final.pdf
+  [181/190] downloaded       PSI-181 PSI-181_Presentations_NCUR_2023_Hellyer_Ogden_23_3_23_Final (1).pdf
+  [182/190] downloaded       PSI-181 PSI-181_Presentations_CANFSA_2024_Soldering 2024-10-21 v2.pdf
+  [183/190] downloaded       PSI-181 PSI-181_Presentations_ASGSR_Manish Kumar_NASA Soldering_2023-11-16 v3.pdf
+  [184/190] downloaded       PSI-181 PSI-181_Presentations_ISSRDC_2024_Soldering 2024-07-22 MK V3.pdf
+  [185/190] downloaded       PSI-117 PSI-117_Presentations_Three_Stage_Cool_Flame_TFarouk.pdf
+  [186/190] downloaded       PSI-181 PSI-181_Presentations_2023 CANFSA_Poster_Manish Kumar 2023-03-28.pdf
+  [187/190] downloaded       PSI-181 PSI-181_Presentations_ASGSR_2024_Soldering 2024-12-03 - v4.pdf
+  [188/190] downloaded       PSI-181 PSI-181_Reports_PSI_Soldering_Final Report_ 20250819.pdf
+  [189/190] downloaded       PSI-181 PSI-181_Presentations_2023 ISSRDC_Poster_Manish Kumar 2023-07-24.pdf
+  [190/190] downloaded       PSI-181 PSI-181_Reports_PSI_Smoldering_Year1 Report.pdf
+
+Manifest: data/manifest.csv
+Downloaded or already present: 185
+Failed: 5
+  PSI-26 PSI-26_Reports_SPICE_FinalReport.pdf: failed: HTTP Error 404: Not Found
+  PSI-26 PSI-26_Reports_BASS_FinalReport.pdf: failed: HTTP Error 404: Not Found
+  PSI-100 PSI-100_Presentations_SAFFIRE_45 I Con of Env Sys presentation.pdf: failed: HTTP Error 404: Not Found
+  PSI-100 PSI-100_Presentations_SAFFIRE_46th I Con of Env Sys presentation.pdf: failed: HTTP Error 404: Not Found
+  PSI-100 PSI-100_Presentations_SAFFIRE_47th I Con of Env Sys presentation.pdf: failed: HTTP Error 404: Not Found
+Skipped: 16573
