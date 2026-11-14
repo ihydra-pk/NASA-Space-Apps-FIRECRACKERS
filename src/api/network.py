@@ -1,9 +1,8 @@
-"""Outbound-network helpers for hosted deployments.
+"""Check whether this server can reach the AI gateway.
 
-``diagnose`` shows whether this server can reach the AI gateway, address by
-address, without using the key. ``install_ipv4_only`` makes outbound
-connections skip IPv6 addresses on hosts (such as Render) that have no IPv6
-route, so a request never waits on an address that cannot work.
+The UPB gateway only accepts connections from the university network or its
+VPN, so hosted copies (Render) cannot reach it. ``diagnose`` shows that,
+address by address, without using the key.
 """
 
 from __future__ import annotations
@@ -15,24 +14,6 @@ from urllib.error import HTTPError
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
-_original_getaddrinfo = socket.getaddrinfo
-
-
-def ipv4_first(results: list[tuple]) -> list[tuple]:
-    """Keep only IPv4 results, unless a host has no IPv4 address at all."""
-
-    ipv4 = [result for result in results if result[0] == socket.AF_INET]
-    return ipv4 or results
-
-
-def install_ipv4_only() -> None:
-    """Make every later address lookup in this process return IPv4 addresses only."""
-
-    def lookup(host, port, family=0, type=0, proto=0, flags=0):  # noqa: A002 - socket's own names
-        return ipv4_first(_original_getaddrinfo(host, port, family, type, proto, flags))
-
-    socket.getaddrinfo = lookup
-
 
 def _seconds(start: float) -> float:
     return round(time.perf_counter() - start, 2)
@@ -42,7 +23,7 @@ def diagnose(
     base_urls: list[str],
     *,
     timeout: float = 5.0,
-    resolve: Callable[..., list[tuple]] = _original_getaddrinfo,
+    resolve: Callable[..., list[tuple]] = socket.getaddrinfo,
     connect: Callable[..., Any] = socket.create_connection,
     open_url: Callable[..., Any] = urlopen,
 ) -> list[dict[str, Any]]:

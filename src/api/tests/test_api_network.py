@@ -4,15 +4,10 @@ from urllib.error import HTTPError
 from fastapi.testclient import TestClient
 
 from src.api import create_app
-from src.api.network import diagnose, ipv4_first
+from src.api.network import diagnose
 
 V4 = (socket.AF_INET, socket.SOCK_STREAM, 6, "", ("131.234.240.215", 443))
 V6 = (socket.AF_INET6, socket.SOCK_STREAM, 6, "", ("2001:638:502:c050::215", 443, 0, 0))
-
-
-def test_ipv4_first_drops_ipv6_only_when_ipv4_exists():
-    assert ipv4_first([V6, V4]) == [V4]
-    assert ipv4_first([V6]) == [V6]
 
 
 class _Socket:

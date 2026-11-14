@@ -21,9 +21,6 @@ services:
         value: 3.12.8
       - key: HOST
         value: 0.0.0.0
-      # Render has no IPv6 route; skip the gateway's IPv6 address.
-      - key: FIRELENS_FORCE_IPV4
-        value: "1"
       - key: FIRELENS_LLM_PROVIDER
         value: openai-compatible
       - key: FIRELENS_LLM_MODEL
