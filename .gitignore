@@ -3,6 +3,10 @@ __pycache__/
 .coverage
 htmlcov/
 .venv/
+.venv-vllm/
+models/
+.local/
+data/local-embeddings/
 .env
 .env.*
 !.env.example

@@ -3,6 +3,9 @@ Flame in Freefall: SI-Powered Fire Safety Insights from Microgravity Combustion 
 
 ## Using the backend (for teammates)
 
+Reviewers who want to download and run the Qwen3 embedding model locally can
+follow [QWEN_LOCAL_GUIDE.md](QWEN_LOCAL_GUIDE.md).
+
 Everything slow to produce is already in this branch (`SI_Dashboard_Ravish`): the NASA PSI downloads, the extracted text, the chunks and the embeddings for all 16 experiments. You do not need to re-download or re-embed anything.
 
 ```bash

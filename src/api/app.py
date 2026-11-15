@@ -116,8 +116,13 @@ def build_explore_service() -> ExploreService:
         )
 
     llm_config = replace(
-        LLMConfig.from_env(provider=_env("LLM_PROVIDER", "openai-compatible")),
-        model_name=_env("LLM_MODEL", "openai.gpt-6-luna"),
+        LLMConfig.from_env(provider=_env("LLM_PROVIDER", "gemini")),
+        model_name=_env(
+            "LLM_MODEL",
+            "gemini-2.5-flash"
+            if _env("LLM_PROVIDER", "gemini") == "gemini"
+            else "openai.gpt-6-luna",
+        ),
     )
     experimental_config = replace(
         ExperimentalDataConfig(),
@@ -169,7 +174,7 @@ def create_app(service: ExploreService | None = None) -> FastAPI:
             os.environ.get("FIRELENS_EMBEDDING_BASE_URL") or "https://ai-gateway.uni-paderborn.de/v1",
             os.environ.get("FIRELENS_LLM_BASE_URL") or "https://ai-gateway.uni-paderborn.de/v1",
         ]
-        names = ("UPB_AI_GATEWAY_KEY", "FIRELENS_LLM_API_KEY", "FIRELENS_EMBEDDING_API_KEY", "OPENAI_API_KEY")
+        names = ("GEMINI_API_KEY", "UPB_AI_GATEWAY_KEY", "FIRELENS_LLM_API_KEY", "FIRELENS_EMBEDDING_API_KEY", "OPENAI_API_KEY")
         return {"key_configured": {name: bool(os.environ.get(name)) for name in names}, "gateways": diagnose(urls)}
 
     @app.get("/api/experiments")

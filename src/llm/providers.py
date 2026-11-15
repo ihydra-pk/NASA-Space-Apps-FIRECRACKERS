@@ -1,4 +1,4 @@
-"""LLM provider protocol, OpenAI-compatible adapter, and deterministic mock."""
+"""LLM provider protocol, Gemini/OpenAI-compatible adapters, and test mock."""
 
 from __future__ import annotations
 
@@ -94,6 +94,71 @@ class OpenAICompatibleLLMProvider:
         return content
 
 
+class GeminiLLMProvider:
+    """Gemini generateContent adapter returning the existing raw JSON contract."""
+
+    provider_name = "gemini"
+
+    def __init__(
+        self,
+        *,
+        api_key: str | None = None,
+        urlopen_func: Callable[..., object] | None = None,
+    ) -> None:
+        self.api_key = api_key or os.environ.get("GEMINI_API_KEY")
+        self._urlopen = urlopen_func or urlopen
+
+    def generate(self, *, system_prompt: str, user_prompt: str, config: LLMConfig) -> str:
+        if not self.api_key:
+            raise RuntimeError("Gemini credentials are missing. Set GEMINI_API_KEY in the server environment.")
+        model = config.model_name.removeprefix("models/")
+        payload = {
+            "systemInstruction": {"parts": [{"text": system_prompt}]},
+            "contents": [{"role": "user", "parts": [{"text": user_prompt}]}],
+            "generationConfig": {
+                "temperature": config.temperature,
+                "maxOutputTokens": config.max_output_tokens,
+                "responseMimeType": "application/json",
+            },
+        }
+        request = Request(
+            f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"x-goog-api-key": self.api_key, "Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            response = self._urlopen(request, timeout=config.timeout_seconds)
+            with response as result:
+                body = result.read()
+            parsed = json.loads(body.decode("utf-8"))
+        except HTTPError as exc:
+            # Do not pass Google's response body through: it can include request details.
+            raise RuntimeError(f"Gemini API returned HTTP {exc.code}") from exc
+        except URLError as exc:
+            raise RuntimeError(f"Could not reach Gemini API: {type(exc.reason).__name__}") from exc
+        except (TimeoutError, OSError) as exc:
+            raise RuntimeError(f"Gemini API request failed: {type(exc).__name__}") from exc
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise RuntimeError("Gemini API returned invalid JSON") from exc
+
+        try:
+            candidate = parsed["candidates"][0]
+            parts = candidate["content"]["parts"]
+            content = "".join(part["text"] for part in parts if isinstance(part.get("text"), str))
+            finish_reason = candidate.get("finishReason")
+        except (KeyError, IndexError, TypeError, AttributeError) as exc:
+            raise RuntimeError("Gemini API response is missing candidate text") from exc
+        if finish_reason == "MAX_TOKENS":
+            raise RuntimeError(
+                "Gemini answer was cut off at the output token limit "
+                f"({config.max_output_tokens}); raise FIRELENS_LLM_MAX_OUTPUT_TOKENS."
+            )
+        if not content.strip():
+            raise RuntimeError("Gemini API returned empty assistant content")
+        return content
+
+
 class MockLLMProvider:
     """Deterministic test provider. Its responses are fixtures, not LLM output."""
 
@@ -150,7 +215,9 @@ def create_llm_provider(config: LLMConfig) -> LLMProvider:
         return MockLLMProvider()
     if config.provider == OpenAICompatibleLLMProvider.provider_name:
         return OpenAICompatibleLLMProvider()
+    if config.provider == GeminiLLMProvider.provider_name:
+        return GeminiLLMProvider()
     raise ValueError(
         f"Unsupported LLM provider {config.provider!r}; "
-        "supported providers: 'openai-compatible', 'mock'."
+        "supported providers: 'openai-compatible', 'gemini', 'mock'."
     )

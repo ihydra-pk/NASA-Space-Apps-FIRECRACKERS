@@ -8,6 +8,7 @@ from src.llm import (
     LLMConfig,
     LLMResponseError,
     LLMService,
+    GeminiLLMProvider,
     MockLLMProvider,
     OpenAICompatibleLLMProvider,
 )
@@ -479,6 +480,82 @@ def test_openai_compatible_provider_requests_chat_json_with_configured_options()
     assert payload["temperature"] == 0.1
     assert payload["max_tokens"] == 99
     assert payload["response_format"] == {"type": "json_object"}
+
+
+def test_gemini_provider_uses_generate_content_json_mode_and_server_key():
+    requests = []
+
+    class FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+        def read(self):
+            return json.dumps({
+                "candidates": [{
+                    "content": {"parts": [{"text": '{"status":"insufficient_evidence"}'}]},
+                    "finishReason": "STOP",
+                }]
+            }).encode()
+
+    def fake_urlopen(request, timeout):
+        requests.append((request, timeout))
+        return FakeResponse()
+
+    provider = GeminiLLMProvider(api_key="test-gemini-key", urlopen_func=fake_urlopen)
+    config = LLMConfig(provider="gemini", model_name="gemini-test-model", temperature=0.2, max_output_tokens=321, timeout_seconds=9)
+    content = provider.generate(system_prompt="system", user_prompt="user", config=config)
+
+    assert content == '{"status":"insufficient_evidence"}'
+    request, timeout = requests[0]
+    payload = json.loads(request.data)
+    assert request.full_url.endswith("/v1beta/models/gemini-test-model:generateContent")
+    assert request.get_header("X-goog-api-key") == "test-gemini-key"
+    assert timeout == 9
+    assert payload["systemInstruction"]["parts"][0]["text"] == "system"
+    assert payload["contents"][0]["parts"][0]["text"] == "user"
+    assert payload["generationConfig"] == {
+        "temperature": 0.2,
+        "maxOutputTokens": 321,
+        "responseMimeType": "application/json",
+    }
+
+
+def test_gemini_provider_reads_key_and_config_from_environment(monkeypatch):
+    monkeypatch.setenv("GEMINI_API_KEY", "test-gemini-key")
+    monkeypatch.setenv("FIRELENS_LLM_PROVIDER", "gemini")
+    monkeypatch.delenv("FIRELENS_LLM_MODEL", raising=False)
+
+    config = LLMConfig.from_env()
+    provider = GeminiLLMProvider()
+
+    assert config.provider == "gemini"
+    assert config.model_name == "gemini-2.5-flash"
+    assert provider.api_key == "test-gemini-key"
+    assert "test-gemini-key" not in repr(config)
+
+
+def test_gemini_provider_fails_without_key(monkeypatch):
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    provider = GeminiLLMProvider(urlopen_func=lambda *_args, **_kwargs: pytest.fail("must not call Gemini"))
+
+    with pytest.raises(RuntimeError, match="GEMINI_API_KEY") as exc:
+        provider.generate(system_prompt="system", user_prompt="user", config=LLMConfig(provider="gemini"))
+    assert "test-gemini-key" not in str(exc.value)
+
+
+def test_gemini_provider_surfaces_only_http_status_not_provider_body():
+    from urllib.error import HTTPError
+
+    def fail_request(request, timeout):
+        raise HTTPError(request.full_url, 429, "quota", {}, None)
+
+    provider = GeminiLLMProvider(api_key="test-gemini-key", urlopen_func=fail_request)
+    with pytest.raises(RuntimeError, match="HTTP 429") as exc:
+        provider.generate(system_prompt="system", user_prompt="user", config=LLMConfig(provider="gemini"))
+    assert "test-gemini-key" not in str(exc.value)
 
 
 def test_live_llm_smoke_is_opt_in_and_requires_gateway_configuration():

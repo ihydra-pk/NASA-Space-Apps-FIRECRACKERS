@@ -17,8 +17,8 @@ class LLMConfig:
     :meth:`from_env`. No credentials are stored in project source/config files.
     """
 
-    provider: str = "openai-compatible"
-    model_name: str = "openai.gpt-6-luna"
+    provider: str = "gemini"
+    model_name: str = "gemini-2.5-flash"
     base_url: str = DEFAULT_UPB_BASE_URL
     timeout_seconds: float = 90.0
     temperature: float = 0.0
@@ -41,10 +41,11 @@ class LLMConfig:
 
     @classmethod
     def from_env(cls, *, provider: str | None = None) -> "LLMConfig":
-        selected_provider = provider or os.environ.get("FIRELENS_LLM_PROVIDER", "openai-compatible")
+        selected_provider = provider or os.environ.get("FIRELENS_LLM_PROVIDER", "gemini")
+        default_model = "gemini-2.5-flash" if selected_provider == "gemini" else "openai.gpt-6-luna"
         return cls(
             provider=selected_provider,
-            model_name=os.environ.get("FIRELENS_LLM_MODEL", "openai.gpt-6-luna"),
+            model_name=os.environ.get("FIRELENS_LLM_MODEL", default_model),
             base_url=os.environ.get("FIRELENS_LLM_BASE_URL", DEFAULT_UPB_BASE_URL),
             timeout_seconds=float(os.environ.get("FIRELENS_LLM_TIMEOUT", "90")),
             temperature=float(os.environ.get("FIRELENS_LLM_TEMPERATURE", "0")),
@@ -53,4 +54,6 @@ class LLMConfig:
 
     @property
     def credential_env_vars(self) -> tuple[str, ...]:
+        if self.provider == "gemini":
+            return ("GEMINI_API_KEY",)
         return ("FIRELENS_LLM_API_KEY", "UPB_AI_GATEWAY_KEY", "OPENAI_API_KEY")

@@ -23,14 +23,14 @@ services:
       - key: HOST
         value: 0.0.0.0
       - key: FIRELENS_LLM_PROVIDER
-        value: openai-compatible
+        value: gemini
       - key: FIRELENS_LLM_MODEL
-        value: openai.gpt-6-luna
+        value: gemini-2.5-flash
       - key: FIRELENS_LLM_MAX_OUTPUT_TOKENS
         value: "4000"
       - key: FIRELENS_EMBEDDING_BASE_URL
         value: https://ai-gateway.uni-paderborn.de/v1
       - key: FIRELENS_LLM_BASE_URL
         value: https://ai-gateway.uni-paderborn.de/v1
-      - key: UPB_AI_GATEWAY_KEY
+      - key: GEMINI_API_KEY
         sync: false

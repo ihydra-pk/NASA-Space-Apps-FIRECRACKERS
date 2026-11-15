@@ -22,8 +22,28 @@ Citation Validation
 
 ## Configuration
 
-The OpenAI-compatible chat provider uses environment configuration. The UPB
-gateway defaults match the existing OpenCode configuration:
+Gemini is the default answer provider. Set the model and the key only in the
+server environment (or in a local ignored `.env` file):
+
+```powershell
+$env:FIRELENS_LLM_PROVIDER = "gemini"
+$env:FIRELENS_LLM_MODEL = "gemini-2.5-flash"
+$env:GEMINI_API_KEY = "<your key>"
+```
+
+Gemini uses the `generateContent` API with JSON response mode and passes its
+text through the existing answer, evidence and citation validation. The key is
+sent in the `x-goog-api-key` header; it is never returned to the browser or
+included in provider error messages. Choose a model enabled for your Google AI
+Studio account; model availability and free-tier quotas depend on the account
+and Google's current limits.
+
+The OpenAI-compatible chat provider remains available. Select it with
+`FIRELENS_LLM_PROVIDER=openai-compatible` and its existing key variables. LLM
+provider settings do not change the separate embedding provider.
+
+The OpenAI-compatible chat provider remains available with environment
+configuration. Its UPB gateway defaults match the existing OpenCode setup:
 
 ```powershell
 $env:UPB_AI_GATEWAY_KEY = "<your key>"

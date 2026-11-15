@@ -5,6 +5,7 @@ from .models import AnswerCitation, AnswerFinding, AnswerResponse, EvidenceRefer
 from .policy import EvidencePolicy, PolicyDecision
 from .providers import (
     LLMProvider,
+    GeminiLLMProvider,
     MockLLMProvider,
     OpenAICompatibleLLMProvider,
     create_llm_provider,
@@ -17,6 +18,7 @@ __all__ = [
     "AnswerResponse",
     "EvidencePolicy",
     "EvidenceReference",
+    "GeminiLLMProvider",
     "LLMConfig",
     "LLMProvider",
     "LLMResponseError",
