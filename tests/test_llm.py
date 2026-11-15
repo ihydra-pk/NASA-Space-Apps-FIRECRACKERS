@@ -547,4 +547,3 @@ def test_evidence_labels_map_back_to_chunk_ids_and_unknown_labels_are_rejected()
         _answer(context, MockLLMProvider(_mock_response(context, chunk_ids=["E9"])))
     with pytest.raises(LLMResponseError, match="scientific_context"):
         _answer(context, MockLLMProvider(_mock_response(context, scientific_context="Kinetics [E1].")))
-

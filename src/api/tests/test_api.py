@@ -113,3 +113,37 @@ def test_host_and_port_come_from_the_environment(monkeypatch):
     monkeypatch.setenv("PORT", "10000")
     assert (parse_args([]).host, parse_args([]).port) == ("0.0.0.0", 10000)
     assert parse_args(["--port", "9000"]).port == 9000
+
+
+def test_tts_rejects_empty_text():
+    response = client().post("/api/tts", json={"text": "  "})
+    assert response.status_code == 422
+
+
+def test_tts_returns_audio_and_alignment(monkeypatch):
+    import src.api.app as api_app
+
+    async def fake_generate_speech(text):
+        assert text == "Hello human."
+        return b"ID3mock-audio", {"characters": ["H"], "character_start_times_seconds": [0], "character_end_times_seconds": [0.1]}
+
+    monkeypatch.setattr(api_app, "generate_speech", fake_generate_speech)
+    response = client().post("/api/tts", json={"text": " Hello human. "})
+    assert response.status_code == 200
+    assert response.json()["audio_base64"]
+    assert response.json()["alignment"]["characters"] == ["H"]
+
+
+def test_tts_never_returns_credentials(monkeypatch):
+    import src.api.app as api_app
+    from src.tts.service import TTSConfigurationError
+
+    monkeypatch.setenv("ELEVENLABS_API_KEY", "not-for-response")
+
+    async def fail(text):
+        raise TTSConfigurationError("Speech configuration missing.")
+
+    monkeypatch.setattr(api_app, "generate_speech", fail)
+    response = client().post("/api/tts", json={"text": "Hello."})
+    assert response.status_code == 503
+    assert "not-for-response" not in response.text

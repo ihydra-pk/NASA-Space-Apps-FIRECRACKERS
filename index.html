@@ -53,7 +53,6 @@ details{border:1px solid var(--ln);padding:10px 14px;margin-top:12px}summary{cur
 .split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}.cond{display:grid;grid-template-columns:repeat(6,1fr);border:1px solid var(--ln)}.cond div{padding:14px 16px;border-right:1px solid var(--ln)}.cond b{display:block;font:500 16px var(--m)}
 .stg{display:grid;grid-template-columns:repeat(4,1fr)}.stg div{border-top:3px solid var(--ln);padding:16px 32px 0 0;color:var(--mu);position:relative}.stg div:not(:last-child):after{content:"→";position:absolute;right:8px;top:14px;color:var(--red)}.stg div.on{border-color:var(--cy);color:var(--tx)}.stg b{display:block;font:600 24px var(--d);letter-spacing:.08em}
 .arch{width:100%;max-width:880px;display:block;margin:0 auto}.arch rect{fill:rgba(8,14,26,.9);stroke:#2a3d63}.arch text{fill:#f1f4fa;font:500 12px var(--m);text-anchor:middle;letter-spacing:.08em}.arch .t{fill:#8a9ab6;font-size:9px}.arch .fl{stroke:var(--cy);fill:none;stroke-dasharray:5 5;animation:fl 1.2s linear infinite}@keyframes fl{to{stroke-dashoffset:-20}}
-#dr{position:fixed;right:0;top:0;height:100%;width:min(420px,100%);background:#070d1a;border-left:1px solid var(--red);padding:28px;transform:translateX(100%);transition:transform .25s;z-index:9}#dr.on{transform:none}
 .tag.ok{color:var(--gn);border-color:#1f5a3f}.tag.no{color:var(--red);border-color:#6a2318}.covr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-items:center;border-bottom:1px solid var(--ln);padding:12px 0}#dl>div{word-break:break-word}.ph{color:var(--am);font:11px var(--m)}
 @media(max-width:960px){main{padding:0 16px 64px}header{padding:8px 16px;gap:8px}.demo{margin-left:0}.hero,.res,.split,.cat,.charts,.tr{grid-template-columns:1fr}.tr>div:not(:last-child):after{display:none}.ctl{grid-template-columns:1fr 1fr}.src{grid-template-columns:1fr}.flt{grid-template-columns:1fr}.cond{grid-template-columns:1fr 1fr}.stg{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -76,8 +75,8 @@ main>.pg:not(#explore){max-width:1000px;margin:0 auto;padding:0 22px 80px}
 h1{font:600 clamp(48px,8vw,96px)/1.05 var(--f);letter-spacing:-.03em;margin:0}
 h2{font:600 32px/1.12 var(--f);letter-spacing:-.025em;margin:0}
 .lab{font:600 12px var(--f);letter-spacing:0;color:var(--mu);text-transform:none}
-.console,.ex,.src,.tr>div,.cond,details,#dr{background:#fff;border:1px solid var(--ln);border-radius:18px}
-#dr{background:#fff}.src{border-left-width:1px}.ex h3,.src h3{font:600 24px var(--f)}
+.console,.ex,.src,.tr>div,.cond,details{background:#fff;border:1px solid var(--ln);border-radius:18px}
+.src{border-left-width:1px}.ex h3,.src h3{font:600 24px var(--f)}
 .btn{border-radius:999px;background:#0071e3;color:#fff;font:400 14px var(--f);letter-spacing:0;padding:10px 20px}.btn:hover{background:#0077ed;box-shadow:none}
 .btn.s{background:none;border:1px solid #0071e3;color:#0071e3;border-radius:999px;font:14px var(--f)}.btn.s:hover{color:#0077ed;border-color:#0077ed}
 .tag{border-radius:999px;border-color:var(--ln);color:var(--mu)}
@@ -181,6 +180,80 @@ main>#ask.pg{max-width:none;padding:0}
 .chat{max-width:1120px;margin:0 auto;padding:24px 22px 18px;display:flex;flex-direction:column;height:calc(100vh - 44px)}
 .chathead{display:flex;justify-content:space-between;align-items:center;padding:8px 0 14px;border-bottom:1px solid #e8e8ed}
 .chathead b{font:600 21px var(--f);letter-spacing:-.02em;display:block}.chathead span{font-size:12px;color:var(--mu)}
+.chat-brand{display:flex;align-items:center;min-width:0}
+.chat-content{flex:1;min-height:0;display:grid;grid-template-columns:290px minmax(0,1fr);gap:20px;padding-top:16px}
+.alien-companion{align-self:stretch;position:relative;display:flex;align-items:center;justify-content:center;min-height:0;padding:18px 10px}
+.alien{width:min(100%,280px);height:auto;max-height:100%;flex:none;overflow:visible;color:#687cf5;filter:drop-shadow(0 8px 14px rgba(70,100,220,.2))}
+.alien-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.alien-call{position:absolute;top:10%;left:50%;z-index:1;display:flex;align-items:center;justify-content:center;min-width:98px;min-height:34px;padding:9px 13px;border:1px solid #cbd3ff;border-radius:18px;background:linear-gradient(155deg,#fff 15%,#f0f3ff 100%);color:#5367dd;font:800 12px/1 var(--f);letter-spacing:.08em;box-shadow:0 5px 15px rgba(54,76,170,.12);transform:translateX(-50%);white-space:nowrap;opacity:0}
+.alien-call:after{content:"";position:absolute;left:20px;bottom:-6px;width:10px;height:10px;background:#fff;border-right:1px solid #cbd3ff;border-bottom:1px solid #cbd3ff;transform:rotate(45deg)}
+.alien-call span{display:inline-block}
+.alien-companion[data-state="idle"] .alien-call{animation:alienBubble 1.65s ease-in-out infinite}
+.alien-companion:not([data-state="idle"]) .alien-call{display:none}
+.chat-main{min-width:0;min-height:0;display:flex;flex-direction:column}
+.alien .alien-shell{fill:url(#alienShellGradient);stroke:#687cf5;stroke-width:2}
+.alien .alien-shell-back{fill:#5365d5;stroke:#4557c6;stroke-width:2;opacity:.95}
+.alien .alien-trim{fill:url(#alienTrimGradient);stroke:#687cf5;stroke-width:1.5}
+.alien .alien-screen{fill:url(#alienScreenGradient);stroke:#687cf5;stroke-width:1.5}
+.alien .alien-shell-highlight{fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;opacity:.78}
+.alien .alien-shell-shine{fill:#fff;opacity:.42}
+.alien .alien-screen-glint{fill:none;stroke:#94a8ff;stroke-width:1.5;stroke-linecap:round;opacity:.5}
+.alien .alien-ground-shadow{fill:#5767a8;opacity:.13;transform-box:fill-box;transform-origin:center;animation:alienShadow 3.8s ease-in-out infinite}
+.alien .alien-shell-back{fill:#5365d5;opacity:.9}
+.alien .alien-eye,.alien .alien-mouth{fill:none;stroke:#a8f3ed;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.alien .alien-eye{fill:#a8f3ed;stroke:none}
+.alien .alien-antenna{fill:none;stroke:#687cf5;stroke-width:2;stroke-linecap:round}
+.alien .alien-antenna{stroke:url(#alienAntennaGradient)}
+.alien .alien-beacon{fill:url(#alienBeaconGradient);stroke:#70c8c1;stroke-width:1}
+.alien .alien-spark{fill:#a8f3ed;transform-box:fill-box;transform-origin:center}
+.alien .alien-mouth-open{opacity:0}
+.alien .alien-frown{opacity:0}
+.alien .alien-listen-rings,.alien .alien-speaking-waves,.alien .alien-thought-dots{opacity:0;fill:none;stroke:#687cf5;stroke-width:1.8;stroke-linecap:round;transform-box:fill-box;transform-origin:center}
+.alien .alien-listen-rings{stroke:#42b8b0;stroke-dasharray:2 3}
+.alien .alien-speaking-waves{stroke:#42b8b0;stroke-width:2}
+.alien .alien-thought-dots{fill:#8d9bff;stroke:none}
+.alien .alien-float{transform-box:fill-box;transform-origin:center;animation:alienFloat 3.8s ease-in-out infinite}
+.alien .alien-spark{animation:alienSpark 2.8s ease-in-out infinite}
+.alien[data-state="idle"] .alien-float{animation:alienShout 1.35s ease-in-out infinite}
+.alien[data-state="idle"] .alien-mouth-closed{animation:alienMouthClose .82s steps(1,end) infinite}
+.alien[data-state="idle"] .alien-mouth-open{animation:alienMouthOpen .82s steps(1,end) infinite}
+.alien[data-state="idle"] .alien-speaking-waves{opacity:.75;animation:alienSpeak .55s ease-in-out infinite alternate}
+.alien[data-state="listening"] .alien-float{animation:alienListen 1.2s ease-in-out infinite}
+.alien[data-state="listening"] .alien-listen-rings{opacity:1;animation:alienHear 1.1s ease-out infinite}
+.alien[data-state="listening"] .alien-eye{animation:alienAlert 1.1s ease-in-out infinite}
+.alien[data-state="listening"] .alien-spark{animation:alienListenSpark .55s ease-in-out infinite}
+.alien[data-state="thinking"] .alien-float{animation:alienThink .72s ease-in-out infinite alternate}
+.alien[data-state="thinking"] .alien-thought-dots{opacity:1;transform-box:view-box;transform-origin:32px 23px;animation:alienOrbit 1.6s linear infinite}
+.alien[data-state="thinking"] .alien-spark{animation:alienThinkSpark .9s linear infinite}
+.alien[data-state="responding"] .alien-float{animation:alienTalk .42s ease-in-out infinite alternate}
+.alien[data-state="responding"] .alien-mouth-closed{animation:alienMouthClose .42s steps(1,end) infinite}
+.alien[data-state="responding"] .alien-mouth-open{animation:alienMouthOpen .42s steps(1,end) infinite}
+.alien[data-state="responding"] .alien-speaking-waves{opacity:1;animation:alienSpeak .48s ease-in-out infinite alternate}
+.alien[data-state="error"] .alien-shell{fill:#fff2ee;stroke:#e47d69}
+.alien[data-state="error"] .alien-trim{fill:#ffd9cf;stroke:#e47d69}
+.alien[data-state="error"] .alien-antenna{stroke:#e47d69}
+.alien[data-state="error"] .alien-mouth-closed{opacity:0}
+.alien[data-state="error"] .alien-frown{opacity:1}
+.alien[data-state="error"] .alien-float{animation:alienGlitch .24s steps(2,end) 5}
+.alien[data-state="error"] .alien-screen{animation:alienScreenFlicker .5s steps(2,end) 3}
+@keyframes alienFloat{50%{transform:translateY(-2px)}}
+@keyframes alienSpark{50%{opacity:.45;transform:scale(.75)}}
+@keyframes alienListen{50%{transform:translateY(-3px) rotate(-5deg)}}
+@keyframes alienListenSpark{50%{opacity:1;transform:scale(1.7)}}
+@keyframes alienThink{to{transform:translateY(-2px) rotate(3deg)}}
+@keyframes alienThinkSpark{to{transform:rotate(360deg)}}
+@keyframes alienTalk{to{transform:translateY(-1px) scale(1.025)}}
+@keyframes alienMouthClose{0%,44%,100%{opacity:1}48%,96%{opacity:0}}
+@keyframes alienMouthOpen{0%,44%,100%{opacity:0}48%,96%{opacity:1}}
+@keyframes alienHear{0%{opacity:0;transform:scale(.72)}45%{opacity:.9}100%{opacity:0;transform:scale(1.14)}}
+@keyframes alienAlert{50%{transform:scale(1.35)}}
+@keyframes alienOrbit{to{transform:rotate(360deg)}}
+@keyframes alienSpeak{to{opacity:.35;transform:scaleY(.55)}}
+@keyframes alienGlitch{25%{transform:translateX(-2px) rotate(-3deg)}75%{transform:translateX(2px) rotate(2deg)}}
+@keyframes alienScreenFlicker{50%{opacity:.5}}
+@keyframes alienBubble{0%,8%{opacity:0;transform:translateX(-50%) translateY(5px) scale(.94)}20%,58%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}72%,100%{opacity:0;transform:translateX(-50%) translateY(-4px) scale(1.03)}}
+@keyframes alienShout{0%,100%{transform:translateY(0) scale(1)}35%,65%{transform:translateY(-5px) scale(1.035)}}
+@keyframes alienShadow{50%{transform:scaleX(.84);opacity:.09}}
 .newchat{border:1px solid var(--ln);background:#fff;border-radius:999px;padding:6px 14px;font:13px var(--f);color:var(--tx)}
 .msgs{flex:1;overflow-y:auto;padding:24px 2px;display:flex;flex-direction:column;gap:18px;scrollbar-width:thin}
 .m{max-width:78%;animation:pop .3s ease}
@@ -192,19 +265,15 @@ main>#ask.pg{max-width:none;padding:0}
 .bub p{margin:0 0 8px}.bub p:last-child{margin:0}
 .bub sup a{font-size:11px;color:#0066cc;text-decoration:none;background:#fff;border-radius:6px;padding:1px 5px;margin-left:2px}
 .bub .note{font-size:12px;color:var(--mu);margin-top:8px}
-.bub .verdict{display:inline-block;font:600 12px var(--f);padding:2px 10px;border-radius:999px;background:#fff}
-.bub .verdict.grounded{color:#1e7d4f;background:#e6f6ee}.bub .verdict.partial{color:#8a5a00;background:#fff4dc}.bub .verdict.insufficient_evidence{color:#a1352a;background:#fdecea}
-.bub .sec{font:600 12px var(--f);color:var(--mu);margin:14px 0 6px}
-.bub .finds{list-style:none;margin:0 0 8px;padding:0;display:grid;gap:6px}
-.bub .finds .sup{display:inline-block;font:600 11px var(--f);padding:1px 8px;border-radius:999px;margin-right:6px;vertical-align:1px}
-.bub .finds .sup.dir{color:#1e7d4f;background:#e6f6ee}.bub .finds .sup.inf{color:#5b3fbf;background:#efeafd}
-.bub .sbg{margin:12px 0 8px;border:1px dashed #c7c7cc;border-radius:14px;padding:4px 14px 10px;background:#fff}
-.bub .sbg .sec{margin-top:8px}.bub .sbg .bgnote{font-size:12px;color:var(--mu);margin:-2px 0 8px}.bub .sbg p{font-size:15px}
-#ask[data-theme="dark"] .bub .sbg{background:var(--chat-panel-2);border-color:var(--chat-muted)}
 .chips2{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .chips2 button{border:1px solid var(--ln);background:#fff;border-radius:999px;padding:6px 12px;font:13px var(--f);color:var(--tx)}
 .chips2 button:hover{border-color:#0071e3;color:#0071e3}
 .srctog{border:0;background:none;color:var(--link);font:13px var(--f);padding:0;margin-top:10px}
+.speaker-controls{display:flex;align-items:center;gap:8px;margin-top:10px}.speaker-btn{border:1px solid var(--ln);background:#fff;border-radius:999px;padding:5px 10px;color:var(--mu);font:13px var(--f)}.speaker-btn:hover{border-color:#0071e3;color:#0071e3}.tts-error{color:#b42318;font-size:12px}
+.backend-answer p{margin:0 0 10px}.backend-answer p:last-child{margin-bottom:0}.answer-cite{border:0;background:#e3efff;color:#0759a5;border-radius:999px;padding:0 6px;font:600 11px/1.5 var(--f);vertical-align:super;cursor:pointer;margin-left:2px}.answer-cite:hover{background:#cfe2ff}.backend-sources{margin-top:12px;border-top:1px solid var(--ln);padding-top:10px}.backend-sources>.srctog{margin-top:0}.backend-sources .srcs{margin-top:8px}.backend-source{background:#fff;border:1px solid var(--ln);border-radius:12px;padding:11px 13px;margin:8px 0}.backend-source-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}.backend-source-title{font-weight:600;font-size:13px;color:var(--tx)}.backend-source-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.backend-source-meta span{font-size:11px;background:#eef1f5;color:var(--mu);border-radius:999px;padding:3px 8px}.backend-source p{font-size:13px;line-height:1.5;color:#4b5563;margin:9px 0 0;white-space:pre-wrap}.backend-source a{display:inline-block;margin-top:8px;font-size:12px;color:var(--link);text-decoration:none}.backend-source a:hover{text-decoration:underline}
+.subtitle-line{margin-top:10px;padding:8px 12px;border-left:2px solid #0071e3;background:rgba(0,113,227,.06);border-radius:0 10px 10px 0;font-size:14px;line-height:1.55}.subtitle-word{border-radius:3px}.subtitle-word.active{background:#dcecff;color:#0759a5;box-shadow:0 0 0 2px #dcecff}
+.auto-speak{display:flex;align-items:center;gap:7px;color:#f1f4fb;font:12px var(--f);white-space:nowrap}.auto-speak input{accent-color:#91a8ff}
+.resource-tree{margin-top:14px;padding-top:12px;border-top:1px solid #e8e8ed}.resource-tree>summary{font-weight:600;color:var(--mu);cursor:pointer}.resource-tree details{margin:6px 0 0 8px;padding:0 0 0 12px;border:0;border-left:1px solid var(--ln);border-radius:0}.resource-tree details summary{cursor:pointer;font-size:14px}.resource-tree a{display:block;margin:6px 0 6px 16px}
 .srcs{display:none;gap:8px;margin-top:10px}.srcs.open{display:grid}
 .srcc{background:#fff;border-radius:14px;padding:12px 14px}
 .srcc .hd{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -240,7 +309,7 @@ main>#ask.pg{max-width:none;padding:0}
 #ask[data-theme="dark"] .askbox:focus-within{border-color:#7ab8ff;box-shadow:0 0 0 4px rgba(122,184,255,.16)}
 #ask[data-theme="dark"] .askbox input{color:var(--chat-text)}
 #ask[data-theme="dark"] .fcrit,#ask[data-theme="dark"] .fi{border-color:var(--chat-line)}
-@media(max-width:560px){.chat{height:calc(100dvh - 44px);padding:16px}.chathead b{font-size:18px}.chat-actions{gap:6px}.newchat,.theme-toggle{padding:6px 10px;font-size:12px}.m{max-width:92%}}
+@media(max-width:560px){.chat{height:calc(100dvh - 44px);padding:16px}.chathead b{font-size:18px}.chat-actions{gap:6px}.newchat,.theme-toggle{padding:6px 10px;font-size:12px}.m{max-width:92%}.chat-content{grid-template-columns:92px minmax(0,1fr);gap:6px;padding-top:8px}.alien-companion{position:relative;align-self:stretch;padding:14px 0}.alien{width:92px;max-width:100%}.alien-call{top:14%;gap:3px;padding:7px 8px;font-size:9px}.alien-call span:nth-child(3){display:none}}
 /* ===== Motion and navigation refresh ===== */
 header{height:68px;padding:0 max(22px,calc((100% - 1160px)/2));background:rgba(250,250,252,.82);border-bottom:1px solid rgba(29,29,31,.08);box-shadow:0 8px 30px rgba(22,30,45,.045);}
 .localnav{top:68px}
@@ -269,6 +338,7 @@ header nav button:hover{color:var(--tx);transform:translateY(-1px)}header nav bu
 @media(max-width:860px){header{height:60px;padding:0 16px;flex-wrap:nowrap;justify-content:space-between}.menu-toggle{display:inline-grid;place-items:center;order:3}.demo{display:none}header nav{display:none;position:absolute;left:14px;right:14px;top:54px;height:auto;padding:8px;border-radius:18px;background:rgba(255,255,255,.96);box-shadow:0 16px 36px rgba(18,26,40,.16);border:1px solid var(--ln);flex-direction:column;align-items:stretch;gap:3px}header nav.open{display:flex;animation:menuIn .22s ease both}header nav button{height:42px;text-align:left;padding:0 14px}.chat{height:calc(100dvh - 60px)}}
 @keyframes menuIn{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.pg.on,.m,header nav button:before,.hero:after,.demo i{animation:none!important}.gcard:hover,.ecard:hover,.ev:hover,.fr:hover,.chip:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.alien *,.alien-call,.alien-call span{animation:none!important;transition:none!important}.alien-companion[data-state="idle"] .alien-call{opacity:1}}
 /* A cooler, ink-and-indigo interface with a soft aurora selection pill. */
 header{background:rgba(17,21,31,.9);border-bottom-color:rgba(160,178,210,.13);box-shadow:0 10px 34px rgba(4,8,18,.26)}
 .logo{color:#f1f4fb}.logo b{color:#91a8ff}
@@ -500,7 +570,7 @@ main>#filter.pg{max-width:none;padding:0 0 80px}
 <div id="fireAmbience" aria-hidden="true"><i class="flame"></i><i class="flame"></i><i class="flame"></i></div>
 <header><div class="logo">NASA <b>FireLens</b></div>
 <nav id="mainnav" aria-label="Main"><button data-p="explore">EXPLORE</button><button data-p="ask">ASK NASA</button><button data-p="exps">EXPERIMENTS</button><button data-p="filter">FILTER</button><button data-p="about">ABOUT</button></nav>
-<button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mainnav">☰</button></header>
+<label class="auto-speak" title="Speak each assistant answer automatically"><input type="checkbox" id="autoSpeak"> Auto-speak</label><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mainnav">☰</button></header>
 <main>
 <nav class="explore-index" aria-label="Explore page index"><a href="#ov">Overview</a><a href="#explorer">Explore the data</a><a href="#mapsec">Flammability map</a><a href="#evsec">Discover the evidence</a></nav>
 <section class="pg" id="explore">
@@ -560,10 +630,39 @@ main>#filter.pg{max-width:none;padding:0 0 80px}
 
 <section class="pg" id="ask">
 <div class="chat">
-  <div class="chathead"><div><b>Ask NASA</b><span id="kbline"></span></div><div class="chat-actions"><button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span aria-hidden="true">☾</span><span>Dark mode</span></button><button class="newchat" id="newchat" type="button">New chat</button></div></div>
+  <div class="chathead"><div class="chat-brand"><div><b>Ask NASA</b><span id="kbline"></span></div></div><div class="chat-actions"><button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span aria-hidden="true">☾</span><span>Dark mode</span></button><button class="newchat" id="newchat" type="button">New chat</button></div></div>
+  <div class="chat-content"><aside class="alien-companion" id="alienCompanion" data-state="idle" aria-live="polite" aria-label="Alien assistant status"><div class="alien-call" aria-hidden="true"><span>ANASA</span></div><svg class="alien" id="chatAlien" data-state="idle" viewBox="0 0 64 64" role="img" aria-label="Friendly alien, relaxing" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="alienShellGradient" x1=".18" y1=".05" x2=".82" y2="1" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="#fff"/><stop offset=".48" stop-color="#edf0ff"/><stop offset="1" stop-color="#c6ceff"/></linearGradient>
+      <linearGradient id="alienTrimGradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5f7ff"/><stop offset=".55" stop-color="#bfcaff"/><stop offset="1" stop-color="#8295f5"/></linearGradient>
+      <linearGradient id="alienScreenGradient" x1="0" y1="0" x2=".2" y2="1"><stop stop-color="#38436f"/><stop offset="1" stop-color="#171d3c"/></linearGradient>
+      <linearGradient id="alienAntennaGradient" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#5466dc"/><stop offset="1" stop-color="#9baaff"/></linearGradient>
+      <radialGradient id="alienBeaconGradient" cx=".32" cy=".25"><stop stop-color="#e1fffb"/><stop offset=".45" stop-color="#9df0e3"/><stop offset="1" stop-color="#56aca9"/></radialGradient>
+      <linearGradient id="alienLegGradient" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#aab7ff"/><stop offset="1" stop-color="#596bdd"/></linearGradient>
+    </defs>
+    <ellipse class="alien-ground-shadow" cx="32" cy="61" rx="17" ry="2.2"/>
+    <g class="alien-float">
+      <path class="alien-shell-back" d="M13 28c0-10.5 8.5-17 19-17s19 6.5 19 17v13c0 8.3-8.5 14-19 14s-19-5.7-19-14V28Z" transform="translate(1 1.5)"/>
+      <path class="alien-antenna" d="M32 12V7m0 0 5-3"/><circle class="alien-beacon" cx="39" cy="4" r="2.5"/><circle class="alien-spark" cx="39" cy="4" r="4"/>
+      <path class="alien-shell" d="M13 28c0-10.5 8.5-17 19-17s19 6.5 19 17v13c0 8.3-8.5 14-19 14s-19-5.7-19-14V28Z"/>
+      <path class="alien-trim" d="M10 29c0-2 1.6-3.5 3.5-3.5H15v9h-1.5A3.5 3.5 0 0 1 10 31v-2Zm44 0c0-2-1.6-3.5-3.5-3.5H49v9h1.5A3.5 3.5 0 0 0 54 31v-2Z"/>
+      <path class="alien-shell-highlight" d="M18 20c3.5-5 8.5-7 14-7"/><ellipse class="alien-shell-shine" cx="19" cy="20" rx="3" ry="1.2" transform="rotate(-42 19 20)"/>
+      <rect class="alien-screen" x="19" y="23" width="26" height="21" rx="9"/>
+      <path class="alien-screen-glint" d="M24 26c4-2 11-2 15 0"/>
+      <circle class="alien-eye" cx="27" cy="32" r="2.2"/><circle class="alien-eye" cx="37" cy="32" r="2.2"/>
+      <path class="alien-mouth alien-mouth-closed" d="M28 38c2.5 2 5.5 2 8 0"/>
+      <path class="alien-mouth alien-mouth-open" d="M28 37c2.5 4 5.5 4 8 0-2.5-2-5.5-2-8 0Z"/>
+      <path class="alien-mouth alien-frown" d="M28 40c2.5-2 5.5-2 8 0"/>
+      <path fill="none" stroke="url(#alienLegGradient)" stroke-width="3.2" stroke-linecap="round" d="M27 53v4m10-4v4"/><path class="alien-antenna" stroke-width="3.2" d="M22 57h5m10 0h5"/>
+    </g>
+    <path class="alien-listen-rings" d="M8 26c-3 4-3 8 0 12m48-12c3 4 3 8 0 12"/>
+    <path class="alien-speaking-waves" d="M53 28c3 2 3 6 0 8m4-12c5 4 5 12 0 16"/>
+    <g class="alien-thought-dots"><circle cx="49" cy="17" r="2.2"/><circle cx="53" cy="12" r="1.7"/><circle cx="55" cy="7" r="1.2"/></g>
+  </svg><span class="alien-status" id="alienStatus" aria-live="polite">Alien is ready.</span></aside><div class="chat-main">
   <div class="msgs" id="log" aria-live="polite"></div>
   <form class="askbox" id="askform" autocomplete="off"><input id="q" placeholder="Message Ask NASA" aria-label="Question"><button id="send" aria-label="Send">↑</button></form>
-  <p class="disc">Answers come from NASA PSI files; general science background is marked separately. Every answer shows its sources.</p>
+  <p class="disc">Answers come only from NASA PSI files. Every answer shows its sources.</p>
+  </div></div>
 </div>
 </section>
 
@@ -605,7 +704,6 @@ main>#filter.pg{max-width:none;padding:0 0 80px}
 <p style="text-align:center;font:600 28px var(--d);letter-spacing:.1em;margin:0">FIRE SAFETY INSIGHT</p>
 <div class="split" style="margin-top:48px;gap:24px;align-items:start"><p>RAG retrieves scientific evidence. The data engine analyzes structured experiment conditions. The AI explains the evidence.</p><p style="color:var(--am)">FireLens does not replace validated combustion models.</p></div></section>
 </main>
-<aside id="dr" aria-label="Source inspector"><div style="display:flex;justify-content:space-between;align-items:center"><span class="lab">SOURCE INSPECTOR</span><button class="btn s" id="dx">CLOSE</button></div><div id="dl" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0"></div><div class="lab" style="margin-bottom:8px">SOURCE TEXT</div><div style="border:1px solid var(--ln);background:#050a14;padding:20px;min-height:220px;font:14px/1.7 var(--m);color:var(--mu)">SOURCE TEXT PENDING BACKEND CONNECTION</div><div style="display:grid;gap:8px;margin-top:24px"><button class="btn" id="dop">OPEN EXPERIMENT</button><button class="btn s" id="dak">ASK NASA ABOUT THIS SOURCE</button></div></aside>
 <script>
 
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -616,20 +714,19 @@ const exploreIndex=$('.explore-index');if(exploreIndex&&'IntersectionObserver'in
 const askTheme=localStorage.getItem('firelens-chat-theme')==='dark'?'dark':'light';
 function setChatTheme(theme){const ask=$('#ask'),toggle=$('#themeToggle'),dark=theme==='dark';ask.dataset.theme=theme;toggle.setAttribute('aria-pressed',String(dark));toggle.setAttribute('aria-label',`Switch to ${dark?'light':'dark'} mode`);toggle.innerHTML=`<span aria-hidden="true">${dark?'☀':'☾'}</span><span>${dark?'Light':'Dark'} mode</span>`;localStorage.setItem('firelens-chat-theme',theme)}
 setChatTheme(askTheme);$('#themeToggle').addEventListener('click',()=>setChatTheme($('#ask').dataset.theme==='dark'?'light':'dark'));
-const STATE={sources:2,pages:15,chunks:null,status:'INGESTION READY'};/* backend hook: replace with API response */
-const COVERAGE={};/* backend hook: {OXYGEN:true,TEMPERATURE:false,...} from index metadata */
+const autoSpeakToggle=$('#autoSpeak');autoSpeakToggle.checked=localStorage.getItem('firelens-auto-speak')==='true';autoSpeakToggle.addEventListener('change',()=>localStorage.setItem('firelens-auto-speak',String(autoSpeakToggle.checked)));
+const STATE={sources:2,pages:15,chunks:null,status:'INGESTION READY'};
+const COVERAGE={};
 const PEND='PENDING BACKEND CONNECTION';
 const EV=[{x:'FLEX',n:'Flame Extinguishment',d:'FLEX Test Plan',p:8,t:'',ty:'PLANNED',k:'Test Plan',psi:'PSI-69',loc:'p.8',id:null,path:null},
 {x:'FLEX',n:'Flame Extinguishment',d:'FLEX DoD',p:null,t:'',ty:'METADATA',k:'Metadata',psi:'PSI-69',loc:null,id:null,path:null}];
 const NI=[{x:'BASS',n:'Burning and Suppression of Solids'},{x:'SAFFIRE',n:'Spacecraft Fire Experiments'}];
-const row=(e,i)=>`<div class="src ${e.ty}"><div><span class="tag ${e.ty}">${e.ty}</span></div><div><h3>${e.x}</h3><p>${e.n}</p></div><div><p>Source</p><b>${e.d}</b><p>Page ${e.p||'—'} · NASA PSI</p></div><div><button class="btn s" data-src="${i}">VIEW SOURCE</button></div></div>`;
+const row=(e,i)=>`<div class="src ${e.ty}"><div><span class="tag ${e.ty}">${e.ty}</span></div><div><h3>${e.x}</h3><p>${e.n}</p></div><div><p>Source</p><b>${e.d}</b><p>Page ${e.p||'—'} · NASA PSI</p></div><div></div></div>`;
 const nrow=e=>`<div class="src METADATA"><div><span class="tag METADATA">NO RECORD</span></div><div><h3>${e.x}</h3><p>${e.n}</p></div><div><b>SOURCE NOT INGESTED</b></div><div></div></div>`;
 const evx=()=>$('#evx').innerHTML=EV.map(row).join('')+NI.map(nrow).join('');
 function kbRender(){$('#k1').textContent=STATE.sources;$('#k2').textContent=STATE.pages;$('#k3').textContent=STATE.chunks==null?'PENDING INDEXING':STATE.chunks;$('#k4').textContent=STATE.status}
 function show(p){const next=$('#'+p);if(!next)return;const active=$('.pg.on');document.body.classList.toggle('explore-active',p==='explore');if(active===next){mainnav.classList.remove('open');menuToggle.setAttribute('aria-expanded','false');menuToggle.setAttribute('aria-label','Open navigation');menuToggle.textContent='☰';return}if(active){active.classList.remove('on');active.setAttribute('aria-hidden','true')}next.classList.remove('on');void next.offsetWidth;next.classList.add('on');next.removeAttribute('aria-hidden');$$('header nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p||(p==='detail'&&b.dataset.p==='exps')));history.replaceState(null,'','#'+p);mainnav.classList.remove('open');menuToggle.setAttribute('aria-expanded','false');menuToggle.setAttribute('aria-label','Open navigation');menuToggle.textContent='☰';window.scrollTo(0,0)}
 $$('header nav button').forEach(b=>b.onclick=()=>show(b.dataset.p));
-let cur=EV[0];document.addEventListener('click',e=>{const s=e.target.closest('[data-src]');if(s){const v=cur=EV[+s.dataset.src];$('#dl').innerHTML=[['EXPERIMENT',v.x],['DOCUMENT',v.d],['PAGE',v.p||PEND],['EVIDENCE TYPE',`<span class="tag ${v.ty}">${v.ty}</span>`],['SOURCE ID',v.id||PEND],['SOURCE LOCATOR',v.loc||PEND],['SOURCE PATH',v.path||PEND],['NASA PSI',v.psi||PEND]].map(([k,t])=>`<div><div class="lab">${k}</div><div style="font:500 15px var(--m)">${t}</div></div>`).join('');$('#dr').classList.add('on')}const g=e.target.closest('[data-go]');if(g)show(g.dataset.go)});
-$('#dx').onclick=()=>$('#dr').classList.remove('on');$('#dop').onclick=()=>{$('#dr').classList.remove('on');openExp((EXP.find(e=>e.n===cur.x)||EXP.find(e=>e.k==='FLEX')).k)};$('#dak').onclick=()=>{$('#dr').classList.remove('on');show('ask');send('What does '+cur.d+' contain?')};
 kbRender();
 // flame canvas
 function flame(c,g){const x=c.getContext('2d'),W=c.width,P=Array.from({length:70},()=>({a:Math.random()*6.28,r:Math.random(),s:.002+Math.random()*.004}));let t=0;
@@ -683,10 +780,10 @@ const FINDINGS=[
   in:'Nitrogen-type inert agents are worth considering for fabric and plastic fires; results are in the BASS reports.',fit:()=>S.dil==='N2'?1:0}
 ];
 function findings(){const box=$('#findings');if(!box)return;
- const sc=FINDINGS.map(f=>{const on=f.pil===S.pil,fit=f.mats.includes(S.mat)?2:(SOLIDS.includes(S.mat)&&f.mats.some(m=>SOLIDS.includes(m))?1:0);
+  const selected=activeMaterials(),sc=FINDINGS.map(f=>{const on=f.pil===S.pil,fit=f.mats.some(m=>selected.includes(m))?2:(selected.some(m=>SOLIDS.includes(m))&&f.mats.some(m=>SOLIDS.includes(m))?1:0);
   return{f,on,score:(on?10:0)+f.imp*2+(f.ev==='s'?2:1)+fit+f.fit()}}).sort((a,b)=>b.score-a.score);
  const main=sc.filter(x=>x.on).slice(0,5),other=sc.filter(x=>!x.on).slice(0,2);
- const ins=PIL[S.pil].in,cond=[GOAL[S.pil][0],MATS[S.mat]];if(ins.includes('flow'))cond.push(RNG.flow.f(S.flow)+' cm/s air');if(ins.includes('o2'))cond.push(S.o2.toFixed(1)+' % O₂');if(ins.includes('pres'))cond.push(S.p.toFixed(2)+' atm');if(ins.includes('grav'))cond.push({micro:'microgravity',moon:'Moon',mars:'Mars',earth:'Earth'}[S.grav]);
+  const ins=PIL[S.pil].in,cond=[GOAL[S.pil][0],S.mat==='all'?'All materials':MATS[S.mat]];if(ins.includes('flow'))cond.push(RNG.flow.f(S.flow)+' cm/s air');if(ins.includes('o2'))cond.push(S.o2.toFixed(1)+' % O₂');if(ins.includes('pres'))cond.push(S.p.toFixed(2)+' atm');if(ins.includes('grav'))cond.push({micro:'microgravity',moon:'Moon',mars:'Mars',earth:'Earth'}[S.grav]);
  const pill={prev:['prev','Prevention'],det:['det','Detection'],supp:['supp','Suppression']};
  const item=(x,i,dim)=>{const f=x.f,ob=typeof f.ob==='function'?f.ob():f.ob;
   return `<div class="fi ${dim?'dim':''}"><div class="no">${i}</div><div><div class="tt"><b>${f.t}</b><span class="pills"><span class="pl ${pill[f.pil][0]}">${pill[f.pil][1]}</span>${dim?'<span class="pl">Other pillar</span>':`<span class="pl ${f.ev}">${f.ev==='s'?'Strong':'Medium'} evidence</span>`}</span></div>
@@ -741,6 +838,7 @@ const RNG={flow:{lab:'AIR FLOW',u:'cm/s',min:0,max:45,step:.5,f:v=>v.toFixed(1),
  age:{lab:'SMOKE AGING TIME',u:'min',min:0,max:30,step:1,f:v=>v.toFixed(0),key:'age'},
  dilp:{lab:'SUPPRESSANT IN AIR',u:'%',min:0,max:70,step:1,f:v=>v.toFixed(0),key:'dilp'}};
 const S=window.S0={pil:'prev',mat:'sibal',flow:10,o2:21,dir:'concurrent',grav:'micro',p:1,age:5,dil:'none',dilp:0};
+function activeMaterials(){return S.mat==='all'?[...new Set(EXP.filter(e=>e.pil.includes(S.pil)).flatMap(e=>e.mats))]:[S.mat]}
 
 /* NASA test points */
 const B2=B2RAW.split(';').map(s=>{const[m,f,o,n]=s.split(',');return{m:{S:'sibal',P:'pmma',N:'nomex',W:'wax'}[m],f:+f,o:+o,n:+n}});
@@ -753,7 +851,7 @@ const TOL={flow:.5,o2:.2,p:.03,age:.5,dilp:1};
 
 function check(e){
  if(!e.pil.includes(S.pil))return{st:'other',why:'Other safety pillar'};
- if(!e.mats.includes(S.mat))return{st:'none',why:'Material not tested'};
+  if(!e.mats.some(m=>activeMaterials().includes(m)))return{st:'none',why:'Material not tested'};
  const bad=[],nl=[];const ins=PIL[S.pil].in;
  if(ins.includes('flow')){if(!inR(S.flow,e.flow,TOL.flow))bad.push('air flow '+fr(e.flow,'cm/s'))}
  if(ins.includes('o2')){if(!e.o2)nl.push('O₂');else if(!inR(S.o2,e.o2,TOL.o2))bad.push('O₂ '+fr(e.o2,'%'))}
@@ -783,11 +881,11 @@ function ticks(R){const b=covBands(R.key);if(!b.length)return '';const pc=x=>(x-
  for(const v of vals){const p=pc(v);if(p-last<7)continue;last=p;const most=v>=bs-1e-9&&v<=be+1e-9;out.push(`<span class="${most?'most':''} ${p<4?'edge0':p>96?'edge1':''}" style="left:${p}%">${R.f(v).replace(/\.0$/,'')}</span>`)}
  return `<div class="ticks">${out.join('')}</div><div class="cov nd" style="margin-top:0">Most data: ${bs===be?R.f(bs).replace(/\.0$/,''):R.f(bs).replace(/\.0$/,'')+'–'+R.f(be).replace(/\.0$/,'')} ${R.u} (${best} experiment${best>1?'s':''}). Darker band = more experiments.</div>`}
 function render(){
- const mats=[...new Set(EXP.filter(e=>e.pil.includes(S.pil)).flatMap(e=>e.mats))];if(!mats.includes(S.mat)){S.mat=mats[0];CH.mat=false}
+  const mats=[...new Set(EXP.filter(e=>e.pil.includes(S.pil)).flatMap(e=>e.mats))];if(S.mat!=='all'&&!mats.includes(S.mat)){S.mat=mats[0];CH.mat=false}
  let h='';
  for(const k of PIL[S.pil].in){
   if(k==='mat')continue;
-  else if(k==='dir'){const ok=EXP.filter(e=>e.dir&&e.mats.includes(S.mat)).map(e=>e.n);h+=`<div class="inp2"><span class="lab">FLAME DIRECTION VS. AIR FLOW</span><div class="seg2" data-k="dir"><button data-v="concurrent" class="${S.dir==='concurrent'?'on':''}">Same direction</button><button data-v="opposed" class="${S.dir==='opposed'?'on':''}">Against flow</button></div><div class="cov ${ok.length?'':'nd'}">${ok.length?'● NASA data: '+ok.join(', '):'Not a variable for this fuel'}</div></div>`}
+   else if(k==='dir'){const ok=EXP.filter(e=>e.dir&&e.mats.some(m=>activeMaterials().includes(m))).map(e=>e.n);h+=`<div class="inp2"><span class="lab">FLAME DIRECTION VS. AIR FLOW</span><div class="seg2" data-k="dir"><button data-v="concurrent" class="${S.dir==='concurrent'?'on':''}">Same direction</button><button data-v="opposed" class="${S.dir==='opposed'?'on':''}">Against flow</button></div><div class="cov ${ok.length?'':'nd'}">${ok.length?'● NASA data: '+ok.join(', '):'Not a variable for this fuel'}</div></div>`}
   else if(k==='grav'){const t={micro:['','● NASA data: all 8 experiments'],earth:['out','⚠ Only a small SAFFIRE-II comparison test'],moon:['out','⚠ Outside NASA data: no Moon-gravity tests'],mars:['out','⚠ Outside NASA data: no Mars-gravity tests']}[S.grav];
    h+=`<div class="inp2"><span class="lab">GRAVITY</span><div class="seg2" data-k="grav">${[['micro','Microgravity'],['moon','Moon'],['mars','Mars'],['earth','Earth']].map(([v,l])=>`<button data-v="${v}" class="${S.grav===v?'on':''}">${l}</button>`).join('')}</div><div class="cov ${t[0]}">${t[1]}</div></div>`}
   else if(k==='dil'){h+=`<div class="inp2"><span class="lab">SUPPRESSANT / DILUENT GAS</span><div class="seg2" data-k="dil">${[['none','None'],['N2','Nitrogen'],['CO2','CO₂'],['He','Helium']].map(([v,l])=>`<button data-v="${v}" class="${S.dil===v?'on':''}">${l}</button>`).join('')}</div><div class="cov ${S.dil==='N2'?'nd':''}">${S.dil==='N2'?'BASS-II added N₂ to lower O₂: use the oxygen slider':S.dil==='none'?'● NASA data: all experiments':'● NASA data: FLEX'}</div></div>`}
@@ -838,7 +936,7 @@ function drawMap(){
   $('#maptitle').textContent='Oxygen × pressure map (FLEX)';
   $('#mapsub').textContent='Every FLEX droplet test, placed by pressure and oxygen. Colour = how the test ended. Filtered by the selected suppressant.';
   for(const p of FX){
-   if(only&&p.m!==S.mat)continue;
+   if(only&&!activeMaterials().includes(p.m))continue;
    const dv=S.dil==='CO2'?p.c:S.dil==='He'?p.h:0;
    if(S.dil==='none'||S.dil==='N2'){if(p.c||p.h)continue}else{if(S.dil==='CO2'&&(p.h||Math.abs(p.c-S.dilp)>5))continue;if(S.dil==='He'&&(p.c||Math.abs(p.h-S.dilp)>5))continue}
    const tot=p.E+p.D+p.C,dom=p.C>=p.E&&p.C>=p.D?'C':p.E>=p.D?'E':'D';
@@ -851,10 +949,10 @@ function drawMap(){
  }else{
   $('#maptitle').textContent='Flammability map: air flow × oxygen';
   $('#mapsub').textContent=S.pil==='det'?'Detection inputs don’t use oxygen. Showing the tested burning conditions for reference.':'Every tested condition from BASS-II, SAFFIRE and FLEX (still air, 1 atm). Hover a dot for the NASA record.';
-  for(const p of B2){if(only&&p.m!==S.mat)continue;pts.push(`<circle cx="${sx(p.f)}" cy="${sy(p.o)}" r="${3.5+Math.sqrt(p.n)*1.5}" fill="#5b8fc7" fill-opacity=".55"><title>BASS-II · ${MATS[p.m]}\nair flow ${p.f} cm/s · O₂ ${p.o}%\n${p.n} test${p.n>1?'s':''} at this condition (outcome in test notes)</title></circle>`)}
-  for(const p of SAFP){if(only&&p.m!==S.mat)continue;pts.push(`<rect class="pt" x="${sx(p.f)-6}" y="${sy(p.o)-6}" width="12" height="12" fill="${/insignificant/.test(p.r)?'#5a5a60':'#e8a27a'}" transform="rotate(45 ${sx(p.f)} ${sy(p.o)})"><title>${p.e} · ${MATS[p.m]}\nair flow ${p.f} cm/s · O₂ ${p.o}%\n${p.r}</title></rect>`)}
-  for(const p of FX){if(p.c||p.h||p.p!==1)continue;if(only&&p.m!==S.mat)continue;const tot=p.E+p.D+p.C;pts.push(`<circle cx="${sx(0)+(p.m==='methanol'?-4:4)}" cy="${sy(p.o)}" r="${3+Math.sqrt(tot)}" fill="#d9b36c" fill-opacity=".8"><title>FLEX · ${MATS[p.m]} droplet, still air, 1 atm\nO₂ ${p.o}%\n${p.C} completion · ${p.E} extinction · ${p.D} disruption</title></circle>`)}
-  if(S.pil==='prev'&&(!only||S.mat==='sibal')){pts.push(`<line x1="${sx(1)}" x2="${sx(1)}" y1="${T}" y2="${H-B}" stroke="#e07a6a" stroke-width="2" stroke-dasharray="6 4"><title>BASS: SIBAL flame quenched below ~1 cm/s (Ferkul et al. 2013). O₂ not listed in the BASS table, so drawn across all O₂ levels.</title></line><text x="${sx(1)+6}" y="${T+12}" style="fill:#e07a6a">BASS quench ~1 cm/s (O₂ not listed)</text>`)}
+   for(const p of B2){if(only&&!activeMaterials().includes(p.m))continue;pts.push(`<circle cx="${sx(p.f)}" cy="${sy(p.o)}" r="${3.5+Math.sqrt(p.n)*1.5}" fill="#5b8fc7" fill-opacity=".55"><title>BASS-II · ${MATS[p.m]}\nair flow ${p.f} cm/s · O₂ ${p.o}%\n${p.n} test${p.n>1?'s':''} at this condition (outcome in test notes)</title></circle>`)}
+   for(const p of SAFP){if(only&&!activeMaterials().includes(p.m))continue;pts.push(`<rect class="pt" x="${sx(p.f)-6}" y="${sy(p.o)-6}" width="12" height="12" fill="${/insignificant/.test(p.r)?'#5a5a60':'#e8a27a'}" transform="rotate(45 ${sx(p.f)} ${sy(p.o)})"><title>${p.e} · ${MATS[p.m]}\nair flow ${p.f} cm/s · O₂ ${p.o}%\n${p.r}</title></rect>`)}
+   for(const p of FX){if(p.c||p.h||p.p!==1)continue;if(only&&!activeMaterials().includes(p.m))continue;const tot=p.E+p.D+p.C;pts.push(`<circle cx="${sx(0)+(p.m==='methanol'?-4:4)}" cy="${sy(p.o)}" r="${3+Math.sqrt(tot)}" fill="#d9b36c" fill-opacity=".8"><title>FLEX · ${MATS[p.m]} droplet, still air, 1 atm\nO₂ ${p.o}%\n${p.C} completion · ${p.E} extinction · ${p.D} disruption</title></circle>`)}
+   if(S.pil==='prev'&&(!only||activeMaterials().includes('sibal'))){pts.push(`<line x1="${sx(1)}" x2="${sx(1)}" y1="${T}" y2="${H-B}" stroke="#e07a6a" stroke-width="2" stroke-dasharray="6 4"><title>BASS: SIBAL flame quenched below ~1 cm/s (Ferkul et al. 2013). O₂ not listed in the BASS table, so drawn across all O₂ levels.</title></line><text x="${sx(1)+6}" y="${T+12}" style="fill:#e07a6a">BASS quench ~1 cm/s (O₂ not listed)</text>`)}
   const fx=Math.min(S.flow,X.max);
   if(S.pil!=='det')pts.push(`<line x1="${sx(fx)}" x2="${sx(fx)}" y1="${T}" y2="${H-B}" stroke="rgba(0,0,0,.2)" stroke-dasharray="4 4"/><line x1="${L}" x2="${W-R}" y1="${sy(S.o2)}" y2="${sy(S.o2)}" stroke="rgba(0,0,0,.2)" stroke-dasharray="4 4"/><circle cx="${sx(fx)}" cy="${sy(S.o2)}" r="11" fill="none" stroke="#1d1d1f" stroke-width="2"/><circle cx="${sx(fx)}" cy="${sy(S.o2)}" r="3" fill="#1d1d1f"/>`);
   $('#legend').innerHTML=`<span><i class="dot" style="background:#5b8fc7"></i>BASS-II tested condition</span><span><i class="dot" style="background:#e8a27a;border-radius:2px"></i>SAFFIRE: burned</span><span><i class="dot" style="background:#5a5a60;border-radius:2px"></i>SAFFIRE: burn insignificant</span><span><i class="dot" style="background:#d9b36c"></i>FLEX droplets (still air)</span><span><i class="dot" style="background:#e07a6a;border-radius:1px"></i>BASS quenching limit (~1 cm/s)</span><span>◯ = your conditions</span>`;
@@ -906,7 +1004,7 @@ function scen(){}
  function goals(){$('#pq').textContent=GOAL[S.pil][1];$('#goals').innerHTML=Object.entries(GOAL).map(([k,[t]])=>`<button class="${S.pil===k?'on':''}" data-g="${k}" role="tab" aria-selected="${S.pil===k}">${t}</button>`).join('');
   $$('#goals button').forEach(b=>b.onclick=()=>changePillar(b.dataset.g))}
 function mats(){const list=[...new Set(EXP.filter(e=>e.pil.includes(S.pil)).flatMap(e=>e.mats))];
- $('#mats').innerHTML=list.map(m=>`<option value="${m}" ${S.mat===m?'selected':''}>${MATS[m]} — ${EXP.filter(e=>e.pil.includes(S.pil)&&e.mats.includes(m)).length} exp.</option>`).join('');
+  $('#mats').innerHTML=`<option value="all" ${S.mat==='all'?'selected':''}>All materials — ${EXP.filter(e=>e.pil.includes(S.pil)).length} exp.</option>`+list.map(m=>`<option value="${m}" ${S.mat===m?'selected':''}>${MATS[m]} — ${EXP.filter(e=>e.pil.includes(S.pil)&&e.mats.includes(m)).length} exp.</option>`).join('');
  $('#mats').onchange=e=>{S.mat=e.target.value;render()}}
 
 $('#onlymat').onchange=drawMap;
@@ -966,8 +1064,7 @@ r:"FLEX contributes to improved fire safety protocols for future space missions,
 p:[["Tethered methanol droplet combustion in carbon-dioxide enriched environment under microgravity conditions","10.1016/j.combustflame.2011.06.014"],["A Numerical Study On The Extinction Characteristics Of Droplet Combustion Under Microgravity Conditions","10.2514/6.2012-1252"]]}
 };
 /* ===== Ask NASA: retrieval over NASA PSI texts, optional AI backend ===== */
-const API_BASE=location.protocol==='file:'?'http://127.0.0.1:8000':'';
-const FIRELENS_API=API_BASE+'/api/explore'; /* POST {question} → validated AI answer: findings, background, limitations, document_evidence (src/api/app.py). Unreachable → keyword answer below */
+const FIRELENS_API='/api/explore'; /* Same-origin FastAPI chat/RAG endpoint */
 const FLD={o:'Objective',a:'Approach',h:'Hypothesis',r:'Research impact',x:'Science document'};
 const CHUNKS=[];
 for(const [psi,d] of Object.entries(PSIDOC)){for(const f of ['o','a','h','r']){if(d[f])CHUNKS.push({psi,n:d.n,f:FLD[f],text:d[f]})}(d.x||[]).forEach(t=>CHUNKS.push({psi,n:d.n,f:'Science document · Ferkul et al. 2013, Flammability Aspects of Fabric…',text:t.replace(/^Science document \([^)]*\):\s*/,'').replace(/^./,m=>m.toUpperCase())}))}
@@ -990,57 +1087,70 @@ function extract(q,hits){const qs=qterms(q);const sents=[];
  hits.forEach((c,i)=>c.text.split(/(?<=[.!?])\s+(?=[A-Z0-9])/).forEach(s=>{const t=tok(s).map(stem);const sc=qs.filter(w=>t.includes(w)).length/Math.sqrt(t.length+3);if(sc>0)sents.push({s,sc,i})}));
  sents.sort((a,b)=>b.sc-a.sc);const pick=[],seen=new Set();for(const x of sents){if(pick.length>=3)break;const key=x.s.slice(0,40);if(seen.has(key))continue;seen.add(key);pick.push(x)}
  return pick.map(x=>`<p>${esc(x.s)}<sup><a href="#">${x.i+1}</a></sup></p>`).join('')}
-let QN=0;
-const logEl=()=>$('#log');
-function addMsg(cls,html){const d=document.createElement('div');d.className='m '+cls;d.innerHTML=cls==='a'?`<div class="av">NASA</div><div class="bub">${html}</div>`:html;logEl().appendChild(d);logEl().scrollTop=1e9;return d}
-function wireSources(bub,count){
- const tog=bub.querySelector('.srctog'),box=bub.querySelector('.srcs');
- if(!tog)return;
- tog.onclick=()=>{box.classList.toggle('open');tog.textContent=(box.classList.contains('open')?'Hide ':'Show ')+count+' NASA sources'};
- bub.querySelectorAll('sup a').forEach(a=>a.onclick=e=>{e.preventDefault();box.classList.add('open');tog.textContent='Hide '+count+' NASA sources';box.children[(+a.textContent)-1]?.scrollIntoView({behavior:'smooth',block:'nearest'})})}
-/* Keyword answer from the passages built into this page (no server needed). */
-function keywordAnswer(bub,q,note){
- const hits=search(q),qs=qterms(q);
- const ans=hits.length?extract(q,hits):'<p>I couldn’t find a NASA PSI passage about that yet. Try asking about flame spread, oxygen, air flow, smoke, suppressant gases, or an experiment like BASS, SAFFIRE or FLEX.</p>';
- const srcs=hits.map((c,i)=>{const pd=PSIDOC[c.psi]||{};const pub=(pd.p||[]).find(x=>x[1]);
-  return `<div class="srcc"><div class="hd"><b>[${i+1}] ${c.n} · ${c.psi}</b><span class="fld">${c.f}</span></div><p>${hl(c.text,qs)}</p><a href="https://psi.nasa.gov/physci/repo/data/investigations/${c.psi}" target="_blank" rel="noopener">Open ${c.psi} ↗</a>${pub?`<a href="https://doi.org/${pub[1]}" target="_blank" rel="noopener">Publication ↗</a>`:''}</div>`}).join('');
- bub.innerHTML=ans+(hits.length?`<button class="srctog" type="button">Show ${hits.length} NASA sources</button><div class="srcs">${srcs}</div>`:'')+`<p class="note">${esc(note)}</p>`;
- wireSources(bub,hits.length)}
-/* AI answer from the FireLens server: answer, findings, background, limitations, sources. */
-function aiAnswer(bub,r){
- const a=r.answer||{},docs=r.document_evidence||[],num=new Map();
- (a.citations||[]).forEach(c=>{if(!num.has(c.chunk_id)&&docs.some(d=>d.record_identifier===c.chunk_id))num.set(c.chunk_id,num.size+1)});
- docs.forEach(d=>{if(!num.has(d.record_identifier))num.set(d.record_identifier,num.size+1)});
- const ref=id=>num.has(id)?`<sup><a href="#">${num.get(id)}</a></sup>`:'';
- const inl=t=>esc(t||'').replace(/\[((?:chunk-[0-9a-f]+[\s,;]*)+)\]/g,(m,ids)=>ids.split(/[\s,;]+/).filter(Boolean).map(ref).join('')).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
- const paras=t=>inl(t).split(/\n\n+/).map(x=>'<p>'+x.replace(/\n/g,'<br>')+'</p>').join('');
- const status=r.status||a.status||'';
- const label={grounded:'Answered from NASA evidence',partial:'Partly answered from NASA evidence',insufficient_evidence:'Insufficient evidence in the indexed NASA sources'}[status]||status;
- let html=`<p><span class="verdict ${esc(status)}">${esc(label)}</span></p>`+paras(a.answer);
- const finds=a.findings||[];
- if(finds.length)html+=`<p class="sec">What the NASA evidence shows</p><ul class="finds">${finds.map(f=>{const inf=f.support==='inference';
-  return `<li><span class="sup ${inf?'inf':'dir'}" title="${inf?'Reasoned from the cited passages together':'Stated in the cited passage'}">${inf?'Inference':'Direct'}</span>${inl(f.statement)}${(f.chunk_ids||[]).map(ref).join('')}</li>`}).join('')}</ul>`;
- if(a.scientific_context)html+=`<div class="sbg"><p class="sec">Scientific background</p><p class="bgnote">General combustion science to explain the findings. Not from NASA documents and not cited.</p>${esc(a.scientific_context).split(/\n\n+/).map(x=>'<p>'+x+'</p>').join('')}</div>`;
- if(a.limitations)html+=`<p class="sec">Limitations</p>`+paras(a.limitations);
- const ordered=[...docs].sort((x,y)=>num.get(x.record_identifier)-num.get(y.record_identifier));
- const srcs=ordered.map(d=>{const pv=d.provenance||{},psi=(pv.filename||'').match(/^PSI-\d+/)?.[0];
-  const text=d.original_text||'';
-  return `<div class="srcc"><div class="hd"><b>[${num.get(d.record_identifier)}] ${esc(d.experiment||'')} · ${esc(pv.filename||'')}</b><span class="fld">${d.page_number?'page '+d.page_number:esc(d.source_locator||'')} · ${esc(d.evidence_status||'')}</span></div><p>${esc(text.length>700?text.slice(0,700)+'…':text)}</p>${psi?`<a href="https://psi.nasa.gov/physci/repo/data/investigations/${psi}" target="_blank" rel="noopener">Open ${psi} ↗</a>`:''}</div>`}).join('');
- bub.innerHTML=html+(docs.length?`<button class="srctog" type="button">Show ${docs.length} NASA sources</button><div class="srcs">${srcs}</div>`:'')+'<p class="note">Written by the AI from the retrieved NASA passages; cited claims are checked against them. Background is general science, marked separately.</p>';
- wireSources(bub,docs.length)}
-async function send(q){q=(q||'').trim();if(!q)return;QN++;addMsg('u',esc(q));
- const wait=addMsg('a','<div class="typing"><span></span><span></span><span></span></div>');
- const bub=wait.querySelector('.bub');
- /* Never wait forever: note after 10 s, give up after 150 s and use the built-in passages. */
- const ctl=new AbortController(),slow=setTimeout(()=>bub.insertAdjacentHTML('beforeend','<p class="note">Still working: the server can take a minute to wake up and search.</p>'),10000),stop=setTimeout(()=>ctl.abort(),150000);
- try{const res=await fetch(FIRELENS_API,{method:'POST',signal:ctl.signal,headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
-  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.detail||('HTTP '+res.status))}
-  aiAnswer(bub,await res.json())}
- catch(e){keywordAnswer(bub,q,'AI backend not reachable ('+(e.name==='AbortError'?'no answer within 150 s':(e.message||e))+'), so this is assembled from NASA PSI passages built into the page.')}
- finally{clearTimeout(slow);clearTimeout(stop)}
- logEl().scrollTop=1e9}
+ let QN=0;
+ const logEl=()=>$('#log');
+ let alienStateTimer;
+ let assistantAudio=null,assistantAudioUrl=null,ttsController=null,ttsRequestId=0,assistantAudioPlaying=false,assistantSpeakerReset=null;
+ const ALIEN_STATUS={idle:'Alien is ready.',listening:'Alien received your question.',thinking:'Alien is thinking and checking NASA evidence.',responding:'Alien is speaking.',error:'Alien encountered a response error.'};
+ function setAlienState(state){const alien=$('#chatAlien');if(!alien)return;const next=['idle','listening','thinking','responding','error'].includes(state)?state:'idle';clearTimeout(alienStateTimer);alien.dataset.state=next;$('#alienCompanion').dataset.state=next;alien.setAttribute('aria-label',`Friendly alien, ${next}`);$('#alienStatus').textContent=ALIEN_STATUS[next];if(next==='error'||(next==='responding'&&!assistantAudioPlaying))alienStateTimer=setTimeout(()=>{if(alien.dataset.state===next&&(next!=='responding'||!assistantAudioPlaying))setAlienState('idle')},next==='error'?2600:2200)}
+ function addSpeaker(message,text){const bubble=message.querySelector('.bub');if(!bubble||!text.trim())return;const controls=document.createElement('div');controls.className='speaker-controls';const button=document.createElement('button');button.type='button';button.className='speaker-btn';button.setAttribute('aria-label','Play this assistant response aloud');button.title='Play this response';button.textContent='🔊 Listen';button.onclick=()=>speakAssistantMessage(text,message);const error=document.createElement('span');error.className='tts-error';error.hidden=true;error.setAttribute('role','status');controls.append(button,error);bubble.appendChild(controls);return{button,error}}
+ function renderTimedSubtitles(message,alignment){const old=message.querySelector('.subtitle-line');old?.remove();const chars=alignment?.characters||[],starts=alignment?.character_start_times_seconds||[],ends=alignment?.character_end_times_seconds||[];if(!chars.length||chars.length!==starts.length||chars.length!==ends.length)return null;const line=document.createElement('div');line.className='subtitle-line';line.setAttribute('aria-label','Speech subtitles');const words=[];let i=0;while(i<chars.length){if(/\s/.test(chars[i])){line.append(document.createTextNode(chars[i++]));continue}const first=i;while(i<chars.length&&!/\s/.test(chars[i]))i++;const span=document.createElement('span');span.className='subtitle-word';span.textContent=chars.slice(first,i).join('');line.appendChild(span);words.push({node:span,start:Number(starts[first])||0,end:Number(ends[i-1])||0})}message.querySelector('.bub').appendChild(line);return time=>{let active=null;words.forEach(word=>{const on=time>=word.start&&time<=word.end;word.node.classList.toggle('active',on);if(on)active=word.node});if(active&&(!line.dataset.lastScroll||line.dataset.lastScroll!==String(words.findIndex(w=>w.node===active)))){active.scrollIntoView({block:'nearest',behavior:'smooth'});line.dataset.lastScroll=String(words.findIndex(w=>w.node===active))}}}
+ function stopAssistantAudio(updateAlien=true){ttsRequestId++;if(ttsController){ttsController.abort();ttsController=null}if(assistantAudio){assistantAudio.onplaying=assistantAudio.onended=assistantAudio.onerror=null;assistantAudio.pause();assistantAudio.removeAttribute('src');assistantAudio.load();assistantAudio=null}if(assistantAudioUrl){URL.revokeObjectURL(assistantAudioUrl);assistantAudioUrl=null}assistantAudioPlaying=false;if(assistantSpeakerReset){assistantSpeakerReset();assistantSpeakerReset=null}if(updateAlien)setAlienState('idle')}
+ async function speakAssistantMessage(text,message){stopAssistantAudio();const requestId=ttsRequestId;const error=message?.querySelector('.tts-error');if(error){error.hidden=true;error.textContent=''}setAlienState('thinking');const controller=new AbortController();ttsController=controller;
+  try{const response=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text}),signal:controller.signal});if(!response.ok){let detail='Speech could not be generated. Please try again.';try{detail=(await response.json()).detail||detail}catch{}throw new Error(detail)}const result=await response.json();if(requestId!==ttsRequestId)return;const raw=atob(result.audio_base64||'');if(!raw.length)throw new Error('Speech audio was empty.');const bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);const blob=new Blob([bytes],{type:'audio/mpeg'});assistantAudioUrl=URL.createObjectURL(blob);const audio=new Audio(assistantAudioUrl);assistantAudio=audio;const updateSubtitle=renderTimedSubtitles(message,result.normalized_alignment||result.alignment);audio.ontimeupdate=()=>updateSubtitle&&updateSubtitle(audio.currentTime);const controls=message?.querySelector('.speaker-btn');if(controls)assistantSpeakerReset=()=>{controls.textContent='🔊 Listen';controls.onclick=()=>speakAssistantMessage(text,message)};audio.onplaying=()=>{if(requestId!==ttsRequestId)return;assistantAudioPlaying=true;if(controls)controls.textContent='⏹ Stop';setAlienState('responding')};audio.onended=()=>{if(requestId!==ttsRequestId)return;stopAssistantAudio(false);setAlienState('idle')};audio.onerror=()=>{if(requestId!==ttsRequestId)return;stopAssistantAudio(false);setAlienState('error');if(error){error.textContent='Audio playback failed. Please try again.';error.hidden=false}};if(controls)controls.onclick=()=>stopAssistantAudio();await audio.play();
+  }catch(e){if(requestId!==ttsRequestId||e.name==='AbortError')return;stopAssistantAudio(false);const controls=message?.querySelector('.speaker-btn');if(controls){controls.textContent='🔊 Listen';controls.onclick=()=>speakAssistantMessage(text,message)}setAlienState('error');if(error){error.textContent=e.message||'Speech could not be played. Please try again.';error.hidden=false}}}
+ function addMsg(cls,html){const d=document.createElement('div');d.className='m '+cls;d.innerHTML=cls==='a'?`<div class="av">NASA</div><div class="bub">${html}</div>`:html;logEl().appendChild(d);logEl().scrollTop=1e9;if(cls==='a'&&html.includes('class="typing"'))setAlienState('thinking');return d}
+async function send(q){q=(q||'').trim();if(!q)return;setAlienState('listening');QN++;const n=QN;addMsg('u',esc(q));
+ let wait,responseFailed=false;
+ try{
+  await new Promise(r=>setTimeout(r,140));
+  wait=addMsg('a','<div class="typing"><span></span><span></span><span></span></div>');
+ const hits=search(q),qs=qterms(q);await new Promise(r=>setTimeout(r,550));
+  let ans,backendSources=[];
+  if(FIRELENS_API){try{
+    const response=await fetch(FIRELENS_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
+    if(!response.ok)throw new Error(`Explore API returned ${response.status}`);
+    const result=await response.json(),answer=result.answer||{};
+    const answerText=typeof answer==='string'?answer:(answer.answer||'');
+    if(!answerText)throw new Error('Explore API returned no answer');
+    backendSources=result.document_evidence||answer.evidence_summary||[];
+    const sourceByChunk=new Map();
+    backendSources.forEach((source,index)=>{const id=source.record_identifier||source.chunk_id||source.provenance?.chunk_id;if(id)sourceByChunk.set(id,index)});
+    const formatted=esc(answerText).split(/\n\n+/).map(paragraph=>`<p>${paragraph.replace(/\[(?:chunk-[0-9a-f]{8,})(?:\s*[,;]\s*chunk-[0-9a-f]{8,})*\]/g,marker=>{const ids=marker.match(/chunk-[0-9a-f]{8,}/g)||[];return ids.map(id=>{const index=sourceByChunk.get(id);return index===undefined?'':`<button type="button" class="answer-cite" data-backend-source="${index}" aria-label="Show source ${index+1}">${index+1}</button>`}).join('')})}</p>`).join('');
+    const scientific=typeof answer.scientific_context==='string'?answer.scientific_context:'';
+    const limitations=typeof answer.limitations==='string'?answer.limitations:'';
+    ans=`<div class="backend-answer">${formatted}${scientific?`<p class="note"><b>Scientific context:</b> ${esc(scientific)}</p>`:''}${limitations?`<p class="note"><b>Limitations:</b> ${esc(limitations)}</p>`:''}</div>`;
+  }catch(e){responseFailed=true;backendSources=[];ans=extract(q,hits)+'<p class="note">AI backend unavailable, showing NASA passages.</p>'}}
+  else if(!hits.length)ans='<p>I couldn?t find a NASA PSI passage about that yet. Try asking about flame spread, oxygen, air flow, smoke, suppressant gases, or an experiment like BASS, SAFFIRE or FLEX.</p>';
+  else ans=extract(q,hits);
+  const srcs=hits.map((c,i)=>{const pd=PSIDOC[c.psi]||{};const pub=(pd.p||[]).find(x=>x[1]);return `<div class="srcc"><div class="hd"><b>[${i+1}] ${c.n} ? ${c.psi}</b><span class="fld">${c.f}</span></div><p>${hl(c.text,qs)}</p><a href="https://psi.nasa.gov/physci/repo/data/investigations/${c.psi}" target="_blank" rel="noopener">Open ${c.psi} ?</a>${pub?`<a href="https://doi.org/${pub[1]}" target="_blank" rel="noopener">Publication ?</a>`:''}</div>`}).join('');
+  wait.querySelector('.bub').innerHTML=ans+(hits.length&&!FIRELENS_API?`<button class="srctog" type="button">Show ${hits.length} NASA sources</button><div class="srcs">${srcs}</div><p class="note">Local NASA passages.</p>`:'');
+  if(backendSources.length){
+    const sourceBox=document.createElement('div');sourceBox.className='srcs';
+    sourceBox.innerHTML=backendSources.map((source,index)=>{
+      const title=source.source_file||source.filename||source.experiment||'NASA source';
+      const experiment=source.experiment||'';
+      const locator=source.source_locator||'';
+      const page=source.page_number?`Page ${source.page_number}`:'';
+      const status=source.evidence_status||'unknown';
+      const type=source.document_type||source.evidence_type||'Document evidence';
+      const sourceUrl=source.provenance?.source_url||source.source_url||'';
+      return `<article class="backend-source" id="backend-source-${index}"><div class="backend-source-head"><span class="backend-source-title">${esc(title)}</span></div><div class="backend-source-meta">${experiment?`<span>${esc(experiment)}</span>`:''}${page?`<span>${page}</span>`:locator?`<span>${esc(locator)}</span>`:''}<span>${esc(status)}</span><span>${esc(type)}</span></div>${source.original_text?`<p>${esc(source.original_text)}</p>`:''}${sourceUrl?`<a href="${esc(sourceUrl)}" target="_blank" rel="noopener">Open NASA source</a>`:''}</article>`;
+    }).join('');
+    const sourceToggle=document.createElement('button');sourceToggle.type='button';sourceToggle.className='srctog';sourceToggle.textContent=`Show ${backendSources.length} NASA sources`;
+    const sourceWrap=document.createElement('div');sourceWrap.className='backend-sources';sourceWrap.append(sourceToggle,sourceBox);
+    sourceToggle.onclick=()=>{sourceBox.classList.toggle('open');sourceToggle.textContent=(sourceBox.classList.contains('open')?'Hide ':'Show ')+backendSources.length+' NASA sources'};
+    wait.querySelector('.bub').appendChild(sourceWrap);
+    wait.querySelectorAll('button[data-backend-source]').forEach(button=>button.onclick=()=>{sourceBox.classList.add('open');sourceToggle.textContent='Hide '+backendSources.length+' NASA sources';sourceBox.querySelector(`#backend-source-${button.dataset.backendSource}`)?.scrollIntoView({behavior:'smooth',block:'nearest'})});
+  }
+  const speechContent=document.createElement('div');speechContent.innerHTML=ans;const speaker=addSpeaker(wait,speechContent.textContent||'');if(autoSpeakToggle.checked&&speaker)speakAssistantMessage(speechContent.textContent||'',wait);
+ if(!FIRELENS_API){const tog=wait.querySelector('.srctog'),box=wait.querySelector('.srcs');
+  if(tog){tog.onclick=()=>{box.classList.toggle('open');tog.textContent=(box.classList.contains('open')?'Hide ':'Show ')+hits.length+' NASA sources'};
+   wait.querySelectorAll('sup a').forEach(a=>a.onclick=e=>{e.preventDefault();box.classList.add('open');tog.textContent='Hide '+hits.length+' NASA sources';box.children[(+a.textContent)-1]?.scrollIntoView({behavior:'smooth',block:'nearest'})})}}
+    logEl().scrollTop=1e9;if(!autoSpeakToggle.checked)setAlienState(responseFailed?'error':'responding');else if(responseFailed)setAlienState('error')
+  }catch(e){if(wait){const bubble=wait.querySelector('.bub');if(bubble)bubble.innerHTML='<p>Sorry, I couldn’t complete that response. Please try again.</p>';addSpeaker(wait,'Sorry, I couldn’t complete that response. Please try again.')}else{const failed=addMsg('a','<p>Sorry, I couldn’t complete that response. Please try again.</p>');addSpeaker(failed,'Sorry, I couldn’t complete that response. Please try again.')}setAlienState('error');logEl().scrollTop=1e9}}
 const SUG=['Why does a flame go out when the air flow is very low?','Which gases put out a flame?','How does smoke behave in microgravity?','What did SAFFIRE test?','Do materials burn better in space?','How does oxygen affect flame spread?'];
-function welcome(){logEl().innerHTML='';addMsg('a',`<p>Hi, I’m Ask NASA. I answer only from NASA PSI files on fire in microgravity, and I show the source for every answer.</p><div class="chips2">${SUG.map(x=>`<button type="button">${x}</button>`).join('')}</div>`);
+ function welcome(){stopAssistantAudio();logEl().innerHTML='';const welcomeText='Hi, I’m Ask NASA. I answer only from NASA PSI files on fire in microgravity, and I show the source for every answer.';const welcomeMessage=addMsg('a',`<p>${welcomeText}</p><div class="chips2">${SUG.map(x=>`<button type="button">${x}</button>`).join('')}</div>`);addSpeaker(welcomeMessage,welcomeText);
  $$('#log .chips2 button').forEach(b=>b.onclick=()=>send(b.textContent))}
 welcome();$('#newchat').onclick=welcome;
 $('#askform').onsubmit=e=>{e.preventDefault();send($('#q').value);$('#q').value=''};
@@ -1109,11 +1219,11 @@ function ftest(){
  const ntp=out.reduce((s,x)=>s+x.pts.length,0);
  $('#fres').innerHTML=`<div class="fhd"><h3>${out.length} ${out.length===1?'experiment matches':'experiments match'}</h3><span>${ntp} NASA test points inside your ranges</span></div>`+(out.length?out.map(({e,why,pts})=>{const d=PSIDOC[e.psi]||{};
   const rows=pts.slice(0,8).map(t=>`<tr><td>${MATS[t.m].split(' (')[0]}</td><td>${t.f??'–'}</td><td>${t.o??'n/l'}</td><td>${t.p??'cabin'}</td><td>${t.dir?(t.dir==='concurrent'?'same':'against'):'–'}</td><td>${t.r}</td></tr>`).join('');
-  const res=[[`${e.psi} on NASA PSI (description, experimental table, data files)`,PSI(e.psi)],...(EXSRC[e.k]||[]),...(d.p||[]).filter(x=>x[1]).map(([t,doi])=>[t,'https://doi.org/'+doi])];
+   const psiUrl=PSI(e.psi),tableLink=e.k==='BASS2'?'<a href="https://psi.nasa.gov/physci/repo/data/investigations/PSI-25" target="_blank" rel="noopener">BASS-II experimental table ↗</a>':e.k==='FLEX'?'<a href="https://psi.nasa.gov/physci/repo/data/investigations/PSI-69" target="_blank" rel="noopener">FLEX experimental table ↗</a>':'<span>See investigation page for available tables</span>',scienceLinks=(EXSRC[e.k]||[]).map(([title,url])=>`<a href="${url}" target="_blank" rel="noopener">${title} ↗</a>`).join('')||'<span>See NASA PSI investigation page</span>',publications=(d.p||[]).filter(x=>x[1]);
   return `<div class="fr ${pts.length?'':'part'}"><div class="t"><h4>${e.n}</h4><span class="full">${e.full} · ${e.plat}</span></div>
   <div class="why2">${why.map(([c,t])=>`<span class="${c}">${t}</span>`).join('')}</div>
   ${pts.length?`<table class="pts"><tr><th>Material</th><th>Air cm/s</th><th>O₂ %</th><th>Pressure atm</th><th>Direction</th><th>Result</th></tr>${rows}</table>${pts.length>8?`<p class="more2">+ ${pts.length-8} more test points</p>`:''}`:'<p class="more2">The experiment’s tested range overlaps yours, but no individual test point is loaded in FireLens for these exact values.</p>'}
-  <div class="res2"><b>Resources</b>${res.map(([t,u])=>`<a href="${u}" target="_blank" rel="noopener">${t} ↗</a>`).join('')}</div></div>`}).join(''):'<div class="fempty">No NASA experiment covers all of these conditions. Widen a range or remove a filter.</div>')}
+   <div class="res2"><b>Resources</b><details class="resource-tree"><summary>NASA PSI Resources</summary><details open><summary>${e.psi}</summary><details><summary>Investigation Metadata Files</summary><a href="${psiUrl}" target="_blank" rel="noopener">Open ${e.psi} on NASA PSI ↗</a></details><details><summary>Engineering Documents</summary><span>See the NASA PSI investigation page</span></details><details><summary>Raw Data</summary><span>See the NASA PSI investigation page</span></details><details><summary>Reference Data</summary><span>See the NASA PSI investigation page</span></details><details><summary>Science Documents</summary>${scienceLinks}</details><details><summary>Reports</summary><span>See the NASA PSI investigation page</span></details><details><summary>Representative Image(s)</summary><span>See the NASA PSI investigation page</span></details><details><summary>Experimental table</summary>${tableLink}</details></details></details>${publications.length?`<details class="resource-tree"><summary>Publications</summary>${publications.map(([title,doi])=>`<a href="https://doi.org/${doi}" target="_blank" rel="noopener">${title} ↗</a>`).join('')}</details>`:''}</div></div>`}).join(''):'<div class="fempty">No NASA experiment covers all of these conditions. Widen a range or remove a filter.</div>')}
 $('#fform').addEventListener('input',ftest);$('#fform').addEventListener('change',ftest);
 $('#freset').onclick=()=>{$('#fform').reset();ftest()};ftest();
 

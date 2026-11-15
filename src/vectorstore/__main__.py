@@ -37,6 +37,11 @@ def main() -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
     index_parser = subparsers.add_parser("index", help="Index embedding JSONL")
     index_parser.add_argument("--input-dir", type=Path, required=True)
+    index_parser.add_argument(
+        "--allow-duplicates",
+        action="store_true",
+        help="allow duplicate chunk IDs reported while building known expanded indexes",
+    )
     search_parser = subparsers.add_parser("search", help="Search indexed embeddings")
     search_parser.add_argument("query")
     for subparser in (index_parser, search_parser):
@@ -69,7 +74,7 @@ def main() -> int:
         print(f"SQLite store: {config.database_path} (collection={config.collection})")
         for failure in result.failures:
             print(f"  - {failure}")
-        return 1 if result.rejected or result.duplicates else 0
+        return 1 if result.rejected or (result.duplicates and not args.allow_duplicates) else 0
 
     embedding_config = EmbeddingConfig(
             provider=config.provider,
