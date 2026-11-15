@@ -272,7 +272,7 @@ main>#ask.pg{max-width:none;padding:0}
 .speaker-controls{display:flex;align-items:center;gap:8px;margin-top:10px}.speaker-btn{border:1px solid var(--ln);background:#fff;border-radius:999px;padding:5px 10px;color:var(--mu);font:13px var(--f)}.speaker-btn:hover{border-color:#0071e3;color:#0071e3}.tts-error{color:#b42318;font-size:12px}
 .backend-answer p{margin:0 0 10px}.backend-answer p:last-child{margin-bottom:0}.answer-cite{border:0;background:#e3efff;color:#0759a5;border-radius:999px;padding:0 6px;font:600 11px/1.5 var(--f);vertical-align:super;cursor:pointer;margin-left:2px}.answer-cite:hover{background:#cfe2ff}.backend-sources{margin-top:12px;border-top:1px solid var(--ln);padding-top:10px}.backend-sources>.srctog{margin-top:0}.backend-sources .srcs{margin-top:8px}.backend-source{background:#fff;border:1px solid var(--ln);border-radius:12px;padding:11px 13px;margin:8px 0}.backend-source-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}.backend-source-title{font-weight:600;font-size:13px;color:var(--tx)}.backend-source-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.backend-source-meta span{font-size:11px;background:#eef1f5;color:var(--mu);border-radius:999px;padding:3px 8px}.backend-source p{font-size:13px;line-height:1.5;color:#4b5563;margin:9px 0 0;white-space:pre-wrap}.backend-source a{display:inline-block;margin-top:8px;font-size:12px;color:var(--link);text-decoration:none}.backend-source a:hover{text-decoration:underline}
 .subtitle-line{margin-top:10px;padding:8px 12px;border-left:2px solid #0071e3;background:rgba(0,113,227,.06);border-radius:0 10px 10px 0;font-size:14px;line-height:1.55}.subtitle-word{border-radius:3px}.subtitle-word.active{background:#dcecff;color:#0759a5;box-shadow:0 0 0 2px #dcecff}
-.auto-speak{display:flex;align-items:center;gap:7px;color:#f1f4fb;font:12px var(--f);white-space:nowrap}.auto-speak input{accent-color:#91a8ff}
+.auto-speak{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid var(--ln);border-radius:999px;background:#fff;color:var(--mu);font:13px var(--f);white-space:nowrap;cursor:pointer}.auto-speak input{margin:0;accent-color:#0071e3}
 .resource-tree{margin-top:14px;padding-top:12px;border-top:1px solid #e8e8ed}.resource-tree>summary{font-weight:600;color:var(--mu);cursor:pointer}.resource-tree details{margin:6px 0 0 8px;padding:0 0 0 12px;border:0;border-left:1px solid var(--ln);border-radius:0}.resource-tree details summary{cursor:pointer;font-size:14px}.resource-tree a{display:block;margin:6px 0 6px 16px}
 .srcs{display:none;gap:8px;margin-top:10px}.srcs.open{display:grid}
 .srcc{background:#fff;border-radius:14px;padding:12px 14px}
@@ -298,7 +298,7 @@ main>#ask.pg{max-width:none;padding:0}
 #ask[data-theme="dark"]{--chat-bg:#111318;--chat-panel:#1b1e25;--chat-panel-2:#222630;--chat-line:#303541;--chat-text:#f1f3f7;--chat-muted:#a0a7b4;--chat-link:#7ab8ff;--chat-user:#245b9e;--chat-ink:#f1f3f7;background:var(--chat-bg);color:var(--chat-text);color-scheme:dark}
 #ask[data-theme="dark"] .chathead{border-color:var(--chat-line)}
 #ask[data-theme="dark"] .chathead span,#ask[data-theme="dark"] .disc{color:var(--chat-muted)}
-#ask[data-theme="dark"] .newchat,#ask[data-theme="dark"] .theme-toggle,#ask[data-theme="dark"] .chips2 button{background:var(--chat-panel);border-color:var(--chat-line);color:var(--chat-text)}
+#ask[data-theme="dark"] .newchat,#ask[data-theme="dark"] .theme-toggle,#ask[data-theme="dark"] .auto-speak,#ask[data-theme="dark"] .chips2 button{background:var(--chat-panel);border-color:var(--chat-line);color:var(--chat-text)}
 #ask[data-theme="dark"] .theme-toggle:hover,#ask[data-theme="dark"] .chips2 button:hover{border-color:#7ab8ff;color:#7ab8ff}
 #ask[data-theme="dark"] .m.u{background:var(--chat-user);color:#fff}
 #ask[data-theme="dark"] .bub,#ask[data-theme="dark"] .srcc{background:var(--chat-panel);color:var(--chat-text)}
@@ -309,7 +309,7 @@ main>#ask.pg{max-width:none;padding:0}
 #ask[data-theme="dark"] .askbox:focus-within{border-color:#7ab8ff;box-shadow:0 0 0 4px rgba(122,184,255,.16)}
 #ask[data-theme="dark"] .askbox input{color:var(--chat-text)}
 #ask[data-theme="dark"] .fcrit,#ask[data-theme="dark"] .fi{border-color:var(--chat-line)}
-@media(max-width:560px){.chat{height:calc(100dvh - 44px);padding:16px}.chathead b{font-size:18px}.chat-actions{gap:6px}.newchat,.theme-toggle{padding:6px 10px;font-size:12px}.m{max-width:92%}.chat-content{grid-template-columns:92px minmax(0,1fr);gap:6px;padding-top:8px}.alien-companion{position:relative;align-self:stretch;padding:14px 0}.alien{width:92px;max-width:100%}.alien-call{top:14%;gap:3px;padding:7px 8px;font-size:9px}.alien-call span:nth-child(3){display:none}}
+@media(max-width:560px){.chat{height:calc(100dvh - 44px);padding:16px}.chathead b{font-size:18px}.chat-actions{gap:6px}.newchat,.theme-toggle,.auto-speak{padding:6px 9px;font-size:11px}.auto-speak{gap:5px}.m{max-width:92%}.chat-content{grid-template-columns:92px minmax(0,1fr);gap:6px;padding-top:8px}.alien-companion{position:relative;align-self:stretch;padding:14px 0}.alien{width:92px;max-width:100%}.alien-call{top:14%;gap:3px;padding:7px 8px;font-size:9px}.alien-call span:nth-child(3){display:none}}
 /* ===== Motion and navigation refresh ===== */
 header{height:68px;padding:0 max(22px,calc((100% - 1160px)/2));background:rgba(250,250,252,.82);border-bottom:1px solid rgba(29,29,31,.08);box-shadow:0 8px 30px rgba(22,30,45,.045);}
 .localnav{top:68px}
@@ -570,7 +570,7 @@ main>#filter.pg{max-width:none;padding:0 0 80px}
 <div id="fireAmbience" aria-hidden="true"><i class="flame"></i><i class="flame"></i><i class="flame"></i></div>
 <header><div class="logo">NASA <b>FireLens</b></div>
 <nav id="mainnav" aria-label="Main"><button data-p="explore">EXPLORE</button><button data-p="ask">ASK NASA</button><button data-p="exps">EXPERIMENTS</button><button data-p="filter">FILTER</button><button data-p="about">ABOUT</button></nav>
-<label class="auto-speak" title="Speak each assistant answer automatically"><input type="checkbox" id="autoSpeak"> Auto-speak</label><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mainnav">☰</button></header>
+<button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mainnav">☰</button></header>
 <main>
 <nav class="explore-index" aria-label="Explore page index"><a href="#ov">Overview</a><a href="#explorer">Explore the data</a><a href="#mapsec">Flammability map</a><a href="#evsec">Discover the evidence</a></nav>
 <section class="pg" id="explore">
@@ -630,7 +630,7 @@ main>#filter.pg{max-width:none;padding:0 0 80px}
 
 <section class="pg" id="ask">
 <div class="chat">
-  <div class="chathead"><div class="chat-brand"><div><b>Ask NASA</b><span id="kbline"></span></div></div><div class="chat-actions"><button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span aria-hidden="true">☾</span><span>Dark mode</span></button><button class="newchat" id="newchat" type="button">New chat</button></div></div>
+  <div class="chathead"><div class="chat-brand"><div><b>Ask NASA</b><span id="kbline"></span></div></div><div class="chat-actions"><button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span aria-hidden="true">☾</span><span>Dark mode</span></button><label class="auto-speak" for="autoSpeak" title="Speak each assistant answer automatically"><input type="checkbox" id="autoSpeak"> Auto-speak</label><button class="newchat" id="newchat" type="button">New chat</button></div></div>
   <div class="chat-content"><aside class="alien-companion" id="alienCompanion" data-state="idle" aria-live="polite" aria-label="Alien assistant status"><div class="alien-call" aria-hidden="true"><span>ANASA</span></div><svg class="alien" id="chatAlien" data-state="idle" viewBox="0 0 64 64" role="img" aria-label="Friendly alien, relaxing" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="alienShellGradient" x1=".18" y1=".05" x2=".82" y2="1" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="#fff"/><stop offset=".48" stop-color="#edf0ff"/><stop offset="1" stop-color="#c6ceff"/></linearGradient>
