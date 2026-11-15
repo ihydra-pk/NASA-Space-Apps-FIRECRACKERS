@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import math
 import operator
+import re
 from dataclasses import dataclass
 from typing import Any, Sequence
 
@@ -74,6 +75,101 @@ def _rankable(scored: Scored, min_chunk_words: int) -> Scored:
         seen.add(key)
         kept.append(item)
     return kept
+
+
+_WORD = "A-Za-z0-9"
+_NAME_SUFFIX = re.compile(r"^(?P<stem>[A-Za-z]{3,})-(?:[IVX]+|\d+|[A-Z])$")
+
+
+def _alias_tiers(experiment: str, accession: str | None) -> tuple[set[str], set[str]]:
+    """(exact names, looser names) for one experiment.
+
+    Exact names are the label's own parts and the NASA ID. Looser names are
+    words taken out of a label (``ACME`` from ``ACME s-Flame``) and a name
+    without its numbered suffix (``SAFFIRE`` from ``SAFFIRE-I``).
+    """
+
+    # "DAFT / DAFT-2" lists two names; "ACME/Flame Design" is one name whose
+    # pieces ("ACME", "Flame Design") are only looser names.
+    exact = {part for part in re.split(r"\s+/\s+", experiment.strip()) if part}
+    looser: set[str] = set()
+    for part in exact:
+        pieces = [piece.strip() for piece in part.split("/") if piece.strip()]
+        if len(pieces) > 1:
+            looser.update(pieces)
+        for token in re.split(r"[\s/]+", part):
+            if "-" in token or (len(token) >= 3 and token.isupper()):
+                looser.add(token)
+    for alias in exact | looser:
+        suffixed = _NAME_SUFFIX.match(alias)
+        if suffixed:
+            looser.add(suffixed.group("stem"))
+    # The ID is added last so that "PSI-47" does not also yield "PSI".
+    looser.discard("PSI")
+    if accession:
+        exact.add(accession.strip())
+    exact = {alias for alias in exact if len(alias) >= 3}
+    return exact, {alias for alias in looser if len(alias) >= 3} - exact
+
+
+def experiment_aliases(experiment: str, accession: str | None) -> set[str]:
+    """Names a question may use for one experiment, from its stored labels.
+
+    ``"DAFT / DAFT-2"`` with ``"PSI-47"`` gives ``PSI-47, DAFT, DAFT-2``;
+    ``"ACME/Flame Design"`` gives ``ACME, Flame Design``; ``"SAFFIRE-I"`` also
+    gives ``SAFFIRE``. Ordinary words inside a label (``Flame``, ``Design``)
+    are not aliases on their own.
+    """
+
+    exact, looser = _alias_tiers(experiment, accession)
+    return exact | looser
+
+
+def _names(query_text: str, alias: str) -> bool:
+    """Whether the question uses ``alias`` as a name rather than a word.
+
+    Matching ignores case, but an alias made only of letters (``SAME``,
+    ``FLEX``, ``Flame Design``) must be written with a capital, so "burn the
+    same" is not read as the SAME experiment. A hyphen is part of a name, so
+    ``BASS`` does not match inside ``BASS-II``.
+    """
+
+    pattern = re.compile(
+        rf"(?<![{_WORD}-]){re.escape(alias)}(?![{_WORD}-])".replace(r"\ ", r"\s+"),
+        re.IGNORECASE,
+    )
+    plain_word = alias.replace(" ", "").isalpha()
+    return any(
+        not plain_word or any(char.isupper() for char in found.group(0))
+        for found in pattern.finditer(query_text)
+    )
+
+
+def named_experiments(query_text: str, records: list[dict]) -> tuple[str, ...]:
+    """Experiment labels of ``records`` that the question names, sorted.
+
+    An exact name wins over a looser one: "BASS" means the BASS experiment and
+    not BASS-II as well, while "SAFFIRE", which is no experiment's exact name,
+    covers SAFFIRE-I and SAFFIRE-III.
+    """
+
+    tiers: dict[str, tuple[set[str], set[str]]] = {}
+    for record in records:
+        experiment = record.get("experiment")
+        if isinstance(experiment, str) and experiment.strip():
+            exact, looser = _alias_tiers(experiment, record.get("source_accession"))
+            known = tiers.setdefault(experiment, (set(), set()))
+            known[0].update(exact)
+            known[1].update(looser)
+    for tier in (0, 1):
+        named = sorted(
+            experiment
+            for experiment, aliases in tiers.items()
+            if any(_names(query_text, alias) for alias in aliases[tier])
+        )
+        if named:
+            return tuple(named)
+    return ()
 
 
 SEARCH_MODES = ("semantic", "hybrid")
@@ -256,6 +352,24 @@ def _distinct_queries(queries: Sequence[str]) -> list[str]:
     return kept
 
 
+def _scope(candidates: list[int], ranking: _Ranking, experiments: tuple[str, ...]) -> list[int]:
+    """Put every passage of the named experiments ahead of all others.
+
+    Fused candidates keep their order; the experiment's remaining passages
+    follow in the question's own order, so a small experiment that no query
+    ranked highly is still searched in full. Other passages come last and only
+    fill slots the named experiments leave empty.
+    """
+
+    def inside(index: int) -> bool:
+        return ranking.scored[index][1].get("experiment") in experiments
+
+    chosen = [index for index in candidates if inside(index)]
+    seen = set(chosen)
+    chosen += [index for index in ranking.order if index not in seen and inside(index)]
+    return chosen + [index for index in candidates if not inside(index)]
+
+
 def search_many(
     queries: Sequence[str],
     store: VectorStore,
@@ -336,6 +450,11 @@ def search_many(
         candidates = question_ranking.order
     else:
         candidates = _fuse_queries(rankings, max(count, _CANDIDATES_PER_QUERY))
+    scoped: tuple[str, ...] = ()
+    if config.scope_to_named_experiments:
+        scoped = named_experiments(question, [record for _, record, _ in question_ranking.scored])
+    if scoped:
+        candidates = _scope(candidates, question_ranking, scoped)
     demote = config.demote_reference_lists and not asks_for_publications(question)
     if demote:
         candidates = _demote_reference_lists(candidates, question_ranking.scored, count)
@@ -344,7 +463,9 @@ def search_many(
         selected = _with_neighbours(
             selected, question_ranking.scored, config.neighbour_chunks, count, skip_references=demote
         )
+
     return SearchResult(
+        scoped_experiments=scoped,
         mode=mode,
         query=question,
         provider=config.provider,

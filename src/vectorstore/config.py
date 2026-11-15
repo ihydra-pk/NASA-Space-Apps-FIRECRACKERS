@@ -36,6 +36,9 @@ class VectorStoreConfig:
     # After each of this many top hits, add the next passage of the same
     # document (the next chunk of the page, or the next page).
     neighbour_chunks: int = 0
+    # When the question names an experiment (NASA ID or acronym, taken from the
+    # labels stored with each chunk), rank that experiment's chunks only.
+    scope_to_named_experiments: bool = True
 
     def __post_init__(self) -> None:
         if not self.collection.strip():

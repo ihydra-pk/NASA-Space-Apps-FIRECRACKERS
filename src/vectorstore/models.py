@@ -85,3 +85,5 @@ class SearchResult:
     similarity_metric: str
     matches: tuple[RetrievalResult, ...]
     mode: str = "semantic"
+    # Experiment labels the question named, when ranking was limited to them.
+    scoped_experiments: tuple[str, ...] = ()

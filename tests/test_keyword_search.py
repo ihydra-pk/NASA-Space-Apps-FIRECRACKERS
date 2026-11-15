@@ -172,3 +172,87 @@ def test_identical_passages_take_one_result_slot(tmp_path):
             ids = [item.chunk_id for item in result.matches]
             assert len(ids) == 3
             assert ("near" in ids) != ("near-copy" in ids)
+
+
+def _labelled(chunk_id, vector, text, experiment, accession):
+    record = _record(chunk_id, vector, text)
+    record["experiment"] = experiment
+    record["source_accession"] = accession
+    return record
+
+
+def _experiment_store(tmp_path: Path) -> tuple[SQLiteVectorStore, VectorStoreConfig]:
+    config = _config(tmp_path)
+    store = SQLiteVectorStore(config)
+    # The ACME chunks are closest to every query vector; DAFT and SAME are far.
+    for index in range(3):
+        vector = [1.0, 0.01 * index, 0.0]
+        store.upsert(_labelled(f"acme-{index}", vector, f"Cover slide number {index}.", "ACME s-Flame", "PSI-23"), vector)
+    store.upsert(_labelled("daft-a", [0.0, 1.0, 0.0], "Particle counters were tested on the station.", "DAFT / DAFT-2", "PSI-47"), [0.0, 1.0, 0.0])
+    store.upsert(_labelled("daft-b", [0.0, 0.9, 0.1], "The P-Trak counts ultrafine particles.", "DAFT / DAFT-2", "PSI-47"), [0.0, 0.9, 0.1])
+    store.upsert(_labelled("same-a", [0.0, 0.0, 1.0], "Smoke particle sizes were measured.", "SAME", "PSI-102"), [0.0, 0.0, 1.0])
+    return store, config
+
+
+def _ids(result) -> list[str]:
+    return [item.chunk_id for item in result.matches]
+
+
+@pytest.mark.parametrize("question", ["PSI-47", "tell me about psi-47", "Tell me more about DAFT", "What did DAFT-2 measure?"])
+def test_question_naming_an_experiment_ranks_that_experiment_first(tmp_path, question):
+    store, config = _experiment_store(tmp_path)
+    with store:
+        result = search(question, store, config, provider=QueryProvider(), top_k=2)
+    assert result.scoped_experiments == ("DAFT / DAFT-2",)
+    assert sorted(_ids(result)) == ["daft-a", "daft-b"]
+    assert [item.rank for item in result.matches] == [1, 2]
+
+
+def test_scoping_tops_up_from_other_experiments_when_too_few_chunks(tmp_path):
+    store, config = _experiment_store(tmp_path)
+    with store:
+        result = search("What did the SAME experiment learn?", store, config, provider=QueryProvider(), top_k=3)
+    assert result.scoped_experiments == ("SAME",)
+    assert _ids(result)[0] == "same-a"
+    assert len(result.matches) == 3
+    assert [item.rank for item in result.matches] == [1, 2, 3]
+
+
+def test_ordinary_words_and_unnamed_questions_are_not_scoped(tmp_path):
+    from dataclasses import replace
+
+    store, config = _experiment_store(tmp_path)
+    with store:
+        ordinary = search("Do materials burn the same in space?", store, config, provider=QueryProvider(), top_k=2)
+        unnamed = search("How do particles behave?", store, config, provider=QueryProvider(), top_k=2)
+        switched_off = search(
+            "PSI-47", store, replace(config, scope_to_named_experiments=False), provider=QueryProvider(), top_k=2
+        )
+    for result in (ordinary, unnamed, switched_off):
+        assert result.scoped_experiments == ()
+        assert _ids(result) == ["acme-0", "acme-1"]
+
+
+def test_two_named_experiments_are_searched_together_and_ids_do_not_overlap(tmp_path):
+    from src.vectorstore.search import experiment_aliases, named_experiments
+
+    store, config = _experiment_store(tmp_path)
+    with store:
+        result = search("Compare DAFT and SAME", store, config, provider=QueryProvider(), top_k=3)
+    assert result.scoped_experiments == ("DAFT / DAFT-2", "SAME")
+    assert sorted(_ids(result)) == ["daft-a", "daft-b", "same-a"]
+
+    records = [
+        {"experiment": "ACME/Flame Design", "source_accession": "PSI-10"},
+        {"experiment": "SAFFIRE-III", "source_accession": "PSI-100"},
+        {"experiment": "BASS", "source_accession": "PSI-26"},
+        {"experiment": "BASS-II", "source_accession": "PSI-25"},
+    ]
+    assert named_experiments("PSI-100", records) == ("SAFFIRE-III",)
+    assert named_experiments("what is PSI?", records) == ()
+    assert named_experiments("BASS-II blowoff", records) == ("BASS-II",)
+    assert named_experiments("Tell me about BASS", records) == ("BASS",)
+    saffire = [{"experiment": name, "source_accession": None} for name in ("SAFFIRE-I", "SAFFIRE-III")]
+    assert named_experiments("What did SAFFIRE test?", saffire) == ("SAFFIRE-I", "SAFFIRE-III")
+    assert named_experiments("the Flame Design burner", records) == ("ACME/Flame Design",)
+    assert "PSI" not in experiment_aliases("PSI-115", "PSI-115")

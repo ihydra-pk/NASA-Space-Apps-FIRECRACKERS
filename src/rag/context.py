@@ -110,6 +110,7 @@ def _retrieval_configuration(retrieval: Any, config: RAGContextConfig) -> dict[s
         "model_name": _get(retrieval, "model_name", default=None),
         "dimension": _get(retrieval, "dimension", default=None),
         "similarity_metric": _get(retrieval, "similarity_metric", default=None),
+        "scoped_experiments": list(_get(retrieval, "scoped_experiments", default=()) or ()),
     }
 
 
